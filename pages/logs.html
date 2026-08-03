@@ -1,0 +1,2147 @@
+<!-- meta tags and other links -->
+<!DOCTYPE html>
+<html lang="en" data-theme="light" dir="ltr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Primary Meta Tags -->
+<title>Nucleus — The Missing Dashboard for Linux Developers</title>
+<meta name="title" content="Nucleus — The Missing Dashboard for Linux Developers">
+<meta name="description" content="Lightweight central control panel for Linux development environments. Service management, project detection, database tools, and server monitoring for ZorinOS, Ubuntu, and Mint.">
+<meta name="keywords" content="nucleus, dashboard, linux, development environment, zorinos, ubuntu, mint, php, apache, nginx, mysql, systemd, web development, local server">
+<meta name="author" content="Tarek Tarabichi, 2TInteractive">
+<meta name="robots" content="index, follow">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://github.com/LebToki/Nucleus/">
+<meta property="og:title" content="Nucleus — The Missing Dashboard for Linux Developers">
+<meta property="og:description" content="Lightweight central control panel for Linux development environments. Service management, project detection, database tools, and server monitoring for ZorinOS, Ubuntu, and Mint.">
+<meta property="og:image" content="/assets/images/nucleus-og.png">
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image">
+<meta property="twitter:url" content="https://github.com/LebToki/Nucleus/">
+<meta property="twitter:title" content="Nucleus — The Missing Dashboard for Linux Developers">
+<meta property="twitter:description" content="Lightweight central control panel for Linux development environments. Service management, project detection, database tools, and server monitoring for ZorinOS, Ubuntu, and Mint.">
+<meta property="twitter:image" content="/assets/images/nucleus-og.png">
+
+<!-- Additional Meta Tags -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#4f46e5">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+<!-- Favicons -->
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/images/favicon/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/images/favicon/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/images/favicon/favicon-16x16.png">
+<link rel="manifest" href="/assets/images/favicon/site.webmanifest">
+<link rel="shortcut icon" href="/assets/images/favicon/favicon.ico">
+    <!-- remix icon font css  -->
+    <link rel="stylesheet" href="/assets/css/remixicon.css">
+    <!-- BootStrap css -->
+    <link rel="stylesheet" href="/assets/css/lib/bootstrap.min.css">
+    <!-- Apex Chart css -->
+    <link rel="stylesheet" href="/assets/css/lib/apexcharts.css">
+    <!-- Data Table css -->
+    <link rel="stylesheet" href="/assets/css/lib/dataTables.min.css">
+    <!-- Text Editor css -->
+    <link rel="stylesheet" href="/assets/css/lib/editor-katex.min.css">
+    <link rel="stylesheet" href="/assets/css/lib/editor.atom-one-dark.min.css">
+    <link rel="stylesheet" href="/assets/css/lib/editor.quill.snow.css">
+    <!-- Date picker css -->
+    <link rel="stylesheet" href="/assets/css/lib/flatpickr.min.css">
+    <!-- Calendar css -->
+    <link rel="stylesheet" href="/assets/css/lib/full-calendar.css">
+    <!-- Vector Map css -->
+    <link rel="stylesheet" href="/assets/css/lib/jquery-jvectormap-2.0.5.css">
+    <!-- Popup css -->
+    <link rel="stylesheet" href="/assets/css/lib/magnific-popup.css">
+    <!-- Slick Slider css -->
+    <link rel="stylesheet" href="/assets/css/lib/slick.css">
+    <!-- prism css -->
+    <link rel="stylesheet" href="/assets/css/lib/prism.css">
+    <!-- CodeMirror css -->
+    <link rel="stylesheet" href="/assets/css/lib/codemirror.min.css">
+    <link rel="stylesheet" href="/assets/css/lib/theme/monokai.min.css">
+    <!-- file upload css -->
+    <link rel="stylesheet" href="/assets/css/lib/file-upload.css">
+
+    <link rel="stylesheet" href="/assets/css/lib/audioplayer.css">
+    <!-- Monochrome Mode css -->
+    <link rel="stylesheet" href="/assets/css/lib/monochrome-mode.css">
+    <!-- main css -->
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<script>
+    // Global CSRF token for AJAX requests
+    window.csrfToken = "0dafb4e5b3245650dcc69eb3ea98b47afea19231702649982e8be0ede29799ae";
+</script>
+
+<body>
+
+    <aside class="sidebar">
+    <button type="button" class="sidebar-close-btn" aria-label="Close Sidebar">
+        <iconify-icon icon="radix-icons:cross-2"></iconify-icon>
+    </button>
+    <div>
+        <a href="index.php" class="sidebar-logo">
+            <img src="/assets/images/logo.png" alt="Nucleus" class="light-logo">
+            <img src="/assets/images/logo-light.png" alt="Nucleus" class="dark-logo">
+            <img src="/assets/images/logo-icon.png" alt="Nucleus" class="logo-icon">
+        </a>
+    </div>
+    <div class="sidebar-menu-area">
+        <ul class="sidebar-menu" id="sidebar-menu">
+            <!-- Dashboard -->
+            <li>
+                <a href="index.php" class="">
+                    <iconify-icon icon="solar:home-smile-angle-outline" class="menu-icon"></iconify-icon>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            
+            <!-- Development Section -->
+            <li class="sidebar-menu-group-title">Development</li>
+            
+            <li>
+                <a href="index.php?page=projects" class="">
+                    <iconify-icon icon="solar:folder-with-files-outline" class="menu-icon"></iconify-icon>
+                    <span>Projects</span>
+                </a>
+            </li>
+            
+            <li>
+                <a href="index.php?page=databases" class="">
+                    <iconify-icon icon="streamline-plump:database-remix" class="menu-icon"></iconify-icon>
+                    <span>Databases</span>
+                </a>
+            </li>
+            
+            <!-- Services Section -->
+            <li class="sidebar-menu-group-title">Services</li>
+            
+            <li>
+                <a href="index.php?page=services" class="">
+                    <iconify-icon icon="material-symbols:linked-services-outline" class="menu-icon"></iconify-icon>
+                    <span>Services</span>
+                </a>
+            </li>
+            
+            <li>
+                <a href="index.php?page=vitals" class="">
+                    <iconify-icon icon="material-symbols:vitals" class="menu-icon"></iconify-icon>
+                    <span>Server Vitals</span>
+                </a>
+            </li>
+            
+            <!-- System Section -->
+            <li class="sidebar-menu-group-title">System</li>
+            
+            <li>
+                <a href="index.php?page=mailbox" class="">
+                    <iconify-icon icon="hugeicons:ai-mail-02" class="menu-icon"></iconify-icon>
+                    <span>Mailbox</span>
+                </a>
+            </li>
+            
+            <li>
+                <a href="index.php?page=logs" class="active">
+                    <iconify-icon icon="carbon:flow-logs-vpc" class="menu-icon"></iconify-icon>
+                    <span>Logs</span>
+                </a>
+            </li>
+            
+            <!-- Tools Section -->
+            <li class="sidebar-menu-group-title">Tools</li>
+            
+            <li>
+                <a href="index.php?page=tools" class="">
+                    <iconify-icon icon="clarity:tools-line" class="menu-icon"></iconify-icon>
+                    <span>Tools</span>
+                </a>
+            </li>
+            
+            <li>
+                <a href="index.php?page=backup" class="">
+                    <iconify-icon icon="solar:cloud-storage-outline" class="menu-icon"></iconify-icon>
+                    <span>Backup</span>
+                </a>
+            </li>
+            
+            <!-- Configuration Section -->
+            <li class="sidebar-menu-group-title">Configuration</li>
+            
+            <li>
+                <a href="index.php?page=sites" class="">
+                    <iconify-icon icon="solar:server-path-bold" class="menu-icon"></iconify-icon>
+                    <span>Sites Enabled</span>
+                </a>
+            </li>
+            
+            <li>
+                <a href="index.php?page=httpd" class="">
+                    <iconify-icon icon="solar:settings-bold" class="menu-icon"></iconify-icon>
+                    <span>Server Configurations</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="index.php?page=config_editor" class="">
+                    <iconify-icon icon="solar:pen-new-square-bold" class="menu-icon"></iconify-icon>
+                    <span>Config Editor</span>
+                </a>
+            </li>
+            
+            <!-- Settings -->
+            <li>
+                <a href="index.php?page=preferences" class="">
+                    <iconify-icon icon="icon-park-outline:setting-two" class="menu-icon"></iconify-icon>
+                    <span>Preferences</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</aside>
+
+        
+    <main class="dashboard-main ">
+        <div class="navbar-header">
+    <div class="row align-items-center justify-content-between">
+        <div class="col-auto">
+            <div class="d-flex flex-wrap align-items-center gap-4">
+                <button type="button" class="sidebar-toggle" aria-label="Toggle Sidebar">
+                    <iconify-icon icon="heroicons:bars-3-solid" class="icon text-2xl non-active"></iconify-icon>
+                    <iconify-icon icon="iconoir:arrow-right" class="icon text-2xl active"></iconify-icon>
+                </button>
+                <button type="button" class="sidebar-mobile-toggle" aria-label="Toggle Mobile Sidebar">
+                    <iconify-icon icon="heroicons:bars-3-solid" class="icon"></iconify-icon>
+                </button>
+                <!-- Search Dropdown -->
+                <div class="dropdown">
+                    <form class="navbar-search" id="project-search-form">
+                        <input type="text" name="search" id="project-search-input" placeholder="Search projects..." autocomplete="off">
+                        <iconify-icon icon="ion:search-outline" class="icon"></iconify-icon>
+                    </form>
+                    <div class="dropdown-menu dropdown-menu-lg p-0" id="project-search-results" style="display: none; min-width: 400px; max-width: 500px;">
+                        <div class="py-12 px-16 radius-8 bg-primary-50 mb-16 d-flex align-items-center justify-content-between gap-2">
+                            <div>
+                                <p class="text-lg text-primary-light fw-semibold mb-0">Projects</p>
+                            </div>
+                            <span class="text-primary-600 fw-semibold text-lg" id="project-count">0</span>
+                        </div>
+                        <div class="max-h-400-px overflow-y-auto scroll-sm pe-4" id="project-list">
+                            <div class="px-24 py-12 text-center">
+                                <p class="text-secondary-light mb-0">Start typing to search projects...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-auto d-none d-md-flex">
+            <div class="d-flex flex-wrap align-items-center gap-3">
+                <!-- Time-based Greeting and Clock -->
+                <div class="d-flex align-items-center gap-2 px-12 py-6 bg-neutral-100 rounded-8">
+                    <iconify-icon icon="solar:clock-circle-bold" class="text-primary-600 text-lg" id="greeting-icon"></iconify-icon>
+                    <div>
+                        <div class="fw-semibold text-xs text-secondary-light mb-1" id="time-greeting">Good Evening</div>
+                        <div class="fw-medium text-xxs text-secondary-light" id="local-time-display">
+                            <span id="local-date"></span> <span id="local-time"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-auto">
+            <div class="d-flex flex-wrap align-items-center gap-3">
+                <!-- Theme Switcher: Light/Dark Toggle -->
+                <button type="button" data-theme-toggle="light-dark" class="w-40-px h-40-px bg-neutral-200 rounded-circle d-flex justify-content-center align-items-center" title="Toggle Light/Dark Theme" aria-label="Toggle Light/Dark Theme">
+                    <iconify-icon icon="solar:sun-bold" class="icon text-lg theme-icon-light" style="display: none;"></iconify-icon>
+                    <iconify-icon icon="solar:moon-bold" class="icon text-lg theme-icon-dark"></iconify-icon>
+                </button>
+                
+                <!-- Theme Switcher: Monochrome -->
+                <button type="button" data-theme-toggle="monochrome" class="w-40-px h-40-px bg-neutral-200 rounded-circle d-flex justify-content-center align-items-center" title="Toggle Monochrome Mode" aria-label="Toggle Monochrome Mode">
+                    <iconify-icon icon="tabler:palette" class="text-primary-light text-xl"></iconify-icon>
+                </button>
+                
+                <!-- Language Selector -->
+                <div class="dropdown d-none d-sm-inline-block">
+                    <button class="has-indicator w-40-px h-40-px bg-neutral-200 rounded-circle d-flex justify-content-center align-items-center" type="button" data-bs-toggle="dropdown" title="Select Language" aria-label="Select Language">
+                        <img 
+                            src="/assets/images/flags/US.png" 
+                            alt="English" 
+                            class="w-24 h-24 object-fit-cover rounded-circle"
+                            onerror="this.src='/assets/images/flags/US.png'"
+                        >
+                    </button>
+                    <div class="dropdown-menu to-top dropdown-menu-sm">
+                        <div class="py-12 px-16 radius-8 bg-primary-50 mb-16 d-flex align-items-center justify-content-between gap-2">
+                            <div>
+                                <p class="text-lg text-primary-light fw-semibold mb-0">Choose Your Language</p>
+                            </div>
+                        </div>
+                        <div class="max-h-400-px overflow-y-auto scroll-sm pe-8">
+                                                        <a href="?lang=en" class="form-check style-check d-flex align-items-center justify-content-between mb-16 text-decoration-none bg-primary-50">
+                                <label class="form-check-label line-height-1 fw-medium text-secondary-light w-100 mb-0" for="lang-en">
+                                    <span class="text-black hover-bg-transparent hover-text-primary d-flex align-items-center gap-3">
+                                        <img 
+                                            src="/assets/images/flags/US.png" 
+                                            alt="English" 
+                                            class="w-36-px h-36-px bg-success-subtle text-success-main rounded-circle flex-shrink-0"
+                                            onerror="this.src='/assets/images/flags/US.png'"
+                                        >
+                                        <span class="text-md fw-semibold mb-0">English</span>
+                                    </span>
+                                </label>
+                                                                <iconify-icon icon="solar:check-circle-bold" class="text-success-main text-xl"></iconify-icon>
+                                                            </a>
+                                                        <a href="?lang=ar" class="form-check style-check d-flex align-items-center justify-content-between mb-16 text-decoration-none ">
+                                <label class="form-check-label line-height-1 fw-medium text-secondary-light w-100 mb-0" for="lang-ar">
+                                    <span class="text-black hover-bg-transparent hover-text-primary d-flex align-items-center gap-3">
+                                        <img 
+                                            src="/assets/images/flags/arabic.png" 
+                                            alt="Arabic" 
+                                            class="w-36-px h-36-px bg-success-subtle text-success-main rounded-circle flex-shrink-0"
+                                            onerror="this.src='/assets/images/flags/US.png'"
+                                        >
+                                        <span class="text-md fw-semibold mb-0">العربية</span>
+                                    </span>
+                                </label>
+                                                            </a>
+                                                        <a href="?lang=de" class="form-check style-check d-flex align-items-center justify-content-between mb-16 text-decoration-none ">
+                                <label class="form-check-label line-height-1 fw-medium text-secondary-light w-100 mb-0" for="lang-de">
+                                    <span class="text-black hover-bg-transparent hover-text-primary d-flex align-items-center gap-3">
+                                        <img 
+                                            src="/assets/images/flags/DE.png" 
+                                            alt="German" 
+                                            class="w-36-px h-36-px bg-success-subtle text-success-main rounded-circle flex-shrink-0"
+                                            onerror="this.src='/assets/images/flags/US.png'"
+                                        >
+                                        <span class="text-md fw-semibold mb-0">Deutsch</span>
+                                    </span>
+                                </label>
+                                                            </a>
+                                                        <a href="?lang=es" class="form-check style-check d-flex align-items-center justify-content-between mb-16 text-decoration-none ">
+                                <label class="form-check-label line-height-1 fw-medium text-secondary-light w-100 mb-0" for="lang-es">
+                                    <span class="text-black hover-bg-transparent hover-text-primary d-flex align-items-center gap-3">
+                                        <img 
+                                            src="/assets/images/flags/ES.png" 
+                                            alt="Spanish" 
+                                            class="w-36-px h-36-px bg-success-subtle text-success-main rounded-circle flex-shrink-0"
+                                            onerror="this.src='/assets/images/flags/US.png'"
+                                        >
+                                        <span class="text-md fw-semibold mb-0">Español</span>
+                                    </span>
+                                </label>
+                                                            </a>
+                                                        <a href="?lang=fr" class="form-check style-check d-flex align-items-center justify-content-between mb-16 text-decoration-none ">
+                                <label class="form-check-label line-height-1 fw-medium text-secondary-light w-100 mb-0" for="lang-fr">
+                                    <span class="text-black hover-bg-transparent hover-text-primary d-flex align-items-center gap-3">
+                                        <img 
+                                            src="/assets/images/flags/FR.png" 
+                                            alt="French" 
+                                            class="w-36-px h-36-px bg-success-subtle text-success-main rounded-circle flex-shrink-0"
+                                            onerror="this.src='/assets/images/flags/US.png'"
+                                        >
+                                        <span class="text-md fw-semibold mb-0">Français</span>
+                                    </span>
+                                </label>
+                                                            </a>
+                                                        <a href="?lang=id" class="form-check style-check d-flex align-items-center justify-content-between mb-16 text-decoration-none ">
+                                <label class="form-check-label line-height-1 fw-medium text-secondary-light w-100 mb-0" for="lang-id">
+                                    <span class="text-black hover-bg-transparent hover-text-primary d-flex align-items-center gap-3">
+                                        <img 
+                                            src="/assets/images/flags/ID.png" 
+                                            alt="Indonesian" 
+                                            class="w-36-px h-36-px bg-success-subtle text-success-main rounded-circle flex-shrink-0"
+                                            onerror="this.src='/assets/images/flags/US.png'"
+                                        >
+                                        <span class="text-md fw-semibold mb-0">Bahasa Indonesia</span>
+                                    </span>
+                                </label>
+                                                            </a>
+                                                        <a href="?lang=pt" class="form-check style-check d-flex align-items-center justify-content-between mb-16 text-decoration-none ">
+                                <label class="form-check-label line-height-1 fw-medium text-secondary-light w-100 mb-0" for="lang-pt">
+                                    <span class="text-black hover-bg-transparent hover-text-primary d-flex align-items-center gap-3">
+                                        <img 
+                                            src="/assets/images/flags/PT.png" 
+                                            alt="Portuguese" 
+                                            class="w-36-px h-36-px bg-success-subtle text-success-main rounded-circle flex-shrink-0"
+                                            onerror="this.src='/assets/images/flags/US.png'"
+                                        >
+                                        <span class="text-md fw-semibold mb-0">Português</span>
+                                    </span>
+                                </label>
+                                                            </a>
+                                                        <a href="?lang=tl" class="form-check style-check d-flex align-items-center justify-content-between mb-16 text-decoration-none ">
+                                <label class="form-check-label line-height-1 fw-medium text-secondary-light w-100 mb-0" for="lang-tl">
+                                    <span class="text-black hover-bg-transparent hover-text-primary d-flex align-items-center gap-3">
+                                        <img 
+                                            src="/assets/images/flags/PH.png" 
+                                            alt="Tagalog" 
+                                            class="w-36-px h-36-px bg-success-subtle text-success-main rounded-circle flex-shrink-0"
+                                            onerror="this.src='/assets/images/flags/US.png'"
+                                        >
+                                        <span class="text-md fw-semibold mb-0">Tagalog</span>
+                                    </span>
+                                </label>
+                                                            </a>
+                                                    </div>
+                    </div>
+                </div><!-- Language dropdown end -->
+
+<!-- Plugins Hub Dropdown -->
+<div class="dropdown">
+    <button class="has-indicator w-40-px h-40-px bg-neutral-200 rounded-circle d-flex justify-content-center align-items-center" type="button" id="plugins-btn" aria-label="Plugins" title="Plugins Hub" onclick="window.location.href='index.php?page=plugins'">
+        <iconify-icon icon="iconoir:puzzle" class="text-primary-light text-xl"></iconify-icon>
+        <span class="indicator bg-danger-main" id="plugin-update-indicator" style="display: none;"></span>
+    </button>
+    <div class="dropdown-menu to-top dropdown-menu-lg p-0" aria-labelledby="plugins-btn">
+        <div class="m-16 py-12 px-16 radius-8 bg-primary-50 mb-16 d-flex align-items-center justify-content-between gap-2">
+            <div>
+                <p class="text-lg text-primary-light fw-semibold mb-0">Plugins Hub</p>
+            </div>
+            <span class="text-primary-600 fw-semibold text-lg w-40-px h-40-px rounded-circle bg-base d-flex justify-content-center align-items-center" id="plugin-count">0</span>
+        </div>
+        <div class="max-h-400-px overflow-y-auto scroll-sm pe-4" id="plugins-list">
+            <div class="px-24 py-12 text-center">
+                <p class="text-secondary-light mb-0">Loading plugins...</p>
+            </div>
+        </div>
+        <div class="text-center py-12 px-16">
+           <a href="index.php?page=plugins" class="text-primary-600 fw-semibold text-md">Open Plugin Hub</a>
+        </div>
+    </div>
+</div><!-- Plugins dropdown end -->
+
+
+
+
+
+                <!-- User Profile Dropdown -->
+                <div class="dropdown">
+                    <button class="d-flex justify-content-center align-items-center rounded-circle" type="button" data-bs-toggle="dropdown" aria-label="User Profile Menu">
+                        <img 
+                            src="/assets/images/logo-icon.png" 
+                            alt="User" 
+                            class="w-40-px h-40-px object-fit-cover rounded-circle"
+                            onerror="this.src='/assets/images/user.png'"
+                        >
+                    </button>
+                    <div class="dropdown-menu to-top dropdown-menu-sm">
+                        <div class="py-12 px-16 radius-8 bg-primary-50 mb-16 d-flex align-items-center justify-content-between gap-2">
+                            <div>
+                                <p class="text-lg text-primary-light fw-semibold mb-2">Nucleus</p>
+                                <span class="text-secondary-light fw-medium text-sm">System User</span>
+                            </div>
+                            <button type="button" class="hover-text-danger" aria-label="Close Profile Menu">
+                                <iconify-icon icon="radix-icons:cross-1" class="icon text-xl"></iconify-icon>
+                            </button>
+                        </div>
+                        <ul class="to-top-list">
+                            <li>
+                                <a class="dropdown-item text-black px-0 py-8 hover-bg-transparent hover-text-primary d-flex align-items-center gap-3" href="javascript:void(0)">
+                                    <iconify-icon icon="solar:user-linear" class="icon text-xl"></iconify-icon> My Profile
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item text-black px-0 py-8 hover-bg-transparent hover-text-primary d-flex align-items-center gap-3" href="javascript:void(0)">
+                                    <iconify-icon icon="icon-park-outline:setting-two" class="icon text-xl"></iconify-icon> Settings
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item text-black px-0 py-8 hover-bg-transparent hover-text-danger d-flex align-items-center gap-3" href="javascript:void(0)">
+                                    <iconify-icon icon="lucide:power" class="icon text-xl"></iconify-icon> Log Out
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div><!-- Profile dropdown end -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="dashboard-main-body">
+    <div class="container-fluid">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+            <h6 class="fw-semibold mb-0">Logs</h6>
+            <ul class="d-flex align-items-center gap-2">
+                <li class="fw-medium">
+                    <a href="index.php" class="d-flex align-items-center gap-1 hover-text-primary">
+                        <iconify-icon icon="solar:home-smile-angle-outline" class="icon text-lg"></iconify-icon>
+                        Dashboard                    </a>
+                </li>
+                <li>-</li>
+                <li class="fw-medium">Logs</li>
+            </ul>
+        </div>
+
+        <div class="row g-3">
+            <!-- Log List (col-4) -->
+            <div class="col-lg-4">
+                <div class="card h-100 p-0">
+                    <div class="card-header border-bottom bg-base py-16 px-24">
+                        <h6 class="text-lg fw-semibold mb-0">Log Files</h6>
+                    </div>
+                    <div class="card-body p-24">
+                        <ul class="list-group radius-8" id="log-list">
+                                                        <li class="list-group-item d-flex align-items-center justify-content-between border text-secondary-light p-16 bg-base " style="cursor: pointer;" onclick="window.location.href='index.php?page=logs&log=orchestrator'">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="w-32-px h-32-px bg-success-50 rounded-circle d-flex justify-content-center align-items-center flex-shrink-0">
+                                        <iconify-icon icon="solar:box-minimalistic-bold" class="text-success-main text-sm"></iconify-icon>
+                                    </div>
+                                    <span>2TI Orchestrator Log</span>
+                                </div>
+                                                                    <span class="text-xs bg-neutral-100 text-neutral-600 radius-4 px-10 py-2 fw-semibold">View</span>
+                                                            </li>
+                                                    </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Code Viewer (col-8) -->
+            <div class="col-lg-8">
+                <div class="card shadow-none border radius-12">
+                    <div class="card-body p-0">
+                        <div class="p-16 border-bottom d-flex align-items-center justify-content-between">
+                            <div>
+                                <h6 class="fw-semibold mb-0" id="log-viewer-title">Select a log file</h6>
+                                <p class="mb-0 text-secondary-light text-sm" id="log-viewer-path"></p>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <button type="button" class="btn btn-sm btn-primary-100 text-primary-600" id="refresh-log">
+                                    <iconify-icon icon="solar:refresh-bold" class="icon"></iconify-icon>
+                                    Refresh                                </button>
+                                <button type="button" class="btn btn-sm btn-primary-100 text-primary-600" id="clear-log">
+                                    <iconify-icon icon="solar:trash-bin-trash-bold" class="icon"></iconify-icon>
+                                    Clear                                </button>
+                                <button type="button" class="btn btn-sm btn-primary-100 text-primary-600" id="download-log">
+                                    <iconify-icon icon="solar:download-bold" class="icon"></iconify-icon>
+                                    Download                                </button>
+                            </div>
+                        </div>
+                        <div id="code-viewer-container" class="position-relative" style="min-height: 500px;">
+                                                            <div class="p-24 text-center">
+                                    <iconify-icon icon="solar:file-text-bold" class="text-secondary-light text-5xl mb-16"></iconify-icon>
+                                    <p class="text-secondary-light mb-0">Select a log file from the list to view its contents</p>
+                                </div>
+                                                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<footer class="d-footer">
+    <div class="row align-items-center justify-content-between">
+        <div class="col-auto">
+            <p class="mb-0">© 2026 Nucleus by Tarek Tarabichi — <span class="text-secondary-light">The Missing Dashboard for Linux Developers</span></p>
+        </div>
+        <div class="col-auto">
+            <p class="mb-0">Made with ❤️ by <a href="https://2tinteractive.com" target="_blank" class="text-primary-600 hover-text-primary">2TInteractive</a></p>
+        </div>
+    </div>
+</footer>
+
+<script>
+// Monochrome Mode Toggle (loaded in footer.php)
+(function() {
+    'use strict';
+    
+    // Wait for DOM to be ready
+    function initMonochromeToggle() {
+        const monochromeBtn = document.querySelector('[data-theme-toggle="monochrome"]');
+        const isMonochrome = localStorage.getItem('monochromeMode') === 'true';
+        
+        // Apply monochrome mode on page load if it was active
+        if (isMonochrome) {
+            document.body.classList.add('monochrome-mode');
+        }
+        
+        // Add click handler for monochrome button
+        if (monochromeBtn) {
+            monochromeBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const isCurrentlyMonochrome = document.body.classList.contains('monochrome-mode');
+                
+                if (isCurrentlyMonochrome) {
+                    // Turn off monochrome
+                    document.body.classList.remove('monochrome-mode');
+                    localStorage.setItem('monochromeMode', 'false');
+                    // Update theme to current light/dark (not monochrome)
+                    const lightDarkTheme = localStorage.getItem('lightDarkTheme') || localStorage.getItem('theme') || 'light';
+                    if (lightDarkTheme !== 'monochrome') {
+                        localStorage.setItem('theme', lightDarkTheme);
+                    }
+                } else {
+                    // Turn on monochrome
+                    document.body.classList.add('monochrome-mode');
+                    localStorage.setItem('monochromeMode', 'true');
+                    // Store current theme before switching to monochrome
+                    const currentTheme = localStorage.getItem('theme') || 'light';
+                    if (currentTheme !== 'monochrome') {
+                        localStorage.setItem('lightDarkTheme', currentTheme);
+                    }
+                    localStorage.setItem('theme', 'monochrome');
+                }
+                
+                // Update button state
+                updateMonochromeButton();
+                
+                // Trigger a custom event so scripts.php can update other button states
+                window.dispatchEvent(new CustomEvent('monochromeModeChanged', {
+                    detail: { isMonochrome: !isCurrentlyMonochrome }
+                }));
+            });
+        }
+    }
+    
+    // Update monochrome button visual state
+    function updateMonochromeButton() {
+        const monochromeBtn = document.querySelector('[data-theme-toggle="monochrome"]');
+        const isMonochrome = document.body.classList.contains('monochrome-mode');
+        
+        if (monochromeBtn) {
+            if (isMonochrome) {
+                monochromeBtn.classList.add('active');
+                monochromeBtn.classList.add('bg-primary-600');
+                monochromeBtn.classList.remove('bg-neutral-200');
+            } else {
+                monochromeBtn.classList.remove('active');
+                monochromeBtn.classList.remove('bg-primary-600');
+                monochromeBtn.classList.add('bg-neutral-200');
+            }
+        }
+    }
+    
+    // Initialize when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+            initMonochromeToggle();
+            updateMonochromeButton();
+        });
+    } else {
+        initMonochromeToggle();
+        updateMonochromeButton();
+    }
+})();
+</script></main>
+
+<!-- AI Agent Chat Widget -->
+<div id="ai-agent-widget" class="ai-agent-widget">
+    <!-- Chat Toggle Button -->
+    <button id="ai-agent-toggle" class="ai-agent-toggle glass-card shadow-lg" title="AI Assistant">
+        <iconify-icon icon="hugeicons:bot" width="28" height="28"></iconify-icon>
+        <span class="ai-agent-badge d-none"></span>
+    </button>
+
+    <!-- Chat Window -->
+    <div id="ai-agent-window" class="ai-agent-window glass-card shadow-lg d-none">
+        <div class="ai-agent-header d-flex align-items-center justify-content-between p-3 border-bottom border-white-10">
+            <div class="d-flex align-items-center gap-2">
+                <div class="ai-agent-avatar glass-card p-2 bg-primary-600">
+                    <iconify-icon icon="hugeicons:bot" width="20" height="20" class="text-white"></iconify-icon>
+                </div>
+                <div>
+                    <h6 class="mb-0 text-white">Nucleus AI Agent</h6>
+                    <small class="text-white-50">BYOK Edition • Beta</small>
+                </div>
+            </div>
+            <button id="ai-agent-close" class="btn btn-sm btn-icon btn-ghost-light">
+                <iconify-icon icon="material-symbols:close-rounded" width="20" height="20"></iconify-icon>
+            </button>
+        </div>
+
+        <div id="ai-agent-messages" class="ai-agent-messages p-3 overflow-y-auto">
+            <div class="ai-message system glass-card p-2 mb-3">
+                <small class="text-white-50 d-block mb-1">System Info</small>
+                <div class="text-white small">Welcome! I'm your local BYOK AI Agent. I can help you scaffold projects, troubleshoot services, and manage your Linux dev environment.</div>
+            </div>
+            <div class="ai-message assistant glass-card p-3 mb-3">
+                <div class="text-white small">How can I help you today? You can ask me things like "Scaffold a new Laravel project" or "Check why my MySQL is down".</div>
+            </div>
+        </div>
+
+        <div class="ai-agent-footer p-3 border-top border-white-10">
+            <div class="input-group">
+                <input type="text" id="ai-agent-input" class="form-control form-control-sm bg-white-5 border-white-10 text-white" placeholder="Ask anything...">
+                <button id="ai-agent-send" class="btn btn-sm btn-primary">
+                    <iconify-icon icon="solar:plain-3-bold-duotone" width="18" height="18"></iconify-icon>
+                </button>
+            </div>
+            <div class="d-flex align-items-center justify-content-between mt-2">
+                <small class="text-white-30" style="font-size: 10px;">Context: <span id="ai-agent-context-status">Scanning...</span></small>
+                <a href="index.php?page=preferences#ai-settings" class="text-white-50 small" style="font-size: 10px;">Settings</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.ai-agent-widget {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 9999;
+}
+
+.ai-agent-toggle {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    background: rgba(var(--primary-rgb), 0.2);
+    color: white;
+}
+
+.ai-agent-toggle:hover {
+    transform: scale(1.1) rotate(5deg);
+    background: rgba(var(--primary-rgb), 0.4);
+}
+
+.ai-agent-window {
+    position: absolute;
+    bottom: 80px;
+    right: 0;
+    width: 380px;
+    height: 550px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: slideUp 0.3s ease-out;
+    background: #020617 !important; /* Extremely solid dark center */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+    border-radius: 16px;
+    z-index: 999999; /* Higher priority */
+}
+
+.ai-agent-header {
+    background: rgba(15, 23, 42, 0.9) !important;
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.ai-agent-footer {
+    background: rgba(15, 23, 42, 0.9) !important;
+    backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.ai-agent-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.25rem;
+    background: #020617 !important; /* Solid dark */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+}
+
+.ai-agent-messages::-webkit-scrollbar {
+    width: 6px;
+}
+
+.ai-agent-messages::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.ai-agent-messages::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+.ai-agent-messages::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.ai-message.assistant {
+    background: rgba(var(--primary-rgb), 0.2) !important;
+    border-left: 3px solid rgba(var(--primary-rgb), 0.5);
+    margin-right: 20%;
+}
+
+.ai-message.user {
+    background: rgba(255, 255, 255, 0.05);
+    border-right: 3px solid rgba(255, 255, 255, 0.2);
+    margin-left: 20%;
+    text-align: right;
+}
+
+.ai-message.system {
+    background: rgba(255, 193, 7, 0.15) !important;
+    border-left: 3px solid rgba(255, 193, 7, 0.3);
+}
+
+.border-white-10 { border-color: rgba(255, 255, 255, 0.1) !important; }
+.text-white-30 { color: rgba(255, 255, 255, 0.3) !important; }
+.text-white-50 { color: rgba(255, 255, 255, 0.5) !important; }
+</style>
+    <!-- jQuery library js -->
+    <script src="/assets/js/lib/jquery-3.7.1.min.js"></script>
+    <!-- Bootstrap js -->
+    <script src="/assets/js/lib/bootstrap.bundle.min.js"></script>
+    <!-- Apex Chart js -->
+    <script src="/assets/js/lib/apexcharts.min.js"></script>
+    <!-- Data Table js -->
+    <script src="/assets/js/lib/dataTables.min.js"></script>
+    <!-- Iconify Font js -->
+    <script src="/assets/js/lib/iconify-icon.min.js"></script>
+    <!-- jQuery UI js -->
+    <script src="/assets/js/lib/jquery-ui.min.js"></script>
+    <!-- Vector Map js -->
+    <script src="/assets/js/lib/jquery-jvectormap-2.0.5.min.js"></script>
+    <script src="/assets/js/lib/jquery-jvectormap-world-mill-en.js"></script>
+    <!-- Popup js -->
+    <script src="/assets/js/lib/magnifc-popup.min.js"></script>
+    <!-- Slick Slider js -->
+    <script src="/assets/js/lib/slick.min.js"></script>
+    <!-- prism js -->
+    <script src="/assets/js/lib/prism.js"></script>
+    <!-- CodeMirror js -->
+    <script src="/assets/js/lib/codemirror.min.js"></script>
+    <script src="/assets/js/lib/mode/apache/apache.min.js"></script>
+    <script src="/assets/js/lib/mode/php/php.min.js"></script>
+    <script src="/assets/js/lib/mode/sql/sql.min.js"></script>
+    <script src="/assets/js/lib/mode/ini/ini.min.js"></script>
+    <script src="/assets/js/lib/mode/shell/shell.min.js"></script>
+    <!-- file upload js -->
+    <script src="/assets/js/lib/file-upload.js"></script>
+    <!-- audioplayer -->
+    <script src="/assets/js/lib/audioplayer.js"></script>
+
+    <!-- main js -->
+    <script src="/assets/js/app.js"></script>
+
+    <!-- AI Agent js -->
+    <script src="/assets/js/ai-agent.js"></script>
+
+    <!-- Time Greeting and Clock Script -->
+    <script>
+    (function() {
+        'use strict';
+        
+        // Get preferences for time/date format
+        const timeFormat = null;
+        const dateFormat = null;
+        
+        // Get translations for greetings
+        const greetings = {
+            morning: 'Good morning',
+            afternoon: 'Good afternoon',
+            evening: 'Good evening'
+        };
+        
+        // Get greeting icon based on time
+        function getGreetingIcon(hour) {
+            if (hour >= 5 && hour < 12) {
+                return 'solar:sun-bold'; // Morning
+            } else if (hour >= 12 && hour < 17) {
+                return 'solar:sun-2-bold'; // Afternoon
+            } else {
+                return 'solar:moon-bold'; // Evening/Night
+            }
+        }
+        
+        // Get greeting text based on time
+        function getGreeting(hour) {
+            if (hour >= 5 && hour < 12) {
+                return greetings.morning;
+            } else if (hour >= 12 && hour < 17) {
+                return greetings.afternoon;
+            } else {
+                return greetings.evening;
+            }
+        }
+        
+        // Format time based on preferences
+        function formatTime(date, format) {
+            const hour = date.getHours();
+            const minute = date.getMinutes();
+            const second = date.getSeconds();
+            
+            if (format === '12') {
+                const hour12 = hour % 12 || 12;
+                const ampm = hour >= 12 ? 'PM' : 'AM';
+                return String(hour12).padStart(2, '0') + ':' + 
+                       String(minute).padStart(2, '0') + ':' + 
+                       String(second).padStart(2, '0') + ' ' + ampm;
+            } else {
+                return String(hour).padStart(2, '0') + ':' + 
+                       String(minute).padStart(2, '0') + ':' + 
+                       String(second).padStart(2, '0');
+            }
+        }
+        
+        // Format date based on preferences
+        function formatDate(date, format) {
+            if (!format) {
+                format = 'Y-m-d'; // Default
+            }
+            
+            const year = date.getFullYear();
+            const month = date.getMonth() + 1;
+            const day = date.getDate();
+            
+            const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const monthFullNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            
+            let formatted = format;
+            formatted = formatted.replace('Y', year);
+            formatted = formatted.replace('y', String(year).slice(-2));
+            formatted = formatted.replace('m', String(month).padStart(2, '0'));
+            formatted = formatted.replace('M', monthNames[month - 1]);
+            formatted = formatted.replace('F', monthFullNames[month - 1]);
+            formatted = formatted.replace('d', String(day).padStart(2, '0'));
+            formatted = formatted.replace('j', String(day));
+            
+            return formatted;
+        }
+        
+        // Update greeting and time
+        function updateGreetingAndTime() {
+            const now = new Date();
+            const hour = now.getHours();
+            
+            // Update greeting
+            const greetingEl = document.getElementById('time-greeting');
+            const iconEl = document.getElementById('greeting-icon');
+            if (greetingEl) {
+                greetingEl.textContent = getGreeting(hour);
+            }
+            if (iconEl) {
+                iconEl.setAttribute('icon', getGreetingIcon(hour));
+            }
+            
+            // Update time
+            const timeEl = document.getElementById('local-time');
+            const dateEl = document.getElementById('local-date');
+            if (timeEl) {
+                timeEl.textContent = formatTime(now, timeFormat || '24');
+            }
+            if (dateEl) {
+                dateEl.textContent = formatDate(now, dateFormat || 'Y-m-d');
+            }
+            
+            // Update display container to show date and time on one line
+            const displayEl = document.getElementById('local-time-display');
+            if (displayEl && dateEl && timeEl) {
+                displayEl.innerHTML = '<span id="local-date">' + dateEl.textContent + '</span> <span id="local-time">' + timeEl.textContent + '</span>';
+            }
+        }
+        
+        // Initialize on page load
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                updateGreetingAndTime();
+                // Update every second
+                setInterval(updateGreetingAndTime, 1000);
+            });
+        } else {
+            updateGreetingAndTime();
+            // Update every second
+            setInterval(updateGreetingAndTime, 1000);
+        }
+    })();
+    </script>
+
+    <!-- Theme Switcher Script -->
+    <script>
+    (function() {
+        'use strict';
+        
+        // Get current theme from localStorage or default to light
+        function getCurrentTheme() {
+            return localStorage.getItem('theme') || 'light';
+        }
+        
+        // Update HTML data-theme attribute (monochrome is handled separately in footer.php)
+        function updateTheme(theme) {
+            const html = document.querySelector('html');
+            
+            // Only handle light/dark themes here
+            if (theme !== 'monochrome') {
+                html.setAttribute('data-theme', theme);
+                localStorage.setItem('theme', theme);
+                localStorage.setItem('lightDarkTheme', theme);
+                
+                // If monochrome is active, keep it active but update the base theme
+                const isMonochrome = localStorage.getItem('monochromeMode') === 'true';
+                if (isMonochrome) {
+                    // Monochrome stays active, just update the underlying theme
+                    html.setAttribute('data-theme', theme);
+                }
+            }
+            
+            updateThemeButtons(theme);
+        }
+        
+        // Toggle between light and dark
+        function toggleLightDark() {
+            const current = getCurrentTheme();
+            const isMonochrome = localStorage.getItem('monochromeMode') === 'true';
+            
+            // Get the actual light/dark theme (not monochrome)
+            let currentLightDark;
+            if (isMonochrome) {
+                currentLightDark = localStorage.getItem('lightDarkTheme') || 'light';
+            } else {
+                currentLightDark = current !== 'monochrome' ? current : 'light';
+            }
+            
+            const newTheme = (currentLightDark === 'light') ? 'dark' : 'light';
+            updateTheme(newTheme);
+        }
+        
+        // Update button states and icons
+        function updateThemeButtons(currentTheme) {
+            // Handle light/dark toggle button
+            const lightDarkBtn = document.querySelector('[data-theme-toggle="light-dark"]');
+            if (lightDarkBtn) {
+                const lightIcon = lightDarkBtn.querySelector('.theme-icon-light');
+                const darkIcon = lightDarkBtn.querySelector('.theme-icon-dark');
+                
+                // Only update icons if they exist
+                if (lightIcon && darkIcon) {
+                    if (currentTheme === 'light') {
+                        lightIcon.style.display = 'block';
+                        darkIcon.style.display = 'none';
+                    } else if (currentTheme === 'dark') {
+                        lightIcon.style.display = 'none';
+                        darkIcon.style.display = 'block';
+                    } else {
+                        // Monochrome is active, show dark icon but dimmed
+                        lightIcon.style.display = 'none';
+                        darkIcon.style.display = 'block';
+                    }
+                }
+                
+                // Update button background
+                lightDarkBtn.classList.remove('bg-primary-600');
+                lightDarkBtn.classList.add('bg-neutral-200');
+            }
+            
+            // Handle monochrome button
+            const monochromeBtn = document.querySelector('[data-theme-toggle="monochrome"]');
+            if (monochromeBtn) {
+                if (currentTheme === 'monochrome') {
+                    monochromeBtn.classList.add('active');
+                    monochromeBtn.classList.add('bg-primary-600');
+                    monochromeBtn.classList.remove('bg-neutral-200');
+                } else {
+                    monochromeBtn.classList.remove('active');
+                    monochromeBtn.classList.remove('bg-primary-600');
+                    monochromeBtn.classList.add('bg-neutral-200');
+                }
+            }
+        }
+        
+        // Wait for DOM to be fully loaded before initializing
+        function initThemeSwitcher() {
+            // Initialize theme on page load
+            const currentTheme = getCurrentTheme();
+            const isMonochrome = localStorage.getItem('monochromeMode') === 'true';
+            
+            // If monochrome is active, use the stored light/dark theme for data-theme
+            if (isMonochrome) {
+                const lightDarkTheme = localStorage.getItem('lightDarkTheme') || 'light';
+                document.querySelector('html').setAttribute('data-theme', lightDarkTheme);
+            } else {
+                // Normal theme initialization
+                const theme = currentTheme !== 'monochrome' ? currentTheme : 'light';
+                updateTheme(theme);
+            }
+            
+            // Update button states
+            updateThemeButtons(isMonochrome ? 'monochrome' : currentTheme);
+            
+            // Light/Dark toggle button handler
+            const lightDarkBtn = document.querySelector('[data-theme-toggle="light-dark"]');
+            if (lightDarkBtn) {
+                lightDarkBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    toggleLightDark();
+                });
+            }
+            
+            // Listen for monochrome mode changes from footer.php
+            window.addEventListener('monochromeModeChanged', function(e) {
+                const isMonochrome = e.detail.isMonochrome;
+                const currentTheme = isMonochrome ? 'monochrome' : (localStorage.getItem('lightDarkTheme') || 'light');
+                updateThemeButtons(currentTheme);
+            });
+        }
+        
+        // Initialize when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initThemeSwitcher);
+        } else {
+            // DOM is already loaded
+            initThemeSwitcher();
+        }
+    })();
+    </script>
+
+    <!-- Service Worker Registration for PWA -->
+    <script>
+    (function() {
+        'use strict';
+        
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                // Get base path dynamically
+                const basePath = '';
+                const swPath = basePath ? basePath + '/sw.js' : '/sw.js';
+                
+                navigator.serviceWorker.register(swPath)
+                    .then(function(registration) {
+                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                        
+                        // Clear cache if requested (for troubleshooting CSS issues)
+                        if (window.location.search.includes('clearcache=true') || 
+                            (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('sw_cleared') !== 'true')) {
+                            registration.unregister().then(function() {
+                                return caches.keys();
+                            }).then(function(cacheNames) {
+                                return Promise.all(cacheNames.map(function(cacheName) {
+                                    return caches.delete(cacheName);
+                                }));
+                            }).then(function() {
+                                console.log('Service Worker and caches cleared');
+                                if (typeof sessionStorage !== 'undefined') {
+                                    sessionStorage.setItem('sw_cleared', 'true');
+                                }
+                                // Reload after clearing
+                                setTimeout(function() {
+                                    window.location.reload();
+                                }, 500);
+                            });
+                            return;
+                        }
+                        
+                        // Check for updates
+                        registration.addEventListener('updatefound', function() {
+                            const newWorker = registration.installing;
+                            newWorker.addEventListener('statechange', function() {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    // New service worker available, prompt user to refresh
+                                    console.log('New service worker available. Please refresh the page.');
+                                }
+                            });
+                        });
+                    })
+                    .catch(function(error) {
+                        console.log('ServiceWorker registration failed: ', error);
+                    });
+            });
+        }
+    })();
+    </script>
+
+    <!-- Project Search Script -->
+    <script>
+    (function() {
+        'use strict';
+        
+        // Get projects data from PHP
+        const allProjects = [{"name":"2ti-orchestrator","path":"\/var\/www\/html\/2ti-orchestrator","url":"http:\/\/2ti-orchestrator.local","platform":"Laravel","icon":"devicon-plain:laravel","iconify":null,"color":"danger","is_wordpress":false,"has_composer":true,"has_npm":true,"has_git":true,"git_branch":"main","git_status":"modified","favicon":"assets\/images\/favicon\/favicon-32x32.png"},{"name":"2tinteractive","path":"\/var\/www\/html\/2tinteractive","url":"http:\/\/2tinteractive.local","platform":"Node.js","icon":"devicon-plain:nodejs","iconify":null,"color":"success","is_wordpress":false,"has_composer":false,"has_npm":true,"has_git":false,"git_branch":null,"git_status":null,"favicon":null},{"name":"sas","path":"\/var\/www\/html\/sas","url":"http:\/\/sas.local","platform":"Node.js","icon":"devicon-plain:nodejs","iconify":null,"color":"success","is_wordpress":false,"has_composer":false,"has_npm":true,"has_git":false,"git_branch":null,"git_status":null,"favicon":null},{"name":"worldmonitor","path":"\/var\/www\/html\/worldmonitor","url":"http:\/\/worldmonitor.local","platform":"Node.js","icon":"devicon-plain:nodejs","iconify":null,"color":"success","is_wordpress":false,"has_composer":false,"has_npm":true,"has_git":false,"git_branch":null,"git_status":null,"favicon":null}];
+        const searchInput = document.getElementById('project-search-input');
+        const searchResults = document.getElementById('project-search-results');
+        const projectList = document.getElementById('project-list');
+        const projectCount = document.getElementById('project-count');
+        const baseUrl = '';
+        const assetsImageUrl = '/assets/images';
+        
+        if (!searchInput || !searchResults || !projectList) {
+            return; // Elements not found
+        }
+        
+        // Filter projects based on search query
+        function filterProjects(query) {
+            if (!query || query.trim() === '') {
+                return [];
+            }
+            
+            const lowerQuery = query.toLowerCase().trim();
+            return allProjects.filter(project => {
+                return project.name.toLowerCase().includes(lowerQuery) ||
+                       project.platform.toLowerCase().includes(lowerQuery);
+            });
+        }
+        
+        // Render project cards
+        function renderProjects(projects) {
+            if (projects.length === 0) {
+                projectList.innerHTML = '<div class="px-24 py-12 text-center"><p class="text-secondary-light mb-0">No projects found</p></div>';
+                projectCount.textContent = '0';
+                return;
+            }
+            
+            projectCount.textContent = projects.length;
+            
+            let html = '';
+            projects.forEach(project => {
+                // Determine icon source (favicon or platform icon)
+                let iconHtml = '';
+                if (project.favicon) {
+                    // Favicon URLs are relative to www root, prepend "/" to make absolute
+                    let faviconUrl = '/' + (project.favicon.startsWith('/') ? project.favicon.substring(1) : project.favicon);
+                    // Ensure favicon URL doesn't contain login redirects
+                    if (faviconUrl.includes('/login') || faviconUrl.includes('redirect=')) {
+                        faviconUrl = null; // Skip favicon if it looks like a redirect
+                    }
+                    if (faviconUrl) {
+                        iconHtml = `<img src="${faviconUrl}" alt="${escapeHtml(project.name)}" class="w-40-px h-40-px object-fit-cover rounded" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" style="max-width: 40px; max-height: 40px;"><iconify-icon icon="${project.iconify || project.icon}" class="text-white text-2xl mb-0" style="display: none;"></iconify-icon>`;
+                    } else {
+                        iconHtml = `<iconify-icon icon="${project.iconify || project.icon}" class="text-white text-2xl mb-0"></iconify-icon>`;
+                    }
+                } else {
+                    // Platform icon when no favicon
+                    iconHtml = `<iconify-icon icon="${project.iconify || project.icon}" class="text-white text-2xl mb-0"></iconify-icon>`;
+                }
+                
+                // WordPress admin link
+                const wpAdminLink = project.is_wordpress 
+                    ? `<a href="${project.url}/wp-admin" target="_blank" class="text-primary-600 hover-text-primary text-sm fw-medium">Manage your WordPress</a>`
+                    : '';
+                
+                html += `
+                    <div class="px-16 py-12 border-bottom project-search-item" data-project-name="${escapeHtml(project.name.toLowerCase())}" data-platform="${escapeHtml(project.platform.toLowerCase())}" style="cursor: pointer;">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="w-40-px h-40-px bg-${project.color}-50 rounded d-flex justify-content-center align-items-center flex-shrink-0">
+                                ${iconHtml}
+                                ${iconFallback}
+                            </div>
+                            <div class="flex-grow-1 min-w-0">
+                                <h6 class="mb-1 text-truncate">${escapeHtml(project.name)}</h6>
+                                <p class="text-secondary-light text-sm mb-1">${escapeHtml(project.platform)}</p>
+                                <div class="d-flex align-items-center gap-2 flex-wrap">
+                                    <a href="${project.url}" target="_blank" class="text-primary-600 hover-text-primary text-sm" onclick="event.stopPropagation();">Open Project</a>
+                                    ${wpAdminLink}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            projectList.innerHTML = html;
+            
+            // Add click handlers to redirect to projects page with search
+            const projectItems = projectList.querySelectorAll('.project-search-item');
+            projectItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const query = searchInput.value.trim();
+                    // Redirect to projects page with search query
+                    window.location.href = 'index.php?page=projects' + (query ? '&search=' + encodeURIComponent(query) : '');
+                });
+            });
+        }
+        
+        // Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // Pre-populate search input if search query exists in URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const searchQuery = urlParams.get('search');
+        if (searchQuery && searchInput) {
+            searchInput.value = searchQuery;
+            // Trigger search to show results dropdown
+            if (searchQuery.trim() !== '') {
+                const filtered = filterProjects(searchQuery);
+                renderProjects(filtered);
+                searchResults.style.display = 'block';
+            }
+        }
+        
+        // Handle search input
+        let searchTimeout;
+        searchInput.addEventListener('input', function(e) {
+            clearTimeout(searchTimeout);
+            const query = e.target.value;
+            
+            if (query.trim() === '') {
+                searchResults.style.display = 'none';
+                projectList.innerHTML = '<div class="px-24 py-12 text-center"><p class="text-secondary-light mb-0">Start typing to search projects...</p></div>';
+                return;
+            }
+            
+            // Debounce search
+            searchTimeout = setTimeout(() => {
+                const filtered = filterProjects(query);
+                renderProjects(filtered);
+                searchResults.style.display = 'block';
+            }, 150);
+        });
+        
+        // Handle Enter key to redirect to projects page with search
+        searchInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const query = this.value.trim();
+                if (query) {
+                    window.location.href = 'index.php?page=projects&search=' + encodeURIComponent(query);
+                }
+            }
+        });
+        
+        // Show dropdown on focus
+        searchInput.addEventListener('focus', function() {
+            if (this.value.trim() !== '') {
+                const filtered = filterProjects(this.value);
+                renderProjects(filtered);
+                searchResults.style.display = 'block';
+            }
+        });
+        
+        // Hide dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+                searchResults.style.display = 'none';
+            }
+        });
+        
+        // Prevent form submission
+        const searchForm = document.getElementById('project-search-form');
+        if (searchForm) {
+            searchForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const query = searchInput.value.trim();
+                if (query) {
+                    window.location.href = 'index.php?page=projects&search=' + encodeURIComponent(query);
+                }
+            });
+        }
+    })();
+    </script>
+
+    <!-- Project Creation Wizard Script -->
+    <script>
+    (function() {
+        'use strict';
+        
+        const modal = document.getElementById('projectWizardModal');
+        const form = document.getElementById('projectWizardForm');
+        const wizardNext = document.getElementById('wizard-next');
+        const wizardPrev = document.getElementById('wizard-prev');
+        const wizardCreate = document.getElementById('wizard-create');
+        const createDatabaseCheck = document.getElementById('create-database');
+        const databaseFields = document.getElementById('database-fields');
+        const projectNameInput = document.getElementById('project-name');
+        const databaseNameInput = document.getElementById('database-name');
+        const wizardMessage = document.getElementById('wizard-message');
+        
+        if (!modal || !form) return;
+        
+        let currentStep = 1;
+        const totalSteps = 3;
+        
+        // Auto-fill database name from project name
+        if (projectNameInput && databaseNameInput) {
+            projectNameInput.addEventListener('input', function() {
+                if (!databaseNameInput.value || databaseNameInput.value === projectNameInput.value.replace(/[^a-zA-Z0-9_]/g, '_')) {
+                    databaseNameInput.value = this.value.replace(/[^a-zA-Z0-9_]/g, '_');
+                }
+            });
+        }
+        
+        // Toggle database fields
+        if (createDatabaseCheck && databaseFields) {
+            createDatabaseCheck.addEventListener('change', function() {
+                databaseFields.style.display = this.checked ? 'block' : 'none';
+            });
+        }
+        
+        // Wizard navigation
+        function showStep(step) {
+            // Hide all steps
+            document.querySelectorAll('.wizard-step').forEach(stepEl => {
+                stepEl.style.display = 'none';
+                stepEl.classList.remove('active');
+            });
+            
+            // Show current step
+            const currentStepEl = document.querySelector(`.wizard-step[data-step="${step}"]`);
+            if (currentStepEl) {
+                currentStepEl.style.display = 'block';
+                currentStepEl.classList.add('active');
+            }
+            
+            // Update buttons
+            wizardPrev.style.display = step > 1 ? 'inline-block' : 'none';
+            wizardNext.style.display = step < totalSteps ? 'inline-block' : 'none';
+            wizardCreate.style.display = step === totalSteps ? 'inline-block' : 'none';
+            
+            currentStep = step;
+        }
+        
+        // Next button
+        if (wizardNext) {
+            wizardNext.addEventListener('click', function() {
+                if (validateStep(currentStep)) {
+                    showStep(currentStep + 1);
+                }
+            });
+        }
+        
+        // Previous button
+        if (wizardPrev) {
+            wizardPrev.addEventListener('click', function() {
+                showStep(currentStep - 1);
+            });
+        }
+        
+        // Validate current step
+        function validateStep(step) {
+            if (step === 1) {
+                const nameInput = document.getElementById('project-name');
+                if (!nameInput || !nameInput.value.trim()) {
+                    showMessage('Please enter a project name', 'danger');
+                    return false;
+                }
+                if (!nameInput.validity.valid) {
+                    showMessage('Project name contains invalid characters', 'danger');
+                    return false;
+                }
+            }
+            return true;
+        }
+        
+        // Show message
+        function showMessage(text, type) {
+            if (!wizardMessage) return;
+            wizardMessage.className = 'alert alert-' + (type || 'info') + ' mb-16';
+            wizardMessage.textContent = text;
+            wizardMessage.classList.remove('d-none');
+            setTimeout(() => {
+                wizardMessage.classList.add('d-none');
+            }, 5000);
+        }
+        
+        // Create project
+        if (wizardCreate) {
+            wizardCreate.addEventListener('click', function() {
+                if (!validateStep(currentStep)) {
+                    return;
+                }
+                
+                const formData = new FormData(form);
+                const data = {};
+                formData.forEach((value, key) => {
+                    data[key] = value;
+                });
+                
+                // Add CSRF token
+                data['csrf_token'] = window.csrfToken;
+                
+                // Show loading state and progress container
+                wizardCreate.disabled = true;
+                wizardCreate.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Creating...';
+                
+                // Add a progress console to the wizard if it doesn't exist
+                let progressCont = document.getElementById('wizard-progress-console');
+                if (!progressCont) {
+                    progressCont = document.createElement('div');
+                    progressCont.id = 'wizard-progress-console';
+                    progressCont.className = 'mt-16 p-12 bg-dark text-success rounded font-monospace text-xs';
+                    progressCont.style.maxHeight = '200px';
+                    progressCont.style.overflowY = 'auto';
+                    wizardMessage.after(progressCont);
+                }
+                progressCont.style.display = 'block';
+                progressCont.innerHTML = 'Initializing...<br>';
+
+                let pollInterval;
+                
+                function pollProgress(logFile) {
+                    fetch('api/project_progress.php?log=' + logFile)
+                        .then(res => res.json())
+                        .then(pollData => {
+                            if (pollData.success) {
+                                progressCont.innerHTML = pollData.content.replace(/\n/g, '<br>');
+                                progressCont.scrollTop = progressCont.scrollHeight;
+                                
+                                if (pollData.completed) {
+                                    clearInterval(pollInterval);
+                                    if (pollData.content.includes('ERROR:')) {
+                                        showMessage('Project creation failed. Check console for details.', 'danger');
+                                        wizardCreate.disabled = false;
+                                        wizardCreate.innerHTML = 'Retry';
+                                    } else {
+                                        showMessage('Project created successfully!', 'success');
+                                        setTimeout(() => location.reload(), 1500);
+                                    }
+                                }
+                            }
+                        });
+                }
+
+                // Send request
+                fetch('api/create_project.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success && result.log_file) {
+                        // Start polling
+                        pollInterval = setInterval(() => pollProgress(result.log_file), 1000);
+                    } else {
+                        showMessage(result.message || 'Failed to start creation', 'danger');
+                        wizardCreate.disabled = false;
+                        wizardCreate.innerHTML = 'Create Project';
+                        progressCont.style.display = 'none';
+                    }
+                })
+                .catch(error => {
+                    showMessage('Error: ' + error.message, 'danger');
+                    wizardCreate.disabled = false;
+                    wizardCreate.innerHTML = 'Create Project';
+                    progressCont.style.display = 'none';
+                });
+            });
+        }
+        
+        // Reset wizard on modal close
+        if (modal) {
+            modal.addEventListener('hidden.bs.modal', function() {
+                form.reset();
+                showStep(1);
+                wizardMessage.classList.add('d-none');
+                if (wizardCreate) {
+                    wizardCreate.disabled = false;
+                    wizardCreate.innerHTML = 'Create Project';
+                }
+            });
+        }
+    })();
+    </script>
+
+    
+        <script>
+    (function() {
+        'use strict';
+        
+        const selectedLog = '';
+        const LOGS_API = 'api/logs.php';
+        const logFiles = {"orchestrator":{"name":"2TI Orchestrator Log","path":"\/var\/www\/html\/2ti-orchestrator\/storage\/logs\/laravel.log","icon":"solar:box-minimalistic-bold","color":"success"}};
+        
+        let codeEditor = null;
+        
+        // Initialize CodeMirror (read-only for logs)
+        function initCodeEditor() {
+            const textarea = document.getElementById('code-viewer');
+            if (!textarea) return;
+            
+            codeEditor = CodeMirror.fromTextArea(textarea, {
+                lineNumbers: true,
+                mode: 'shell',
+                theme: 'monokai',
+                readOnly: true,
+                lineWrapping: true,
+                styleActiveLine: true
+            });
+            
+            // Set editor container height
+            const container = document.getElementById('code-viewer-container');
+            if (container) {
+                codeEditor.setSize('100%', '70vh');
+            }
+        }
+        
+        // Load log content
+        function loadLogContent(logType) {
+            const titleEl = document.getElementById('log-viewer-title');
+            const pathEl = document.getElementById('log-viewer-path');
+            
+            if (!codeEditor) {
+                initCodeEditor();
+            }
+            
+            if (!codeEditor) return;
+            
+            codeEditor.setValue('Loading...');
+            
+            fetch(LOGS_API + '?action=read&type=' + encodeURIComponent(logType))
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('HTTP error! status: ' + response.status);
+                    }
+                    return response.text();
+                })
+                .then(text => {
+                    try {
+                        const data = JSON.parse(text);
+                        if (data.success) {
+                            codeEditor.setValue(data.content || '(Empty log file)');
+                            if (titleEl && logFiles[logType]) {
+                                titleEl.textContent = logFiles[logType].name || 'Log File';
+                            }
+                            if (pathEl) {
+                                pathEl.textContent = data.path || '';
+                            }
+                        } else {
+                            codeEditor.setValue('Error: ' + (data.error || 'Failed to load log file'));
+                        }
+                    } catch (e) {
+                        console.error('JSON parse error:', e, text);
+                        codeEditor.setValue('Error: Invalid response from server. ' + text.substring(0, 200));
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading log:', error);
+                    if (codeEditor) {
+                        codeEditor.setValue('Error: Failed to load log file. ' + error.message);
+                    }
+                });
+        }
+        
+        // Refresh log
+        function refreshLog() {
+            if (selectedLog) {
+                loadLogContent(selectedLog);
+            }
+        }
+        
+        // Clear log
+        function clearLog() {
+            if (!selectedLog) return;
+            
+            if (!confirm('Are you sure you want to clear this log file? This action cannot be undone.')) {
+                return;
+            }
+            
+            fetch(LOGS_API + '?action=clear&type=' + encodeURIComponent(selectedLog), {
+                method: 'POST'
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('HTTP error! status: ' + response.status);
+                    }
+                    return response.text();
+                })
+                .then(text => {
+                    try {
+                        const data = JSON.parse(text);
+                        if (data.success) {
+                            loadLogContent(selectedLog);
+                            alert('Log file cleared successfully');
+                        } else {
+                            alert('Error: ' + (data.error || 'Failed to clear log file'));
+                        }
+                    } catch (e) {
+                        console.error('JSON parse error:', e, text);
+                        alert('Error: Invalid response from server');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error clearing log:', error);
+                    alert('Error: Failed to clear log file');
+                });
+        }
+        
+        // Download log
+        function downloadLog() {
+            if (!selectedLog || !logFiles[selectedLog]) return;
+            
+            const logFile = logFiles[selectedLog];
+            window.open(LOGS_API + '?action=read&type=' + encodeURIComponent(selectedLog) + '&download=1', '_blank');
+        }
+        
+        // Initialize
+        if (selectedLog) {
+            // Wait for CodeMirror to load
+            if (typeof CodeMirror !== 'undefined') {
+                initCodeEditor();
+                loadLogContent(selectedLog);
+            } else {
+                // Retry after a short delay
+                setTimeout(function() {
+                    if (typeof CodeMirror !== 'undefined') {
+                        initCodeEditor();
+                        loadLogContent(selectedLog);
+                    }
+                }, 100);
+            }
+        }
+        
+        // Button handlers
+        const refreshBtn = document.getElementById('refresh-log');
+        const clearBtn = document.getElementById('clear-log');
+        const downloadBtn = document.getElementById('download-log');
+        
+        if (refreshBtn) {
+            refreshBtn.addEventListener('click', refreshLog);
+        }
+        
+        if (clearBtn) {
+            clearBtn.addEventListener('click', clearLog);
+        }
+        
+        if (downloadBtn) {
+            downloadBtn.addEventListener('click', downloadLog);
+        }
+    })();
+    </script>
+    
+    
+    
+    
+    
+    
+    
+    <!-- Auto-Update Check Script -->
+    <script>
+    (function() {
+        'use strict';
+        
+        const UPDATE_API = '/api/update.php';
+        const PREFERENCES_API = '/api/preferences.php';
+        
+        // Check if auto-update is enabled
+        let autoUpdateEnabled = true;
+        let autoInstallEnabled = false;
+        let lastCheckTime = null;
+        const CHECK_INTERVAL = 3600000; // 1 hour in milliseconds
+        
+        // Load preferences
+        function loadPreferences() {
+            return fetch(PREFERENCES_API + '?action=get')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.preferences) {
+                        autoUpdateEnabled = data.preferences.auto_update_check !== false;
+                        autoInstallEnabled = data.preferences.auto_update_install === true;
+                        lastCheckTime = data.preferences.last_update_check;
+                    }
+                })
+                .catch(error => {
+                    console.error('Failed to load preferences:', error);
+                });
+        }
+        
+        // Check for updates
+        function checkForUpdates(showNotification = true) {
+            if (!autoUpdateEnabled) {
+                return;
+            }
+            
+            // Don't check too frequently (at least 30 minutes between checks)
+            if (lastCheckTime) {
+                const timeSinceLastCheck = Date.now() - (lastCheckTime * 1000);
+                if (timeSinceLastCheck < 1800000) { // 30 minutes
+                    return;
+                }
+            }
+            
+            fetch(UPDATE_API + '?action=check')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.data && data.data.available) {
+                        showUpdateNotification(data.data);
+                        
+                        // Update last check time
+                        saveLastCheckTime();
+                    } else {
+                        // No update available
+                        if (showNotification) {
+                            saveLastCheckTime();
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Update check failed:', error);
+                });
+        }
+        
+        // Show update notification
+        function showUpdateNotification(updateInfo) {
+            const indicator = document.getElementById('update-indicator');
+            const notificationCount = document.getElementById('notification-count');
+            const notificationsList = document.getElementById('notifications-list');
+            
+            if (indicator) {
+                indicator.style.display = 'block';
+            }
+            
+            if (notificationCount) {
+                const currentCount = parseInt(notificationCount.textContent) || 0;
+                notificationCount.textContent = currentCount + 1;
+            }
+            
+            if (notificationsList) {
+                const existingUpdate = notificationsList.querySelector('.update-notification');
+                if (existingUpdate) {
+                    existingUpdate.remove();
+                }
+                
+                const notification = document.createElement('div');
+                notification.className = 'update-notification px-24 py-16 border-bottom';
+                notification.innerHTML = `
+                    <div class="d-flex align-items-start gap-3">
+                        <div class="w-40-px h-40-px bg-success-subtle rounded-circle d-flex justify-content-center align-items-center flex-shrink-0">
+                            <iconify-icon icon="solar:download-bold" class="text-success-main text-xl"></iconify-icon>
+                        </div>
+                        <div class="flex-grow-1">
+                            <p class="fw-semibold mb-4">Update Available: ${updateInfo.latest_version}</p>
+                            <p class="text-secondary-light text-sm mb-8">Current: ${updateInfo.current_version}</p>
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-primary-600 btn-sm" onclick="installUpdate('${updateInfo.download_url}', '${updateInfo.version}')">
+                                    <iconify-icon icon="solar:download-bold" class="icon"></iconify-icon>
+                                    Update Now
+                                </button>
+                                <a href="${updateInfo.release_url}" target="_blank" class="btn btn-secondary btn-sm">
+                                    View Release
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                const emptyMsg = notificationsList.querySelector('.px-24.py-12.text-center');
+                if (emptyMsg) {
+                    emptyMsg.remove();
+                }
+                
+                notificationsList.insertBefore(notification, notificationsList.firstChild);
+            }
+        }
+        
+        // Install update
+        window.installUpdate = function(downloadUrl, version) {
+            if (!confirm(`Install update to version ${version}? This will create a backup and may take a few minutes.`)) {
+                return;
+            }
+            
+            const progressModal = document.createElement('div');
+            progressModal.className = 'modal fade show';
+            progressModal.style.display = 'block';
+            progressModal.innerHTML = `
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Installing Update</h5>
+                        </div>
+                        <div class="modal-body">
+                            <div class="progress mb-16">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%"></div>
+                            </div>
+                            <p id="update-status">Preparing update...</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(progressModal);
+            
+            const progressBar = progressModal.querySelector('.progress-bar');
+            const statusText = progressModal.querySelector('#update-status');
+            
+            // Store backup path for use in install step
+            let backupPath = null;
+            
+            // Step 1: Backup
+            statusText.textContent = 'Creating backup...';
+            progressBar.style.width = '25%';
+            
+            fetch(UPDATE_API + '?action=backup')
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.success) {
+                        throw new Error(data.error || 'Backup failed');
+                    }
+                    
+                    // Store backup path for later use
+                    backupPath = data.backup_path;
+                    if (!backupPath) {
+                        throw new Error('Backup path not returned from backup operation');
+                    }
+                    
+                    // Step 2: Download
+                    statusText.textContent = 'Downloading update...';
+                    progressBar.style.width = '50%';
+                    
+                    return fetch(UPDATE_API + '?action=download', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ download_url: downloadUrl })
+                    });
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.success) {
+                        throw new Error(data.error || 'Download failed');
+                    }
+                    
+                    if (!data.zip_path) {
+                        throw new Error('Download path not returned from download operation');
+                    }
+                    
+                    // Step 3: Install
+                    statusText.textContent = 'Installing update...';
+                    progressBar.style.width = '75%';
+                    
+                    return fetch(UPDATE_API + '?action=install', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            zip_path: data.zip_path,
+                            backup_path: backupPath
+                        })
+                    });
+                })
+                .then(response => response.json())
+                .then(data => {
+                    progressBar.style.width = '100%';
+                    
+                    if (data.success && data.verified) {
+                        statusText.textContent = 'Update installed successfully! Reloading...';
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 2000);
+                    } else {
+                        throw new Error(data.message || 'Installation failed');
+                    }
+                })
+                .catch(error => {
+                    console.error('Update installation error:', error);
+                    statusText.textContent = 'Error: ' + (error.message || 'Unknown error occurred');
+                    progressBar.className = 'progress-bar bg-danger';
+                    progressBar.style.width = '100%';
+                    
+                    // Add a close button
+                    const closeBtn = document.createElement('button');
+                    closeBtn.className = 'btn btn-secondary mt-3';
+                    closeBtn.textContent = 'Close';
+                    closeBtn.onclick = () => progressModal.remove();
+                    progressModal.querySelector('.modal-body').appendChild(closeBtn);
+                    
+                    // Auto-remove after 10 seconds instead of 5
+                    setTimeout(() => {
+                        if (progressModal.parentNode) {
+                            progressModal.remove();
+                        }
+                    }, 10000);
+                });
+        };
+        
+        // Save last check time
+        function saveLastCheckTime() {
+            fetch(PREFERENCES_API, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    last_update_check: Math.floor(Date.now() / 1000)
+                })
+            }).catch(error => {
+                console.error('Failed to save last check time:', error);
+            });
+        }
+        
+        // Initialize
+        loadPreferences().then(() => {
+            // Check on page load (after a short delay)
+            setTimeout(() => {
+                checkForUpdates(false);
+            }, 3000);
+            
+            // Check periodically if enabled
+            if (autoUpdateEnabled) {
+                setInterval(() => {
+                    checkForUpdates(false);
+                }, CHECK_INTERVAL);
+            }
+        });
+    })();
+    </script>
+
+    <!-- Toast Notification System -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 9999;">
+        <div id="liveToast" class="toast glass" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header border-bottom border-white border-opacity-10 bg-transparent">
+                <iconify-icon icon="solar:info-circle-bold" class="text-primary-600 me-2 text-xl" id="toast-icon"></iconify-icon>
+                <strong class="me-auto text-primary-light" id="toast-title">Notification</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body text-secondary-light" id="toast-body">
+                Hello, world! This is a toast message.
+            </div>
+        </div>
+    </div>
+
+    <script>
+    (function() {
+        'use strict';
+        
+        // Unified Notification Helper
+        window.showNotification = function(message, type = 'info', title = null) {
+            const toastEl = document.getElementById('liveToast');
+            const toastIcon = document.getElementById('toast-icon');
+            const toastTitle = document.getElementById('toast-title');
+            const toastBody = document.getElementById('toast-body');
+            
+            if (!toastEl) return;
+            
+            // Set colors and icons based on type
+            const types = {
+                success: { icon: 'solar:check-circle-bold', color: 'text-success-main', title: 'Success' },
+                error: { icon: 'solar:danger-triangle-bold', color: 'text-danger-main', title: 'Error' },
+                warning: { icon: 'solar:info-circle-bold', color: 'text-warning-main', title: 'Warning' },
+                info: { icon: 'solar:info-circle-bold', color: 'text-primary-600', title: 'Notice' }
+            };
+            
+            const config = types[type] || types.info;
+            
+            toastIcon.setAttribute('icon', config.icon);
+            toastIcon.className = config.color + ' me-2 text-xl';
+            toastTitle.textContent = title || config.title;
+            toastTitle.className = 'me-auto ' + config.color;
+            toastBody.textContent = message;
+            
+            const toast = new bootstrap.Toast(toastEl, { delay: 5000 });
+            toast.show();
+        };
+
+        // Loading State Helper
+        window.toggleLoading = function(element, isLoading, originalHtml = null) {
+            if (!element) return;
+            
+            if (isLoading) {
+                const height = element.offsetHeight;
+                element.dataset.originalHtml = element.innerHTML;
+                element.style.minHeight = height + 'px';
+                element.disabled = true;
+                element.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+            } else {
+                element.innerHTML = originalHtml || element.dataset.originalHtml || 'Submit';
+                element.disabled = false;
+                element.style.minHeight = '';
+            }
+        };
+    })();
+    </script>
+
+        <!-- .env Editor Logic -->
+    <script>
+    (function() {
+        'use strict';
+        
+        const ENV_API = 'api/env_editor.php';
+        let currentEnvProject = null;
+        
+        const modal = document.getElementById('envEditorModal');
+        const loader = document.getElementById('env-editor-loader');
+        const container = document.getElementById('env-editor-container');
+        const emptyState = document.getElementById('env-editor-empty');
+        const textarea = document.getElementById('env-editor-textarea');
+        const projectNameEl = document.getElementById('envProjectName');
+        const saveBtn = document.getElementById('save-env-btn');
+        const createBtn = document.getElementById('create-env-btn');
+        
+        if (!modal) return;
+        
+        // Handle dropdown button clicks
+        document.addEventListener('click', function(e) {
+            const btn = e.target.closest('.env-editor-btn');
+            if (btn) {
+                const projectName = btn.getAttribute('data-project-name');
+                openEnvEditor(projectName);
+            }
+        });
+        
+        function openEnvEditor(projectName) {
+            currentEnvProject = projectName;
+            if (projectNameEl) projectNameEl.textContent = projectName;
+            
+            // Reset state
+            if (loader) loader.style.display = 'block';
+            if (container) container.style.display = 'none';
+            if (emptyState) emptyState.style.display = 'none';
+            if (textarea) textarea.value = '';
+            
+            fetch(`${ENV_API}?action=read&project=${encodeURIComponent(projectName)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (loader) loader.style.display = 'none';
+                    if (data.success) {
+                        if (textarea) textarea.value = data.content;
+                        if (container) container.style.display = 'block';
+                    } else if (data.error === 'File not found') {
+                        if (emptyState) emptyState.style.display = 'block';
+                    } else {
+                        showNotification(data.error || 'Failed to load .env file', 'error');
+                    }
+                })
+                .catch(error => {
+                    if (loader) loader.style.display = 'none';
+                    showNotification('Error: ' + error.message, 'error');
+                });
+        }
+        
+        if (saveBtn) {
+            saveBtn.addEventListener('click', function() {
+                if (!currentEnvProject) return;
+                
+                toggleLoading(saveBtn, true, 'Saving...');
+                
+                const formData = new FormData();
+                formData.append('action', 'save');
+                formData.append('project', currentEnvProject);
+                formData.append('content', textarea.value);
+                formData.append('csrf_token', window.csrfToken);
+                
+                fetch(ENV_API, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    toggleLoading(saveBtn, false);
+                    if (data.success) {
+                        showNotification('Changes saved successfully!', 'success');
+                        // Close modal after delay
+                        setTimeout(() => {
+                            const bModal = bootstrap.Modal.getInstance(modal);
+                            if (bModal) bModal.hide();
+                        }, 1000);
+                    } else {
+                        showNotification(data.error || 'Failed to save changes', 'error');
+                    }
+                })
+                .catch(error => {
+                    toggleLoading(saveBtn, false);
+                    showNotification('Error: ' + error.message, 'error');
+                });
+            });
+        }
+        
+        if (createBtn) {
+            createBtn.addEventListener('click', function() {
+                if (textarea) textarea.value = "# Created by Laragon Dashboard\nAPP_NAME=" + currentEnvProject + "\nAPP_ENV=local\nAPP_KEY=\nAPP_DEBUG=true\nAPP_URL=http://" + currentEnvProject + ".local\n\nDB_CONNECTION=mysql\nDB_HOST=127.0.0.1\nDB_PORT=3306\nDB_DATABASE=" + currentEnvProject.replace(/[^a-zA-Z0-9_]/g, '_') + "\nDB_USERNAME=root\nDB_PASSWORD=";
+                if (emptyState) emptyState.style.display = 'none';
+                if (container) container.style.display = 'block';
+            });
+        }
+    })();
+    </script>
+    </body>
+
+</html>
