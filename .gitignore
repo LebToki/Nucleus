@@ -1,0 +1,75 @@
+# ============================================
+# Nucleus — The Missing Dashboard for Linux
+# .gitignore — github.com/LebToki/Nucleus
+# ============================================
+
+# --- Separate projects & symlinks (not part of Nucleus) ---
+2ti-orchestrator/
+dashboard/
+laragon-dashboard/
+2tinteractive
+sas
+worldmonitor/
+chrome/
+nul
+
+# --- Source assets (deployed copies live in assets/) ---
+nucleus-logo/
+
+# --- Runtime directories ---
+cache/
+data/
+logs/
+
+# --- Build artifacts ---
+build/
+
+# --- Test files ---
+test*.php
+*test.php
+*_test.php
+tests/
+phpunit.xml
+.phpunit.result.cache
+
+# --- Backup / temp files ---
+*.backup
+*.bak
+*.old
+*.orig
+*.swp
+*.swo
+*~
+dashboard.htaccess
+index.php.laravel-backup
+
+# --- Dependencies (installed at runtime) ---
+vendor/
+node_modules/
+
+# --- Environment / secrets ---
+.env
+.env.local
+.env.production
+
+# --- Database dumps ---
+*.sql
+*.sql.gz
+
+# --- OS files ---
+.DS_Store
+Thumbs.db
+desktop.ini
+*.tmp
+
+# --- IDE / editor ---
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+.project
+.settings/
+
+# --- Windows artifacts (should not exist on Linux, but just in case) ---
+C:/
+[D-Z]:/

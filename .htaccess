@@ -1,0 +1,56 @@
+# Nucleus — Apache Rewrite Rules
+# The Missing Dashboard for Linux Developers
+# Serves the dashboard at root, project subdirs directly
+
+<IfModule mod_rewrite.c>
+    <IfModule mod_negotiation.c>
+        Options -MultiViews -Indexes
+    </IfModule>
+
+    RewriteEngine On
+
+    # Handle Authorization Header
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+    # Redirect /favicon.ico to actual location
+    RewriteRule ^favicon\.ico$ /assets/images/favicon/favicon.ico [L,R=301]
+
+    # Serve existing files directly (CSS, JS, images, etc.)
+    RewriteCond %{REQUEST_FILENAME} -f
+    RewriteRule ^ - [L]
+
+    # For project dirs with a public/ folder (Laravel, etc.), redirect to public/
+    RewriteCond %{REQUEST_URI} ^/([^/]+)/?$
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteCond %{DOCUMENT_ROOT}/%1/public -d
+    RewriteCond %1 !^(assets|build|includes|partials|pages|api|i18n|cache|data|logs|laragon-dashboard|dashboard)$
+    RewriteRule ^([^/]+)/?$ /$1/public/ [L,R=301]
+
+    # For Laravel: route non-file requests within public/ to public/index.php
+    RewriteCond %{REQUEST_URI} ^/([^/]+)/public/(.*)$
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^([^/]+)/public/(.*)$ /$1/public/index.php [L]
+
+    # Serve existing directories directly (dashboard pages, assets, etc.)
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+
+    # Dashboard routing: everything else goes to index.php?page=X
+    RewriteRule ^$ index.php [L]
+    RewriteRule ^(.+)$ index.php?page=$1 [QSA,L]
+</IfModule>
+
+# Security headers
+<IfModule mod_headers.c>
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-XSS-Protection "1; mode=block"
+    Header set X-Content-Type-Options "nosniff"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# Block access to sensitive files
+<FilesMatch "^\.(env|log|json|yml|yaml|ini|conf|gitignore)">
+    Require all denied
+</FilesMatch>
