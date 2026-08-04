@@ -1,6 +1,6 @@
 <?php
 /**
- * Laragon Dashboard - Tools Page
+ * Nucleus - Tools Page
  * Version: 3.0.0
  * Description: Development tools and utilities
  */

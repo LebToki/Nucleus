@@ -1,6 +1,6 @@
 <?php
 /**
- * Laragon Dashboard - Sites (Virtual Hosts) Page
+ * Nucleus - Sites (Virtual Hosts) Page
  * Version: 3.0.0
  * Description: Manage Apache virtual hosts with code editor
  */

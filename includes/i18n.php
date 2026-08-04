@@ -1,6 +1,6 @@
 <?php
 /**
- * i18n Translation Helper for Laragon Dashboard
+ * i18n Translation Helper for Nucleus
  * Loads translation files per module with fallback chain (lang → en)
  * Provides t() function for UI translations
  * Version: 3.0.0

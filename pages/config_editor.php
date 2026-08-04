@@ -1,6 +1,6 @@
 <?php
 /**
- * Laragon Dashboard - Config Editor Page
+ * Nucleus - Config Editor Page
  * Version: 1.0.0
  * Description: Interface for editing service configuration files
  */

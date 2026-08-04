@@ -1,6 +1,6 @@
 <?php
 /**
- * Laragon Dashboard - Logs API
+ * Nucleus - Logs API
  * Version: 3.0.0
  * Description: API endpoint for reading log files
  */
@@ -47,12 +47,12 @@ if (!defined('LARAGON_ROOT')) {
 
 // Scan for log files in Laragon directory
 function scanLogFiles() {
-    return \LaragonDashboard\Core\Services\Logs::scan();
+    return \Nucleus\Core\Services\Logs::scan();
 }
 
 // Read log file content
 function readLogFile($path, $lines = 1000) {
-    $result = \LaragonDashboard\Core\Services\Logs::read($path, $lines);
+    $result = \Nucleus\Core\Services\Logs::read($path, $lines);
     if ($result === false) {
         return ['success' => false, 'error' => 'Failed to read log file'];
     }

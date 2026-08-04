@@ -79,16 +79,15 @@ class AdminerModule {
         ];
         
         foreach ($possiblePaths as $path) {
-            $normalized = str_replace('\\', '/', $path);
-            if (is_dir($normalized)) {
+            if (is_dir($path)) {
                 // Return relative path from document root
-                $docRoot = str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT'] ?? '');
-                if (stripos($normalized, $docRoot) === 0) {
-                    $relativePath = substr($normalized, strlen($docRoot));
+                $docRoot = $_SERVER['DOCUMENT_ROOT'] ?? '';
+                if (stripos($path, $docRoot) === 0) {
+                    $relativePath = substr($path, strlen($docRoot));
                     // Ensure it starts with / and doesn't have double slashes
                     return '/' . ltrim($relativePath, '/');
                 }
-                return $normalized;
+                return $path;
             }
         }
         
@@ -111,11 +110,11 @@ class AdminerModule {
         
         // If base_path is relative, make it absolute
         if (!file_exists($basePath)) {
-            $docRoot = str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT'] ?? '');
+            $docRoot = $_SERVER['DOCUMENT_ROOT'] ?? '';
             $basePath = rtrim($docRoot, '/') . '/' . ltrim($basePath, '/');
         }
-        
-        return rtrim(str_replace('\\', '/', $basePath), '/') . '/' . $this->config['adminer_file'];
+
+        return rtrim($basePath, '/') . '/' . $this->config['adminer_file'];
     }
     
     /**

@@ -1,6 +1,6 @@
 <?php
 /**
- * Laragon Dashboard - Helper Functions
+ * Nucleus - Helper Functions
  * Version: 4.0.3
  * Provides utility functions for the dashboard
  */
@@ -13,114 +13,27 @@ if (file_exists(__DIR__ . '/autoload.php')) {
 // Start output buffering to prevent stray output
 ob_start();
 
-/**
- * Get Laragon root directory
- */
-if (!function_exists('getLaragonRoot')) {
-    function getLaragonRoot() {
-        return \LaragonDashboard\Core\System::getLaragonRoot();
-    }
-}
-
-/**
- * Get Laragon sendmail directory
- */
-if (!function_exists('getLaragonSendmailDir')) {
-    function getLaragonSendmailDir() {
-        $laragonRoot = getLaragonRoot();
-        $sendmailPath = $laragonRoot . '/bin/sendmail/output/';
-        
-        // Create directory if it doesn't exist
-        if (!is_dir($sendmailPath)) {
-            @mkdir($sendmailPath, 0755, true);
-        }
-        
-        return $sendmailPath;
-    }
-}
-
-/**
- * Get Laragon domain suffix
- */
-if (!function_exists('getLaragonDomainSuffix')) {
-    function getLaragonDomainSuffix() {
-        return '.local';
-    }
-}
-
-/**
- * Get application version
- */
-if (!function_exists('getAppVersion')) {
-    function getAppVersion() {
-        // Check for VERSION file
-        $versionFile = dirname(__DIR__) . '/VERSION';
-        if (file_exists($versionFile)) {
-            $version = trim(file_get_contents($versionFile));
-            if (!empty($version)) {
-                return $version;
-            }
-        }
-        
-        // Try to get from Git
-        $gitHeadFile = dirname(__DIR__) . '/.git/HEAD';
-        if (file_exists($gitHeadFile)) {
-            $headContent = trim(file_get_contents($gitHeadFile));
-            if (preg_match('/refs\/heads\/(.+)$/', $headContent, $matches)) {
-                $branch = $matches[1];
-                // Try to get the latest commit hash
-                $headRefFile = dirname(__DIR__) . '/.git/' . trim(file_get_contents(dirname(__DIR__) . '/.git/HEAD'));
-                if (file_exists($headRefFile)) {
-                    $commitHash = substr(trim(file_get_contents($headRefFile)), 0, 7);
-                    return 'dev-' . $branch . '+' . $commitHash;
-                }
-                return 'dev-' . $branch;
-            } elseif (preg_match('/([a-f0-9]+)/', $headContent, $matches)) {
-                // Detached HEAD state
-                return 'dev-detached+' . substr($matches[1], 0, 7);
-            }
-        }
-        
-        // Fallback to APP_VERSION constant if defined
-        if (defined('APP_VERSION')) {
-            return APP_VERSION;
-        }
-        
-        return '4.0.0';
-    }
-}
+// Note: getLaragonRoot(), getLaragonSendmailDir(), getLaragonDomainSuffix(), getAppVersion()
+// are defined in config.php which loads before this file.
 
 /**
  * Get Apache version
  */
 if (!function_exists('getApacheVersion')) {
     function getApacheVersion() {
+        // Try apache2ctl first (Debian/Ubuntu)
+        $output = @shell_exec('apache2ctl -v 2>&1');
+        if ($output && preg_match('/(\d+\.\d+\.\d+)/', $output, $matches)) {
+            return $matches[1];
+        }
+
+        // Try httpd (RHEL/CentOS/Fedora)
         $output = @shell_exec('httpd -v 2>&1');
         if ($output && preg_match('/Apache\/(\d+\.\d+\.\d+)/', $output, $matches)) {
             return $matches[1];
         }
 
-        // Linux: try apache2ctl
-        if (PHP_OS_FAMILY !== 'Windows') {
-            $output = @shell_exec('apache2ctl -v 2>&1');
-            if ($output && preg_match('/(\d+\.\d+\.\d+)/', $output, $matches)) {
-                return $matches[1];
-            }
-            $output = @shell_exec('httpd -v 2>&1');
-            if ($output && preg_match('/(\d+\.\d+\.\d+)/', $output, $matches)) {
-                return $matches[1];
-            }
-            return 'Apache2';
-        }
-
-        // Windows/Laragon fallback
-        $laragonRoot = getLaragonRoot();
-        $apachePath = $laragonRoot . '/bin/apache/httpd-2.4.*/bin/httpd.exe';
-        if (glob($apachePath)) {
-            return '2.4.x';
-        }
-
-        return 'Unknown';
+        return 'Apache2';
     }
 }
 
@@ -139,33 +52,19 @@ if (!function_exists('getCurrentPHPVersion')) {
  */
 if (!function_exists('getMySQLVersion')) {
     function getMySQLVersion() {
-        // Linux: try mysql CLI first
-        if (PHP_OS_FAMILY !== 'Windows') {
-            $output = @shell_exec('mysql -V 2>&1');
-            if ($output && preg_match('/(\d+\.\d+\.\d+)/', $output, $matches)) {
-                return $matches[1] . ' (MySQL)';
-            }
-            // Try mariadb
-            $output = @shell_exec('mariadb -V 2>&1');
-            if ($output && preg_match('/(\d+\.\d+\.\d+)/', $output, $matches)) {
-                return $matches[1] . ' (MariaDB)';
-            }
-            return 'MySQL/MariaDB';
-        }
-
-        // Windows/Laragon fallback
+        // Try mysql CLI first
         $output = @shell_exec('mysql -V 2>&1');
         if ($output && preg_match('/(\d+\.\d+\.\d+)/', $output, $matches)) {
             return $matches[1] . ' (MySQL)';
         }
 
-        $laragonRoot = getLaragonRoot();
-        $mysqlPath = $laragonRoot . '/bin/mysql/mysql-*/bin/mysql.exe';
-        if (glob($mysqlPath)) {
-            return 'MySQL (Laragon)';
+        // Try mariadb
+        $output = @shell_exec('mariadb -V 2>&1');
+        if ($output && preg_match('/(\d+\.\d+\.\d+)/', $output, $matches)) {
+            return $matches[1] . ' (MariaDB)';
         }
-        
-        return 'MySQL';
+
+        return 'MySQL/MariaDB';
     }
 }
 
@@ -174,29 +73,17 @@ if (!function_exists('getMySQLVersion')) {
  */
 if (!function_exists('isPhpMyAdminInstalled')) {
     function isPhpMyAdminInstalled() {
-        // Linux: check standard paths
-        if (PHP_OS_FAMILY !== 'Windows') {
-            $linuxPaths = [
-                '/usr/share/phpmyadmin',
-                '/usr/share/phpMyAdmin',
-                '/var/www/html/phpmyadmin',
-                '/var/www/html/phpMyAdmin',
-                '/usr/local/share/phpmyadmin',
-            ];
-            foreach ($linuxPaths as $p) {
-                if (is_dir($p)) return true;
-            }
-            // Check if accessible via web
-            return false;
+        $linuxPaths = [
+            '/usr/share/phpmyadmin',
+            '/usr/share/phpMyAdmin',
+            '/var/www/html/phpmyadmin',
+            '/var/www/html/phpMyAdmin',
+            '/usr/local/share/phpmyadmin',
+        ];
+        foreach ($linuxPaths as $p) {
+            if (is_dir($p)) return true;
         }
-
-        // Windows/Laragon fallback
-        $laragonRoot = getLaragonRoot();
-        $pmaPath = $laragonRoot . '/etc/apps/phpMyAdmin';
-        if (!is_dir($pmaPath)) {
-            $pmaPath = $laragonRoot . '/www/phpmyadmin';
-        }
-        return is_dir($pmaPath);
+        return false;
     }
 }
 
@@ -205,22 +92,19 @@ if (!function_exists('isPhpMyAdminInstalled')) {
  */
 if (!function_exists('getPhpMyAdminVersion')) {
     function getPhpMyAdminVersion() {
-        // Linux: check standard paths
-        if (PHP_OS_FAMILY !== 'Windows') {
-            $linuxPaths = [
-                '/usr/share/phpmyadmin',
-                '/usr/share/phpMyAdmin',
-                '/var/www/html/phpmyadmin',
-                '/var/www/html/phpMyAdmin',
-            ];
-            foreach ($linuxPaths as $pmaPath) {
-                if (is_dir($pmaPath)) {
-                    $versionFile = $pmaPath . '/README';
-                    if (file_exists($versionFile)) {
-                        $content = @file_get_contents($versionFile);
-                        if (preg_match('/Version\s+(\d+\.\d+\.\d+)/', $content, $matches)) {
-                            return $matches[1];
-                        }
+        $linuxPaths = [
+            '/usr/share/phpmyadmin',
+            '/usr/share/phpMyAdmin',
+            '/var/www/html/phpmyadmin',
+            '/var/www/html/phpMyAdmin',
+        ];
+        foreach ($linuxPaths as $pmaPath) {
+            if (is_dir($pmaPath)) {
+                $versionFile = $pmaPath . '/README';
+                if (file_exists($versionFile)) {
+                    $content = @file_get_contents($versionFile);
+                    if (preg_match('/Version\s+(\d+\.\d+\.\d+)/', $content, $matches)) {
+                        return $matches[1];
                     }
                 }
             }
@@ -322,48 +206,21 @@ if (!function_exists('getPHPSAPI')) {
 if (!function_exists('getDocumentRoot')) {
     function getDocumentRoot() {
         $docRoot = $_SERVER['DOCUMENT_ROOT'] ?? '';
-        
-        // Check if it's a Laragon www directory
-        if (stripos($docRoot, 'laragon') !== false) {
+        if (!empty($docRoot)) {
             return $docRoot;
         }
-        
-        // Check if there's a www subdirectory in Laragon
+
         $laragonRoot = getLaragonRoot();
-        $wwwPath = $laragonRoot . '/www';
-        if (is_dir($wwwPath)) {
-            return $wwwPath;
-        }
-        
-        return $docRoot ?: $laragonRoot . '/www';
+        return $laragonRoot . '/html';
     }
 }
 
 /**
- * Get Laragon version
+ * Get Nucleus version (replaces legacy Laragon version)
  */
 if (!function_exists('getLaragonVersion')) {
     function getLaragonVersion() {
-        $laragonRoot = getLaragonRoot();
-        $versionFile = $laragonRoot . '/laragon.ini';
-        
-        if (file_exists($versionFile)) {
-            $content = @file_get_contents($versionFile);
-            if (preg_match('/version=(\d+\.\d+\.\d+)/', $content, $matches)) {
-                return $matches[1];
-            }
-        }
-        
-        // Try to find Laragon executable
-        $laragonExe = $laragonRoot . '/laragon.exe';
-        if (file_exists($laragonExe)) {
-            $versionInfo = @file_get_contents($laragonExe, false, null, 0, 100);
-            if (preg_match('/(\d+\.\d+\.\d+)/', $versionInfo, $matches)) {
-                return $matches[1];
-            }
-        }
-        
-        return 'Laragon';
+        return 'Nucleus';
     }
 }
 
@@ -373,11 +230,11 @@ if (!function_exists('getLaragonVersion')) {
 if (!function_exists('getAllProjects')) {
     function getAllProjects() {
         // Use platform-aware www path detection
-        if (class_exists('\LaragonDashboard\Core\System') && method_exists('\LaragonDashboard\Core\System', 'getWwwPath')) {
-            $wwwPath = \LaragonDashboard\Core\System::getWwwPath();
+        if (class_exists('\Nucleus\Core\System') && method_exists('\Nucleus\Core\System', 'getWwwPath')) {
+            $wwwPath = \Nucleus\Core\System::getWwwPath();
         } else {
             $laragonRoot = getLaragonRoot();
-            $wwwPath = (PHP_OS_FAMILY !== 'Windows') ? $laragonRoot . '/html' : $laragonRoot . '/www';
+            $wwwPath = $laragonRoot . '/html';
         }
 
         if (!is_dir($wwwPath)) {
@@ -423,8 +280,8 @@ if (!function_exists('getAllProjects')) {
                     // Non-project directories
                     'nucleus-logo',
                 ];
-                // Skip hidden dirs, excluded dirs, and Windows drive-letter artifacts (e.g. "C:")
-                if (empty($name) || $name[0] === '.' || in_array($name, $excludedDirs, true) || preg_match('/^[A-Z]:$/', $name)) {
+                // Skip hidden dirs and excluded dirs
+                if (empty($name) || $name[0] === '.' || in_array($name, $excludedDirs, true)) {
                     continue;
                 }
                 
@@ -707,70 +564,36 @@ if (!function_exists('getServicesStatus')) {
 
         $status = [];
 
-        if (PHP_OS_FAMILY !== 'Windows') {
-            // Linux: use systemctl and ss/netstat
-            $netstatOutput = @shell_exec('ss -tlnp 2>/dev/null || netstat -tlnp 2>/dev/null');
-
-            foreach ($services as $key => $service) {
-                // Check if port is listening
-                $isPortRunning = false;
-                if ($netstatOutput) {
-                    if (preg_match('/:' . preg_quote($service['port'], '/') . '\s/m', $netstatOutput)) {
-                        $isPortRunning = true;
-                    }
-                }
-
-                // Check systemd service status
-                $systemdRunning = false;
-                foreach ($service['systemd'] as $unit) {
-                    $output = @shell_exec("systemctl is-active {$unit} 2>/dev/null");
-                    if (trim($output) === 'active') {
-                        $systemdRunning = true;
-                        break;
-                    }
-                }
-
-                $status[$key] = [
-                    'name' => $service['display'],
-                    'running' => $isPortRunning || $systemdRunning,
-                    'port' => $service['port'],
-                    'systemd_active' => $systemdRunning,
-                ];
-            }
-
-            return $status;
-        }
-
-        // Windows fallback: original sc query + netstat logic
-        $netstatOutput = @shell_exec('netstat -an 2>&1');
-        $scCommands = [];
-        foreach ($services as $service) {
-            $scCommands[] = 'sc query "' . $service['name'] . '"';
-        }
-        $scOutput = @shell_exec(implode(' & ', $scCommands) . ' 2>&1');
+        // Linux: use systemctl and ss/netstat
+        $netstatOutput = @shell_exec('ss -tlnp 2>/dev/null || netstat -tlnp 2>/dev/null');
 
         foreach ($services as $key => $service) {
+            // Check if port is listening
             $isPortRunning = false;
             if ($netstatOutput) {
-                if (preg_match('/[:\s]' . preg_quote($service['port'], '/') . '\s+.*?LISTENING/i', $netstatOutput)) {
+                if (preg_match('/:' . preg_quote($service['port'], '/') . '\s/m', $netstatOutput)) {
                     $isPortRunning = true;
                 }
-            } else {
-                $isPortRunning = isPortInUse($service['port']);
+            }
+
+            // Check systemd service status
+            $systemdRunning = false;
+            foreach ($service['systemd'] as $unit) {
+                $output = @shell_exec("systemctl is-active {$unit} 2>/dev/null");
+                if (trim($output) === 'active') {
+                    $systemdRunning = true;
+                    break;
+                }
             }
 
             $status[$key] = [
                 'name' => $service['display'],
-                'running' => $isPortRunning,
+                'running' => $isPortRunning || $systemdRunning,
                 'port' => $service['port'],
+                'systemd_active' => $systemdRunning,
             ];
-
-            $status[$key]['windows_service'] = false;
-            if ($scOutput && preg_match('/SERVICE_NAME:\s*' . preg_quote($service['name'], '/') . '\s+(?:(?!SERVICE_NAME:).)*?STATE\s+:\s+\d+\s+RUNNING/is', $scOutput)) {
-                $status[$key]['windows_service'] = true;
-            }
         }
-        
+
         return $status;
     }
 }
@@ -780,13 +603,7 @@ if (!function_exists('getServicesStatus')) {
  */
 if (!function_exists('isPortInUse')) {
     function isPortInUse($port) {
-        if (PHP_OS_FAMILY !== 'Windows') {
-            // Linux: use ss or netstat
-            $output = @shell_exec("ss -tlnp 2>/dev/null | grep ':$port ' || netstat -tlnp 2>/dev/null | grep ':$port '");
-            return !empty(trim((string)$output));
-        }
-        // Windows fallback
-        $output = @shell_exec('netstat -an | findstr :' . $port . ' 2>&1');
+        $output = @shell_exec("ss -tlnp 2>/dev/null | grep ':$port ' || netstat -tlnp 2>/dev/null | grep ':$port '");
         return !empty(trim((string)$output));
     }
 }
@@ -796,40 +613,22 @@ if (!function_exists('isPortInUse')) {
  */
 if (!function_exists('getListeningPorts')) {
     function getListeningPorts() {
-        if (PHP_OS_FAMILY !== 'Windows') {
-            // Linux: use ss or netstat
-            $output = @shell_exec('ss -tlnp 2>/dev/null || netstat -tlnp 2>/dev/null');
-            $ports = [];
-            if ($output) {
-                // ss format: LISTEN 0 128 0.0.0.0:80 0.0.0.0:* users:(("apache2",pid=1234,fd=4))
-                if (preg_match_all('/LISTEN\s+\d+\s+\d+\s+[\d.]+:(\d+)\s+.*?pid=(\d+)/', $output, $matches, PREG_SET_ORDER)) {
-                    foreach ($matches as $match) {
-                        $ports[] = ['pid' => $match[2], 'port' => $match[1]];
-                    }
-                }
-                // Fallback: netstat format
-                elseif (preg_match_all('/LISTEN\s+(\d+)\s+.*?:(\d+)/', $output, $matches, PREG_SET_ORDER)) {
-                    foreach ($matches as $match) {
-                        $ports[] = ['pid' => $match[1], 'port' => $match[2]];
-                    }
-                }
-            }
-            return $ports;
-        }
-
-        // Windows fallback
-        $output = @shell_exec('netstat -an 2>&1');
+        $output = @shell_exec('ss -tlnp 2>/dev/null || netstat -tlnp 2>/dev/null');
         $ports = [];
-
-        if (preg_match_all('/LISTENING\s+(\d+)\s+.*?:(\d+)/', $output, $matches, PREG_SET_ORDER)) {
-            foreach ($matches as $match) {
-                $ports[] = [
-                    'pid' => $match[1],
-                    'port' => $match[2],
-                ];
+        if ($output) {
+            // ss format: LISTEN 0 128 0.0.0.0:80 0.0.0.0:* users:(("apache2",pid=1234,fd=4))
+            if (preg_match_all('/LISTEN\s+\d+\s+\d+\s+[\d.]+:(\d+)\s+.*?pid=(\d+)/', $output, $matches, PREG_SET_ORDER)) {
+                foreach ($matches as $match) {
+                    $ports[] = ['pid' => $match[2], 'port' => $match[1]];
+                }
+            }
+            // Fallback: netstat format
+            elseif (preg_match_all('/LISTEN\s+(\d+)\s+.*?:(\d+)/', $output, $matches, PREG_SET_ORDER)) {
+                foreach ($matches as $match) {
+                    $ports[] = ['pid' => $match[1], 'port' => $match[2]];
+                }
             }
         }
-        
         return $ports;
     }
 }
@@ -840,16 +639,21 @@ if (!function_exists('getListeningPorts')) {
 if (!function_exists('startService')) {
     function startService($service) {
         $services = [
-            'Apache' => 'Apache2.4',
-            'MySQL' => 'MySQL',
-            'Nginx' => 'Nginx',
+            'Apache' => ['apache2', 'httpd'],
+            'MySQL' => ['mysql', 'mariadb'],
+            'Nginx' => ['nginx'],
         ];
-        
+
         if (isset($services[$service])) {
-            $output = @shell_exec('net start "' . $services[$service] . '" 2>&1');
-            return strpos($output, 'was started successfully') !== false || strpos($output, 'running') !== false;
+            foreach ($services[$service] as $unit) {
+                $output = @shell_exec("sudo systemctl start {$unit} 2>&1");
+                $check = @shell_exec("systemctl is-active {$unit} 2>/dev/null");
+                if (trim($check) === 'active') {
+                    return true;
+                }
+            }
         }
-        
+
         return false;
     }
 }
@@ -860,16 +664,21 @@ if (!function_exists('startService')) {
 if (!function_exists('stopService')) {
     function stopService($service) {
         $services = [
-            'Apache' => 'Apache2.4',
-            'MySQL' => 'MySQL',
-            'Nginx' => 'Nginx',
+            'Apache' => ['apache2', 'httpd'],
+            'MySQL' => ['mysql', 'mariadb'],
+            'Nginx' => ['nginx'],
         ];
-        
+
         if (isset($services[$service])) {
-            $output = @shell_exec('net stop "' . $services[$service] . '" 2>&1');
-            return strpos($output, 'was stopped successfully') !== false || strpos($output, 'stopped') !== false;
+            foreach ($services[$service] as $unit) {
+                $output = @shell_exec("sudo systemctl stop {$unit} 2>&1");
+                $check = @shell_exec("systemctl is-active {$unit} 2>/dev/null");
+                if (trim($check) !== 'active') {
+                    return true;
+                }
+            }
         }
-        
+
         return false;
     }
 }
@@ -890,105 +699,61 @@ if (!function_exists('restartService')) {
  */
 if (!function_exists('getLogFiles')) {
     function getLogFiles() {
-        $laragonRoot = getLaragonRoot();
-
-        if (PHP_OS_FAMILY !== 'Windows') {
-            // Linux: use standard log paths
-            $logs = [
-                'apache_error' => [
-                    'name' => 'Apache Error Log',
-                    'path' => '/var/log/apache2/error.log',
-                    'type' => 'error',
-                ],
-                'apache_access' => [
-                    'name' => 'Apache Access Log',
-                    'path' => '/var/log/apache2/access.log',
-                    'type' => 'access',
-                ],
-                'php_error' => [
-                    'name' => 'PHP Error Log',
-                    'path' => '/var/log/php8.3-fpm.log',
-                    'type' => 'error',
-                ],
-                'mysql_error' => [
-                    'name' => 'MySQL Error Log',
-                    'path' => '/var/log/mysql/error.log',
-                    'type' => 'error',
-                ],
-                'mysql_slow' => [
-                    'name' => 'MySQL Slow Query Log',
-                    'path' => '/var/log/mysql/slow.log',
-                    'type' => 'slow',
-                ],
-                'nucleus' => [
-                    'name' => 'Nucleus Log',
-                    'path' => dirname(__DIR__) . '/logs/nucleus.log',
-                    'type' => 'app',
-                ],
-            ];
-
-            // Filter out non-existent logs, but always show at least nucleus log
-            $existing = array_filter($logs, function($log) {
-                return file_exists($log['path']);
-            });
-
-            // If no logs found, try alternative paths
-            if (empty($existing)) {
-                $altPaths = [
-                    'apache_error' => '/var/log/httpd/error_log',
-                    'apache_access' => '/var/log/httpd/access_log',
-                    'php_error' => '/var/log/php-fpm/error.log',
-                    'mysql_error' => '/var/log/mariadb/mariadb.log',
-                ];
-                foreach ($altPaths as $key => $path) {
-                    if (file_exists($path) && isset($logs[$key])) {
-                        $logs[$key]['path'] = $path;
-                        $existing[$key] = $logs[$key];
-                    }
-                }
-            }
-
-            return $existing ?: $logs;
-        }
-
-        // Windows/Laragon fallback
         $logs = [
             'apache_error' => [
                 'name' => 'Apache Error Log',
-                'path' => $laragonRoot . '/logs/apache_error.log',
+                'path' => '/var/log/apache2/error.log',
                 'type' => 'error',
             ],
             'apache_access' => [
                 'name' => 'Apache Access Log',
-                'path' => $laragonRoot . '/logs/apache_access.log',
+                'path' => '/var/log/apache2/access.log',
                 'type' => 'access',
             ],
             'php_error' => [
                 'name' => 'PHP Error Log',
-                'path' => $laragonRoot . '/logs/php_error.log',
+                'path' => '/var/log/php8.3-fpm.log',
                 'type' => 'error',
             ],
             'mysql_error' => [
                 'name' => 'MySQL Error Log',
-                'path' => $laragonRoot . '/logs/mysql_error.log',
+                'path' => '/var/log/mysql/error.log',
                 'type' => 'error',
             ],
             'mysql_slow' => [
                 'name' => 'MySQL Slow Query Log',
-                'path' => $laragonRoot . '/logs/mysql_slow.log',
+                'path' => '/var/log/mysql/slow.log',
                 'type' => 'slow',
             ],
-            'laragon' => [
-                'name' => 'Laragon Log',
-                'path' => $laragonRoot . '/logs/laragon.log',
-                'type' => 'laragon',
+            'nucleus' => [
+                'name' => 'Nucleus Log',
+                'path' => dirname(__DIR__) . '/logs/nucleus.log',
+                'type' => 'app',
             ],
         ];
 
-        // Filter out non-existent logs
-        return array_filter($logs, function($log) {
+        // Filter out non-existent logs, but always show at least nucleus log
+        $existing = array_filter($logs, function($log) {
             return file_exists($log['path']);
         });
+
+        // If no logs found, try alternative paths
+        if (empty($existing)) {
+            $altPaths = [
+                'apache_error' => '/var/log/httpd/error_log',
+                'apache_access' => '/var/log/httpd/access_log',
+                'php_error' => '/var/log/php-fpm/error.log',
+                'mysql_error' => '/var/log/mariadb/mariadb.log',
+            ];
+            foreach ($altPaths as $key => $path) {
+                if (file_exists($path) && isset($logs[$key])) {
+                    $logs[$key]['path'] = $path;
+                    $existing[$key] = $logs[$key];
+                }
+            }
+        }
+
+        return $existing ?: $logs;
     }
 }
 
@@ -1002,8 +767,8 @@ if (!function_exists('readLogFile')) {
         }
         
         // ⚡ Bolt: Use native PHP implementation to avoid slow powershell subprocess creation
-        if (class_exists('\\LaragonDashboard\\Core\\Services\\Logs')) {
-            $result = \LaragonDashboard\Core\Services\Logs::read($path, $lines);
+        if (class_exists('\\Nucleus\\Core\\Services\\Logs')) {
+            $result = \Nucleus\Core\Services\Logs::read($path, $lines);
             if ($result) {
                 return [
                     'content' => $result['content'],
@@ -1039,7 +804,7 @@ if (!function_exists('clearLogFile')) {
 if (!function_exists('createProject')) {
     function createProject($name, $type, $options = []) {
         $laragonRoot = getLaragonRoot();
-        $wwwDir = (PHP_OS_FAMILY !== 'Windows') ? $laragonRoot . '/html' : $laragonRoot . '/www';
+        $wwwDir = $laragonRoot . '/html';
         $wwwPath = $wwwDir . '/' . $name;
 
         if (is_dir($wwwPath)) {
@@ -1055,37 +820,32 @@ if (!function_exists('createProject')) {
                 break;
 
             case 'wordpress':
-                if (PHP_OS_FAMILY !== 'Windows') {
-                    // Linux: use wp-cli or curl
-                    $commands[] = 'cd ' . escapeshellarg($wwwDir) . ' && (command -v wp >/dev/null 2>&1 && wp core download --locale=en_US --path=' . escapeshellarg($name) . ' || (curl -sO https://wordpress.org/latest.tar.gz && tar -xzf latest.tar.gz && mv wordpress ' . escapeshellarg($name) . ' && rm -f latest.tar.gz))';
-                } else {
-                    // Windows fallback
-                    $commands[] = 'cd ' . escapeshellarg($wwwDir) . ' && if exist wp-cli.phar (php wp-cli.phar core download --locale=en_US) else (curl -O https://wordpress.org/latest.tar.gz && tar -xzf latest.tar.gz && mv wordpress ' . escapeshellarg($name) . ' && del latest.tar.gz)';
-                }
+                // Use wp-cli or curl
+                $commands[] = 'cd ' . escapeshellarg($wwwDir) . ' && (command -v wp >/dev/null 2>&1 && wp core download --locale=en_US --path=' . escapeshellarg($name) . ' || (curl -sO https://wordpress.org/latest.tar.gz && tar -xzf latest.tar.gz && mv wordpress ' . escapeshellarg($name) . ' && rm -f latest.tar.gz))';
                 break;
-                
+
             case 'nodejs':
                 // Create Node.js project
                 $commands[] = 'cd ' . escapeshellarg($wwwPath) . ' && npm init -y';
                 break;
-                
+
             case 'static':
                 // Create basic static files
-                $commands[] = 'mkdir ' . escapeshellarg($wwwPath);
+                $commands[] = 'mkdir -p ' . escapeshellarg($wwwPath);
                 $commands[] = 'echo "<!DOCTYPE html><html><head><title>' . escapeshellarg($name) . '</title></head><body><h1>' . escapeshellarg($name) . '</h1></body></html>" > ' . escapeshellarg($wwwPath . '/index.html');
                 break;
-                
+
             default:
                 // Create basic PHP project
-                $commands[] = 'mkdir ' . escapeshellarg($wwwPath);
+                $commands[] = 'mkdir -p ' . escapeshellarg($wwwPath);
                 $commands[] = 'echo "<?php phpinfo();" > ' . escapeshellarg($wwwPath . '/index.php');
         }
-        
+
         $output = [];
         foreach ($commands as $command) {
             exec($command . ' 2>&1', $output);
         }
-        
+
         return [
             'success' => is_dir($wwwPath),
             'output' => implode("\n", $output),
@@ -1099,25 +859,14 @@ if (!function_exists('createProject')) {
 if (!function_exists('deleteProject')) {
     function deleteProject($name) {
         $laragonRoot = getLaragonRoot();
-        $wwwDir = (PHP_OS_FAMILY !== 'Windows') ? $laragonRoot . '/html' : $laragonRoot . '/www';
+        $wwwDir = $laragonRoot . '/html';
         $projectPath = $wwwDir . '/' . $name;
 
         if (!is_dir($projectPath)) {
             return ['success' => false, 'error' => 'Project not found'];
         }
 
-        if (PHP_OS_FAMILY !== 'Windows') {
-            // Linux: use rm -rf
-            $output = @shell_exec('rm -rf ' . escapeshellarg($projectPath) . ' 2>&1');
-            return [
-                'success' => !is_dir($projectPath),
-                'output' => $output,
-            ];
-        }
-
-        // Windows fallback
-        $output = @shell_exec('rmdir /s /q "' . str_replace('/', '\\', $projectPath) . '" 2>&1');
-
+        $output = @shell_exec('rm -rf ' . escapeshellarg($projectPath) . ' 2>&1');
         return [
             'success' => !is_dir($projectPath),
             'output' => $output,
@@ -1181,14 +930,6 @@ if (!function_exists('saveDashboardPreferences')) {
         $prefsFile = $dataDir . '/preferences.json';
         $existing = getDashboardPreferences();
         
-        // Normalize paths before saving
-        if (isset($preferences['laragon_root'])) {
-            $preferences['laragon_root'] = rtrim(str_replace('\\', '/', $preferences['laragon_root']), '/');
-        }
-        if (isset($preferences['document_root'])) {
-            $preferences['document_root'] = rtrim(str_replace('\\', '/', $preferences['document_root']), '/');
-        }
-        
         $merged = array_merge($existing, $preferences);
         
         // Remove null and empty string values
@@ -1206,7 +947,7 @@ if (!function_exists('saveDashboardPreferences')) {
 if (!function_exists('clearAllCaches')) {
     function clearAllCaches() {
         $results = [];
-        
+
         // Clear dashboard cache
         $cacheDir = dirname(__DIR__) . '/temp/cache';
         if (is_dir($cacheDir)) {
@@ -1218,7 +959,7 @@ if (!function_exists('clearAllCaches')) {
             }
             $results['dashboard_cache'] = true;
         }
-        
+
         // Clear session cache
         $sessionDir = dirname(__DIR__) . '/temp/sessions';
         if (is_dir($sessionDir)) {
@@ -1230,20 +971,7 @@ if (!function_exists('clearAllCaches')) {
             }
             $results['session_cache'] = true;
         }
-        
-        // Clear Laragon cache
-        $laragonRoot = getLaragonRoot();
-        $laragonCache = $laragonRoot . '/data/cache';
-        if (is_dir($laragonCache)) {
-            $files = glob($laragonCache . '/*');
-            foreach ($files as $file) {
-                if (is_file($file)) {
-                    @unlink($file);
-                }
-            }
-            $results['laragon_cache'] = true;
-        }
-        
+
         return $results;
     }
 }
@@ -1267,19 +995,9 @@ if (!function_exists('optimizeDatabases')) {
  */
 if (!function_exists('runComposerCommand')) {
     function runComposerCommand($projectPath, $command = 'install') {
-        $laragonRoot = getLaragonRoot();
-        $composerPath = $laragonRoot . '/bin/composer/composer.phar';
-        
-        if (!file_exists($composerPath)) {
-            return [
-                'success' => false,
-                'output' => 'Composer not found. Please install Composer in Laragon.',
-            ];
-        }
-        
-        $fullCommand = 'php ' . escapeshellarg($composerPath) . ' ' . $command;
+        $fullCommand = 'composer ' . $command;
         $output = @shell_exec('cd ' . escapeshellarg($projectPath) . ' && ' . $fullCommand . ' 2>&1');
-        
+
         return [
             'success' => strpos($output, 'Generating autoload files') !== false || strpos($output, 'Package operations') !== false,
             'output' => $output,
@@ -1292,19 +1010,9 @@ if (!function_exists('runComposerCommand')) {
  */
 if (!function_exists('runNpmCommand')) {
     function runNpmCommand($projectPath, $command = 'install') {
-        $laragonRoot = getLaragonRoot();
-        $npmPath = $laragonRoot . '/bin/node/node.exe';
-        
-        if (!file_exists($npmPath)) {
-            return [
-                'success' => false,
-                'output' => 'Node.js not found. Please install Node.js in Laragon.',
-            ];
-        }
-        
-        $fullCommand = $npmPath . ' ' . $command;
+        $fullCommand = 'npm ' . $command;
         $output = @shell_exec('cd ' . escapeshellarg($projectPath) . ' && ' . $fullCommand . ' 2>&1');
-        
+
         return [
             'success' => strpos($output, 'added') !== false || strpos($output, 'up to date') !== false,
             'output' => $output,
@@ -1360,27 +1068,20 @@ if (!function_exists('checkGitStatus')) {
 }
 
 /**
- * Get Laragon config
+ * Get Nucleus config (replaces legacy Laragon config)
  */
 if (!function_exists('getLaragonConfig')) {
     function getLaragonConfig() {
-        $laragonRoot = getLaragonRoot();
-        $configFile = $laragonRoot . '/laragon.ini';
-        
+        $configFile = dirname(__DIR__) . '/data/nucleus.json';
+
         if (!file_exists($configFile)) {
             return [];
         }
-        
+
         $content = @file_get_contents($configFile);
-        $config = [];
-        
-        if (preg_match_all('/^(\w+)=(.*)$/m', $content, $matches, PREG_SET_ORDER)) {
-            foreach ($matches as $match) {
-                $config[$match[1]] = $match[2];
-            }
-        }
-        
-        return $config;
+        $config = @json_decode($content, true);
+
+        return is_array($config) ? $config : [];
     }
 }
 
@@ -1389,40 +1090,15 @@ if (!function_exists('getLaragonConfig')) {
  */
 if (!function_exists('fixSMTP')) {
     function fixSMTP() {
-        $laragonRoot = getLaragonRoot();
-        $phpIni = $laragonRoot . '/bin/php/php.ini';
-        $sendmailIni = $laragonRoot . '/bin/sendmail/sendmail.ini';
-        
         $results = [];
-        
-        // Fix php.ini
-        if (file_exists($phpIni)) {
-            $phpIniContent = @file_get_contents($phpIni);
-            
-            // Enable mailparse extension
-            if (strpos($phpIniContent, 'extension=mailparse') !== false && strpos($phpIniContent, 'extension=mailparse') !== false) {
-                // Extension might already be enabled
-            } else {
-                $phpIniContent .= "\n; Mailparse extension\n";
-                $phpIniContent .= "extension=mailparse\n";
-                $results['mailparse'] = @file_put_contents($phpIniContent, $phpIni) !== false;
-            }
+
+        // Check PHP ini for mail configuration
+        $phpIni = php_ini_loaded_file();
+        if ($phpIni && file_exists($phpIni)) {
+            $results['php_ini'] = $phpIni;
+            $results['mail_configured'] = ini_get('SMTP') ? true : false;
         }
-        
-        // Configure sendmail.ini
-        if (file_exists($sendmailIni)) {
-            $sendmailContent = @file_get_contents($sendmailIni);
-            
-            // Update SMTP settings
-            $sendmailContent = str_replace('smtp_server=mail.mydomain.com', 'smtp_server=localhost', $sendmailContent);
-            $sendmailContent = str_replace('smtp_port=25', 'smtp_port=1025', $sendmailContent);
-            $sendmailContent = str_replace('auth_username=', 'auth_username=', $sendmailContent);
-            $sendmailContent = str_replace('auth_password=', 'auth_password=', $sendmailContent);
-            $sendmailContent = str_replace('force_sender=', 'force_sender=', $sendmailContent);
-            
-            $results['sendmail'] = @file_put_contents($sendmailContent, $sendmailIni) !== false;
-        }
-        
+
         return $results;
     }
 }
@@ -1445,7 +1121,7 @@ if (!function_exists('getPHPIniPath')) {
     function getPHPIniPath() {
         $loadedIni = php_ini_loaded_file();
         if ($loadedIni && file_exists($loadedIni)) return $loadedIni;
-        
+
         $linuxPaths = [
             '/etc/php/8.3/apache2/php.ini',
             '/etc/php/8.3/cli/php.ini',
@@ -1456,19 +1132,8 @@ if (!function_exists('getPHPIniPath')) {
         foreach ($linuxPaths as $path) {
             if (file_exists($path)) return $path;
         }
-        
-        $laragonConfig = getLaragonConfig();
-        $phpVersion = $laragonConfig['php'] ?? null;
-        $laragonRoot = getLaragonRoot();
-        
-        if ($phpVersion) {
-            $path = $laragonRoot . '/bin/php/' . $phpVersion . '/php.ini';
-            if (file_exists($path)) return $path;
-        }
-        
-        // Fallback: try to find any PHP ini
-        $paths = glob($laragonRoot . '/bin/php/php-*/php.ini');
-        return !empty($paths) ? $paths[0] : null;
+
+        return null;
     }
 }
 
@@ -1486,19 +1151,8 @@ if (!function_exists('getMySQLIniPath')) {
         foreach ($linuxPaths as $path) {
             if (file_exists($path)) return $path;
         }
-        
-        $laragonConfig = getLaragonConfig();
-        $mysqlVersion = $laragonConfig['mysql'] ?? null;
-        $laragonRoot = getLaragonRoot();
-        
-        if ($mysqlVersion) {
-            $path = $laragonRoot . '/bin/mysql/' . $mysqlVersion . '/my.ini';
-            if (file_exists($path)) return $path;
-        }
-        
-        // Fallback: try to find any MySQL ini
-        $paths = glob($laragonRoot . '/bin/mysql/mysql-*/my.ini');
-        return !empty($paths) ? $paths[0] : null;
+
+        return null;
     }
 }
 
@@ -1510,7 +1164,7 @@ ob_end_clean();
  */
 if (!function_exists('generateCSRFToken')) {
     function generateCSRFToken() {
-        return \LaragonDashboard\Core\Security::generateCSRFToken();
+        return \Nucleus\Core\Security::generateCSRFToken();
     }
 }
 
@@ -1519,7 +1173,7 @@ if (!function_exists('generateCSRFToken')) {
  */
 if (!function_exists('getCSRFToken')) {
     function getCSRFToken() {
-        return \LaragonDashboard\Core\Security::getCSRFToken();
+        return \Nucleus\Core\Security::getCSRFToken();
     }
 }
 
@@ -1543,7 +1197,7 @@ if (!function_exists('verifyCSRFToken')) {
  */
 if (!function_exists('is_authenticated')) {
     function is_authenticated() {
-        return \LaragonDashboard\Core\Security::isAuthenticated();
+        return \Nucleus\Core\Security::isAuthenticated();
     }
 }
 
@@ -1552,7 +1206,7 @@ if (!function_exists('is_authenticated')) {
  */
 if (!function_exists('check_auth')) {
     function check_auth() {
-        \LaragonDashboard\Core\Security::checkAuth();
+        \Nucleus\Core\Security::checkAuth();
     }
 }
 

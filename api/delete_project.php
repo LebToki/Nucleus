@@ -1,6 +1,6 @@
 <?php
 /**
- * Laragon Dashboard - Delete Project API
+ * Nucleus - Delete Project API
  * Handles deletion of projects and their associated databases
  * Version: 3.1.0
  */
@@ -16,10 +16,23 @@ if (file_exists(__DIR__ . '/../includes/helpers.php')) {
     require_once __DIR__ . '/../includes/helpers.php';
 }
 
+// Enforce authentication
+if (function_exists('check_auth')) {
+    check_auth();
+}
+
 // Only allow POST requests
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     echo json_encode(['success' => false, 'error' => 'Method not allowed']);
+    exit;
+}
+
+// CSRF check
+$csrfToken = $_POST['csrf_token'] ?? '';
+if (!validate_csrf_token($csrfToken)) {
+    http_response_code(403);
+    echo json_encode(['success' => false, 'error' => 'CSRF token validation failed']);
     exit;
 }
 
@@ -169,11 +182,14 @@ function deleteProject($projectName, $createBackup = true, $deleteDatabase = tru
             throw new Exception('Invalid project name');
         }
         
-        // Get project path
-        $laragonRoot = defined('LARAGON_ROOT') ? LARAGON_ROOT : '';
-        $documentRoot = defined('DOCUMENT_ROOT') ? DOCUMENT_ROOT : ($laragonRoot . '/www');
-        $projectPath = rtrim($documentRoot, '/\\') . '/' . $projectName;
-        
+        // Get project path — Linux-native via System class
+        if (class_exists('\Nucleus\Core\System') && method_exists('\Nucleus\Core\System', 'getWwwPath')) {
+            $documentRoot = \Nucleus\Core\System::getWwwPath();
+        } else {
+            $documentRoot = defined('DOCUMENT_ROOT') ? DOCUMENT_ROOT : (defined('LARAGON_ROOT') ? LARAGON_ROOT . '/html' : '/var/www/html');
+        }
+        $projectPath = rtrim($documentRoot, '/') . '/' . $projectName;
+
         if (!is_dir($projectPath)) {
             throw new Exception('Project directory not found');
         }
@@ -291,9 +307,12 @@ try {
                 throw new Exception('Project name is required');
             }
             
-            $laragonRoot = defined('LARAGON_ROOT') ? LARAGON_ROOT : '';
-            $documentRoot = defined('DOCUMENT_ROOT') ? DOCUMENT_ROOT : ($laragonRoot . '/www');
-            $projectPath = rtrim($documentRoot, '/\\') . '/' . basename($projectName);
+            if (class_exists('\Nucleus\Core\System') && method_exists('\Nucleus\Core\System', 'getWwwPath')) {
+                $documentRoot = \Nucleus\Core\System::getWwwPath();
+            } else {
+                $documentRoot = defined('DOCUMENT_ROOT') ? DOCUMENT_ROOT : (defined('LARAGON_ROOT') ? LARAGON_ROOT . '/html' : '/var/www/html');
+            }
+            $projectPath = rtrim($documentRoot, '/') . '/' . basename($projectName);
             
             $databaseName = null;
             if (is_dir($projectPath)) {

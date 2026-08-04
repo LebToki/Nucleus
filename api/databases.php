@@ -1,6 +1,6 @@
 <?php
 /**
- * Laragon Dashboard - Databases API
+ * Nucleus - Databases API
  * Version: 1.0.0
  * Description: API endpoint for managing MySQL databases
  */
@@ -38,7 +38,7 @@ try {
 
     switch ($action) {
         case 'list':
-            $databases = \LaragonDashboard\Core\Databases::list();
+            $databases = \Nucleus\Core\Databases::list();
             ob_clean();
             echo json_encode(['success' => true, 'data' => $databases]);
             break;
@@ -47,7 +47,7 @@ try {
             $name = $_POST['name'] ?? '';
             if (empty($name)) throw new Exception('Database name is required');
             
-            $result = \LaragonDashboard\Core\Databases::create($name);
+            $result = \Nucleus\Core\Databases::create($name);
             ob_clean();
             echo json_encode(['success' => $result, 'message' => $result ? 'Database created' : 'Failed to create database']);
             break;
@@ -56,7 +56,7 @@ try {
             $name = $_POST['name'] ?? '';
             if (empty($name)) throw new Exception('Database name is required');
             
-            $result = \LaragonDashboard\Core\Databases::drop($name);
+            $result = \Nucleus\Core\Databases::drop($name);
             ob_clean();
             echo json_encode(['success' => $result, 'message' => $result ? 'Database deleted' : 'Failed to delete database']);
             break;
@@ -65,7 +65,7 @@ try {
             $name = $_POST['name'] ?? ($_GET['name'] ?? '');
             if (empty($name)) throw new Exception('Database name is required');
             
-            $result = \LaragonDashboard\Core\Databases::backup($name);
+            $result = \Nucleus\Core\Databases::backup($name);
             ob_clean();
             if ($result) {
                 echo json_encode(['success' => true, 'message' => 'Backup created: ' . $result['filename'], 'data' => $result]);

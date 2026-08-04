@@ -1,11 +1,11 @@
 <?php
 
 /**
- * Laragon Dashboard - Autoloader
+ * Nucleus - Autoloader
  * Automatically loads classes from the includes/Core directory
  */
 spl_autoload_register(function ($class) {
-    $prefix = 'LaragonDashboard\\Core\\';
+    $prefix = 'Nucleus\\Core\\';
     $base_dir = __DIR__ . '/Core/';
 
     $len = strlen($prefix);

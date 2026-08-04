@@ -1,6 +1,6 @@
 <?php
 
-namespace LaragonDashboard\Core;
+namespace Nucleus\Core;
 
 /**
  * Databases Class
@@ -13,7 +13,7 @@ class Databases {
     /**
      * Get MySQL connection
      */
-    private static function getConnection() {
+    private static function getConnection(): ?\mysqli {
         if (self::$connection === null) {
             $host = defined('MYSQL_HOST') ? MYSQL_HOST : '127.0.0.1';
             $user = defined('MYSQL_USER') ? MYSQL_USER : 'root';
@@ -26,8 +26,8 @@ class Databases {
                     throw new \Exception("Connection failed: " . self::$connection->connect_error);
                 }
             } catch (\Exception $e) {
-                if (class_exists('\\LaragonDashboard\\Core\\Logger')) {
-                    \LaragonDashboard\Core\Logger::error("MySQL Connection Error: " . $e->getMessage());
+                if (class_exists('\\Nucleus\\Core\\Logger')) {
+                    \Nucleus\Core\Logger::error("MySQL Connection Error: " . $e->getMessage());
                 }
                 return null;
             }
@@ -38,7 +38,7 @@ class Databases {
     /**
      * List all databases
      */
-    public static function list() {
+    public static function list(): array {
         $db = self::getConnection();
         if (!$db) return [];
 
@@ -70,7 +70,7 @@ class Databases {
     /**
      * Create a database
      */
-    public static function create($name) {
+    public static function create(string $name): bool {
         $db = self::getConnection();
         if (!$db) return false;
 
@@ -83,7 +83,7 @@ class Databases {
     /**
      * Drop a database
      */
-    public static function drop($name) {
+    public static function drop(string $name): bool {
         $db = self::getConnection();
         if (!$db) return false;
 
@@ -95,8 +95,8 @@ class Databases {
         // Security: Prevent deletion of system databases
         $systemDatabases = ['information_schema', 'mysql', 'performance_schema', 'sys', 'phpmyadmin'];
         if (in_array(strtolower($name), $systemDatabases)) {
-            if (class_exists('\\LaragonDashboard\\Core\\Logger')) {
-                \LaragonDashboard\Core\Logger::error("Security Warning: Attempted to drop system database '$name'");
+            if (class_exists('\\Nucleus\\Core\\Logger')) {
+                \Nucleus\Core\Logger::error("Security Warning: Attempted to drop system database '$name'");
             }
             return false;
         }
@@ -108,7 +108,7 @@ class Databases {
     /**
      * Backup a database
      */
-    public static function backup($name) {
+    public static function backup(string $name): array|false {
         $db = self::getConnection();
         if (!$db) return false;
 
@@ -124,28 +124,34 @@ class Databases {
         $filename = $name . '_' . date('Y-m-d_H-i-s') . '.sql';
         $filepath = $backupDir . '/' . $filename;
 
-        // Find mysqldump
-        $laragonRoot = \LaragonDashboard\Core\System::getLaragonRoot();
-        $mysqlDir = $laragonRoot . '/bin/mysql';
-        
-        // Find the first mysqldump.exe in the mysql directory
-        $it = new \RecursiveDirectoryIterator($mysqlDir);
-        $dumpPath = null;
-        foreach (new \RecursiveIteratorIterator($it) as $file) {
-            if ($file->getFilename() === 'mysqldump.exe') {
-                $dumpPath = $file->getPathname();
+        // Find mysqldump — check common paths, fall back to PATH
+        $dumpPath = 'mysqldump'; // Default: assume it's in PATH
+
+        $linuxPaths = ['/usr/bin/mysqldump', '/usr/local/bin/mysqldump', '/usr/bin/mariadb-dump'];
+        foreach ($linuxPaths as $path) {
+            if (is_executable($path)) {
+                $dumpPath = $path;
                 break;
             }
         }
 
-        if (!$dumpPath) {
-            // Fallback to searching the path
-            $dumpPath = 'mysqldump';
+        // Build command with configured credentials
+        $host = defined('MYSQL_HOST') ? MYSQL_HOST : 'localhost';
+        $user = defined('MYSQL_USER') ? MYSQL_USER : 'root';
+        $pass = defined('MYSQL_PASSWORD') ? MYSQL_PASSWORD : '';
+
+        $command = escapeshellarg($dumpPath)
+            . ' --host=' . escapeshellarg($host)
+            . ' --user=' . escapeshellarg($user);
+
+        if (!empty($pass)) {
+            $command .= ' --password=' . escapeshellarg($pass);
         }
 
-        // Security: Escape shell arguments to prevent command injection
-        $command = escapeshellarg($dumpPath) . ' --user=root --result-file=' . escapeshellarg($filepath) . ' ' . escapeshellarg($name);
-        
+        $command .= ' --result-file=' . escapeshellarg($filepath)
+            . ' ' . escapeshellarg($name)
+            . ' 2>&1';
+
         exec($command, $output, $returnVar);
 
         if ($returnVar === 0 && file_exists($filepath)) {

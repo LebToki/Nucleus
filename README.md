@@ -6,7 +6,7 @@ A lightweight, central control panel for Linux development environments. Nucleus
 
 Born from [Laragon Dashboard](https://github.com/LebToki/Laragon-Dashboard) (v4.0.5 for Windows), Nucleus is the Linux-native evolution — purpose-built for ZorinOS, Ubuntu, and Linux Mint.
 
-[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/LebToki/Nucleus)
+[![Version](https://img.shields.io/badge/version-1.0.1-blue.svg)](https://github.com/LebToki/Nucleus)
 [![PHP](https://img.shields.io/badge/PHP-8.1%2B-green.svg)](https://php.net)
 [![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3.2-purple.svg)](https://getbootstrap.com)
 [![Platform](https://img.shields.io/badge/platform-linux%20%7C%20ZorinOS%20%7C%20Ubuntu%20%7C%20Mint-orange.svg)]()
@@ -142,8 +142,8 @@ Or download the [latest release](https://github.com/LebToki/Nucleus/releases):
 
 ```bash
 cd /var/www/html
-sudo wget https://github.com/LebToki/Nucleus/releases/download/v1.0.0/nucleus-v1.0.0.zip
-sudo unzip nucleus-v1.0.0.zip -d .
+sudo wget https://github.com/LebToki/Nucleus/releases/download/v1.0.1/nucleus-v1.0.1.zip
+sudo unzip nucleus-v1.0.1.zip -d .
 ```
 
 #### 2. Set Permissions
@@ -206,7 +206,7 @@ Nucleus auto-detects your Linux environment. Edit `config.php` to customize:
 ```php
 // Auto-detected (no manual configuration needed)
 APP_NAME = 'Nucleus'
-APP_VERSION = '1.0.0'
+APP_VERSION = '1.0.1'
 
 // Project root detection order:
 // 1. PROJECTS_ROOT environment variable

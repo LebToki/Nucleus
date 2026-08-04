@@ -1,6 +1,6 @@
 <?php
 /**
- * Laragon Dashboard - Tunnel API
+ * Nucleus - Tunnel API
  * Version: 3.1.0
  * Description: API for exposing local projects online via free tunneling services
  */
@@ -144,12 +144,8 @@ function startTunnel($tunnelType, $port, $projectName = '') {
         $command = str_replace('--port', '--port ' . $port . ' --subdomain ' . $subdomain, $command);
     }
     
-    // Start tunnel in background (Windows)
-    if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-        $command = 'start /B ' . $command . ' > nul 2>&1';
-    } else {
-        $command = $command . ' > /dev/null 2>&1 &';
-    }
+    // Start tunnel in background
+    $command = $command . ' > /dev/null 2>&1 &';
     
     @exec($command, $output, $returnVar);
     

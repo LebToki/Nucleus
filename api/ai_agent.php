@@ -1,6 +1,6 @@
 <?php
 /**
- * Laragon Dashboard AI Agent Bridge
+ * Nucleus AI Agent Bridge
  * Provides system context to the AI Agent
  */
 

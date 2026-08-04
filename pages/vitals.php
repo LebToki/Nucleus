@@ -1,6 +1,6 @@
 <?php
 /**
- * Laragon Dashboard - Server Vitals Page
+ * Nucleus - Server Vitals Page
  * Version: 3.0.0
  * Description: Server monitoring with charts
  */

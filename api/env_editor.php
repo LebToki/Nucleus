@@ -1,6 +1,6 @@
 <?php
 /**
- * Laragon Dashboard - .env Editor API
+ * Nucleus - .env Editor API
  * Version: 1.0.0
  * Description: API for reading and writing project environment variables
  */
@@ -33,8 +33,10 @@ $projectName = basename($projectName);
 
 // Get project path
 $laraconfig = getLaragonConfig();
-$documentRoot = $laraconfig['DocumentRoot'] ?? (defined('LARAGON_ROOT') ? LARAGON_ROOT . '/www' : '');
-$projectPath = rtrim($documentRoot, '/\\') . '/' . $projectName;
+$documentRoot = (class_exists('\Nucleus\Core\System') && method_exists('\Nucleus\Core\System', 'getWwwPath'))
+    ? \Nucleus\Core\System::getWwwPath()
+    : (defined('LARAGON_ROOT') ? LARAGON_ROOT . '/html' : '/var/www/html');
+$projectPath = rtrim($documentRoot, '/') . '/' . $projectName;
 $envPath = $projectPath . '/.env';
 
 try {

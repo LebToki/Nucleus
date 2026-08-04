@@ -8,10 +8,14 @@
 dashboard/
 laragon-dashboard/
 2tinteractive
+SAS
 sas
 worldmonitor/
 chrome/
 nul
+
+# --- Downloaded at runtime (install via Plugins page) ---
+phpmyadmin/
 
 # --- Source assets (deployed copies live in assets/) ---
 nucleus-logo/

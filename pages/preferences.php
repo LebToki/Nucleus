@@ -1,6 +1,6 @@
 <?php
 /**
- * Laragon Dashboard - Preferences Page
+ * Nucleus - Preferences Page
  * Version: 3.0.0
  * Description: Dashboard preferences and settings
  */

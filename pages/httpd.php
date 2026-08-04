@@ -1,6 +1,6 @@
 <?php
 /**
- * Laragon Dashboard - Apache Configuration Page
+ * Nucleus - Apache Configuration Page
  * Version: 3.0.0
  * Description: Edit httpd.conf with code editor
  */

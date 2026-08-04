@@ -1,6 +1,6 @@
 <?php
 /**
- * Laragon Dashboard - Backup Page
+ * Nucleus - Backup Page
  * Version: 4.0.0
  * Description: Backup management with project + database dumps
  */

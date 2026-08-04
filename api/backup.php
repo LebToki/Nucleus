@@ -1,6 +1,6 @@
 <?php
 /**
- * Laragon Dashboard - Backup API
+ * Nucleus - Backup API
  * Version: 3.0.0
  * Description: API endpoint for backup operations
  */
@@ -137,9 +137,12 @@ function createBackup($projectName, $databaseName = null) {
     $backupDir = getBackupDirectory();
     $timestamp = date('Y-m-d_H-i-s');
     
-    // Get project path
-    $laragonRoot = defined('LARAGON_ROOT') ? LARAGON_ROOT : '';
-    $documentRoot = defined('DOCUMENT_ROOT') ? DOCUMENT_ROOT : ($laragonRoot . '/www');
+    // Get project path — Linux-native
+    if (class_exists('\Nucleus\Core\System') && method_exists('\Nucleus\Core\System', 'getWwwPath')) {
+        $documentRoot = \Nucleus\Core\System::getWwwPath();
+    } else {
+        $documentRoot = defined('DOCUMENT_ROOT') ? DOCUMENT_ROOT : (defined('LARAGON_ROOT') ? LARAGON_ROOT . '/html' : '/var/www/html');
+    }
     
     $projectPath = rtrim($documentRoot, '/') . '/' . $projectName;
     

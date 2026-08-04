@@ -1,6 +1,6 @@
 <?php
 /**
- * Laragon Dashboard - Fix SMTP Configuration
+ * Nucleus - Fix SMTP Configuration
  * Configures PHP to use Mailpit SMTP instead of sendmail.exe
  * Version: 3.1.0
  */

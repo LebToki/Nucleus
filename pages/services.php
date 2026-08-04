@@ -1,6 +1,6 @@
 <?php
 /**
- * Laragon Dashboard - Services Page
+ * Nucleus - Services Page
  * Version: 3.0.0
  * Description: Service management with port configuration
  */
@@ -36,134 +36,172 @@ function t_services($key, $fallback = '') {
     return $servicesTranslations[$key] ?? ($fallback ?: $key);
 }
 
-// Get Laragon config
-$laragonConfig = getLaragonConfig();
 $laragonRoot = defined('LARAGON_ROOT') ? LARAGON_ROOT : '';
 
-// Define available services with default ports
+// Define available services with default ports (Linux/Nucleus)
 $availableServices = [
     'Apache' => [
         'name' => 'Apache',
-        'port' => $laragonConfig['ApachePort'] ?? '80',
-        'ssl_port' => $laragonConfig['ApacheSSLPort'] ?? '443',
-        'enabled' => isset($laragonConfig['ApacheEnabled']) ? ($laragonConfig['ApacheEnabled'] == '1') : true,
+        'port' => '80',
+        'ssl_port' => '443',
+        'enabled' => true,
         'has_ssl' => true,
         'icon' => 'devicon-plain:apache',
         'color' => 'primary',
-        'service_name' => 'Apache2.4',
-        'type' => 'windows_service'
+        'service_name' => 'apache2',
     ],
     'MySQL' => [
         'name' => 'MySQL',
-        'port' => $laragonConfig['MySQLPort'] ?? '3306',
+        'port' => '3306',
         'ssl_port' => null,
-        'enabled' => isset($laragonConfig['MySQLEnabled']) ? ($laragonConfig['MySQLEnabled'] == '1') : true,
+        'enabled' => true,
         'has_ssl' => false,
         'icon' => 'tabler:brand-mysql',
         'color' => 'info',
-        'service_name' => 'MySQL',
-        'type' => 'windows_service'
+        'service_name' => 'mysql',
     ],
     'PostgreSQL' => [
         'name' => 'PostgreSQL',
-        'port' => $laragonConfig['PostgreSQLPort'] ?? '5432',
+        'port' => '5432',
         'ssl_port' => null,
-        'enabled' => isset($laragonConfig['PostgreSQLEnabled']) ? ($laragonConfig['PostgreSQLEnabled'] == '1') : false,
+        'enabled' => false,
         'has_ssl' => false,
         'icon' => 'devicon-plain:postgresql',
         'color' => 'secondary',
         'service_name' => 'postgresql',
-        'type' => 'windows_service'
     ],
     'Nginx' => [
         'name' => 'Nginx',
-        'port' => $laragonConfig['NginxPort'] ?? '8080',
-        'ssl_port' => $laragonConfig['NginxSSLPort'] ?? '8443',
-        'enabled' => isset($laragonConfig['NginxEnabled']) ? ($laragonConfig['NginxEnabled'] == '1') : false,
+        'port' => '8080',
+        'ssl_port' => '8443',
+        'enabled' => false,
         'has_ssl' => true,
         'icon' => 'devicon-plain:nginx',
         'color' => 'success',
         'service_name' => 'nginx',
-        'type' => 'process'
     ],
     'Memcached' => [
         'name' => 'Memcached',
-        'port' => $laragonConfig['MemcachedPort'] ?? '11211',
+        'port' => '11211',
         'ssl_port' => null,
-        'enabled' => isset($laragonConfig['MemcachedEnabled']) ? ($laragonConfig['MemcachedEnabled'] == '1') : false,
+        'enabled' => false,
         'has_ssl' => false,
         'icon' => 'devicon-plain:memcached',
         'color' => 'warning',
         'service_name' => 'memcached',
-        'type' => 'process'
     ],
     'Redis' => [
         'name' => 'Redis',
-        'port' => $laragonConfig['RedisPort'] ?? '6379',
+        'port' => '6379',
         'ssl_port' => null,
-        'enabled' => isset($laragonConfig['RedisEnabled']) ? ($laragonConfig['RedisEnabled'] == '1') : false,
+        'enabled' => false,
         'has_ssl' => false,
         'icon' => 'devicon-plain:redis',
         'color' => 'danger',
-        'service_name' => 'Redis',
-        'type' => 'windows_service'
+        'service_name' => 'redis-server',
     ],
     'MongoDB' => [
         'name' => 'MongoDB',
-        'port' => $laragonConfig['MongoDBPort'] ?? '27017',
+        'port' => '27017',
         'ssl_port' => null,
-        'enabled' => isset($laragonConfig['MongoDBEnabled']) ? ($laragonConfig['MongoDBEnabled'] == '1') : false,
+        'enabled' => false,
         'has_ssl' => false,
         'icon' => 'devicon-plain:mongodb',
         'color' => 'success',
-        'service_name' => 'MongoDB',
-        'type' => 'windows_service'
+        'service_name' => 'mongod',
     ],
     'Mailpit' => [
         'name' => 'Mailpit',
-        'port' => $laragonConfig['MailpitPort'] ?? '1025',
-        'ssl_port' => $laragonConfig['MailpitHTTPPort'] ?? '8025', // HTTP port for web UI
-        'enabled' => isset($laragonConfig['MailpitEnabled']) ? ($laragonConfig['MailpitEnabled'] == '1') : false,
+        'port' => '1025',
+        'ssl_port' => '8025', // HTTP port for web UI
+        'enabled' => false,
         'has_ssl' => true, // Show HTTP port field
         'icon' => 'solar:letter-bold',
         'color' => 'purple',
-        'service_name' => 'Mailpit',
-        'type' => 'process'
+        'service_name' => 'mailpit',
     ]
 ];
 
-// Check if services are actually installed
-function checkServiceInstalled($service) {
-    global $laragonRoot;
-    
-    if (empty($laragonRoot)) {
-        return false;
+// Check if a service is installed on the system (Linux-native via systemd)
+function checkServiceInstalled(string $serviceName): bool {
+    // Check if systemd unit exists (works for both active and inactive services)
+    $output = @shell_exec('systemctl list-unit-files ' . escapeshellarg($serviceName . '.service') . ' 2>/dev/null');
+    if ($output && stripos($output, $serviceName) !== false) {
+        return true;
     }
-    
-    $servicePaths = [
-        'Apache' => $laragonRoot . '/bin/apache',
-        'MySQL' => $laragonRoot . '/bin/mysql',
-        'PostgreSQL' => $laragonRoot . '/bin/postgresql',
-        'Nginx' => $laragonRoot . '/bin/nginx',
-        'Memcached' => $laragonRoot . '/bin/memcached',
-        'Redis' => $laragonRoot . '/bin/redis',
-        'MongoDB' => $laragonRoot . '/bin/mongodb',
-        'Mailpit' => $laragonRoot . '/bin/mailpit'
+
+    // Fallback: check if the binary exists in PATH
+    $binaryMap = [
+        'apache2' => 'apache2ctl',
+        'mysql' => 'mysql',
+        'mariadb' => 'mariadb',
+        'postgresql' => 'psql',
+        'nginx' => 'nginx',
+        'redis-server' => 'redis-cli',
+        'memcached' => 'memcached',
+        'mongod' => 'mongod',
+        'php-fpm' => 'php-fpm',
+        'postfix' => 'postfix',
     ];
-    
-    if (isset($servicePaths[$service])) {
-        return is_dir($servicePaths[$service]);
+
+    $binary = $binaryMap[$serviceName] ?? $serviceName;
+    $which = trim(@shell_exec('which ' . escapeshellarg($binary) . ' 2>/dev/null') ?? '');
+    return !empty($which);
+}
+
+// Detect PHP-FPM service name (varies by version)
+function detectPhpFpmService(): ?string {
+    $versions = ['8.3', '8.2', '8.1', '8.0', '7.4'];
+    foreach ($versions as $ver) {
+        $unit = 'php' . $ver . '-fpm';
+        $output = @shell_exec('systemctl list-unit-files ' . escapeshellarg($unit . '.service') . ' 2>/dev/null');
+        if ($output && stripos($output, $unit) !== false) {
+            return $unit;
+        }
     }
-    
-    return false;
+    // Generic fallback
+    $output = @shell_exec('systemctl list-unit-files 2>/dev/null | grep php.*fpm');
+    if ($output && preg_match('/(php[\d.]+-fpm)/', $output, $m)) {
+        return $m[1];
+    }
+    return null;
 }
 
 // Filter to only show installed services
 $installedServices = [];
 foreach ($availableServices as $key => $service) {
-    if (checkServiceInstalled($key)) {
+    if (checkServiceInstalled($service['service_name'])) {
         $installedServices[$key] = $service;
     }
+}
+
+// Add PHP-FPM dynamically if detected
+$phpFpmService = detectPhpFpmService();
+if ($phpFpmService) {
+    $installedServices['PHP-FPM'] = [
+        'name' => 'PHP-FPM',
+        'port' => '9000',
+        'ssl_port' => null,
+        'enabled' => true,
+        'has_ssl' => false,
+        'icon' => 'devicon-plain:php',
+        'color' => 'indigo',
+        'service_name' => $phpFpmService,
+    ];
+}
+
+// Add Postfix if detected (Linux mail transfer agent)
+if (checkServiceInstalled('postfix')) {
+    $installedServices['Postfix'] = [
+        'name' => 'Postfix',
+        'port' => '25',
+        'ssl_port' => null,
+        'enabled' => true,
+        'has_ssl' => false,
+        'icon' => 'solar:mail-bold',
+        'color' => 'teal',
+        'service_name' => 'postfix',
+    ];
 }
 
 include __DIR__ . '/../partials/layouts/layoutTop.php';
@@ -219,53 +257,34 @@ include __DIR__ . '/../partials/layouts/layoutTop.php';
                                     </thead>
                                     <tbody id="services-list">
                                         <?php
-                                        // Consolidate Windows service queries for efficiency
-                                        $scCommands = [];
-                                        foreach ($installedServices as $service) {
-                                            if ($service['type'] === 'windows_service') {
-                                                $scCommands[] = 'sc query "' . $service['service_name'] . '"';
-                                            }
+                                        // ⚡ Bolt: Batch systemctl queries for all services
+                                        $systemctlServices = array_column($installedServices, 'service_name');
+                                        $systemctlOutput = '';
+                                        if (!empty($systemctlServices)) {
+                                            $systemctlOutput = @shell_exec('systemctl is-active ' . implode(' ', array_map('escapeshellarg', $systemctlServices)) . ' 2>&1');
                                         }
-                                        $scOutput = '';
-                                        if (!empty($scCommands)) {
-                                            $scOutput = @shell_exec(implode(' & ', $scCommands) . ' 2>&1');
-                                        }
+                                        $systemctlLines = array_filter(explode("\n", trim($systemctlOutput ?? '')));
 
-                                        foreach ($installedServices as $key => $service):
-                                            // Check service status directly
-                                            $status = 'unknown';
+                                        // ⚡ Bolt: Single ss call for all port checks
+                                        $ssOutput = @shell_exec('ss -tlnp 2>&1');
+
+                                        foreach ($installedServices as $idx => $service):
+                                            // Check service status via systemctl
+                                            $line = trim($systemctlLines[$idx] ?? 'inactive');
+                                            $status = ($line === 'active') ? 'running' : 'stopped';
                                             $runningPorts = [];
-                                            
-                                            if ($service['type'] === 'windows_service') {
-                                                if ($scOutput) {
-                                                    // Match the specific service's output block and check its state without crossing service boundaries
-                                                    if (preg_match('/SERVICE_NAME:\s*' . preg_quote($service['service_name'], '/') . '\s+(?:(?!SERVICE_NAME:).)*?STATE\s+:\s+\d+\s+RUNNING/is', $scOutput)) {
-                                                        $status = 'running';
-                                                        $runningPorts[] = $service['port'];
-                                                        if ($service['ssl_port']) {
-                                                            $runningPorts[] = $service['ssl_port'];
-                                                        }
-                                                    } elseif (preg_match('/SERVICE_NAME:\s*' . preg_quote($service['service_name'], '/') . '\s+(?:(?!SERVICE_NAME:).)*?STATE\s+:\s+\d+\s+STOPPED/is', $scOutput)) {
-                                                        $status = 'stopped';
-                                                    }
-                                                }
-                                            } else {
-                                                // Process-based services
-                                                $processName = strtolower($service['service_name']) . '.exe';
-                                                $output = @shell_exec('tasklist /FI "IMAGENAME eq ' . $processName . '" 2>&1');
-                                                if ($output && stripos($output, $processName) !== false) {
-                                                    $status = 'running';
+
+                                            if ($status === 'running') {
+                                                if (!empty($service['port']) && $ssOutput && preg_match('/:' . preg_quote((string)$service['port'], '/') . '\s/', $ssOutput)) {
                                                     $runningPorts[] = $service['port'];
-                                                    if ($service['ssl_port']) {
-                                                        $runningPorts[] = $service['ssl_port'];
-                                                    }
-                                                } else {
-                                                    $status = 'stopped';
+                                                }
+                                                if (!empty($service['ssl_port']) && $ssOutput && preg_match('/:' . preg_quote((string)$service['ssl_port'], '/') . '\s/', $ssOutput)) {
+                                                    $runningPorts[] = $service['ssl_port'];
                                                 }
                                             }
-                                            
+
                                             // JavaScript will refresh status via API for real-time updates
-                                            
+
                                             $runningPortsStr = !empty($runningPorts) ? implode('/', $runningPorts) : '-';
                                         ?>
                                         <tr>
@@ -314,6 +333,9 @@ include __DIR__ . '/../partials/layouts/layoutTop.php';
                                                         </button>
                                                     <?php endif; ?>
                                                     <?php if ($status === 'running'): ?>
+                                                        <button type="button" class="w-32-px h-32-px bg-warning-focus text-warning-main rounded-circle d-inline-flex align-items-center justify-content-center" onclick="restartService('<?php echo $key; ?>')" title="<?php echo t_services('restart', 'Restart'); ?>" aria-label="<?php echo t_services('restart', 'Restart') . ' ' . htmlspecialchars($key); ?>">
+                                                            <iconify-icon icon="solar:refresh-bold"></iconify-icon>
+                                                        </button>
                                                         <button type="button" class="w-32-px h-32-px bg-danger-focus text-danger-main rounded-circle d-inline-flex align-items-center justify-content-center" onclick="stopService('<?php echo $key; ?>')" title="<?php echo t_services('stop', 'Stop'); ?>" aria-label="<?php echo t_services('stop', 'Stop') . ' ' . htmlspecialchars($key); ?>">
                                                             <iconify-icon icon="solar:stop-bold"></iconify-icon>
                                                         </button>
@@ -351,105 +373,79 @@ include __DIR__ . '/../partials/layouts/layoutTop.php';
                                 <!-- Document Root -->
                                 <div class="col-md-6">
                                     <label class="form-label fw-medium mb-8"><?php echo t_services('document_root', 'Document Root'); ?></label>
-                                    <input type="text" class="form-control" name="DocumentRoot" id="document-root" value="<?php echo htmlspecialchars($laragonConfig['DocumentRoot'] ?? $laragonRoot . '/www'); ?>" placeholder="<?php echo htmlspecialchars($laragonRoot . '/www'); ?>">
+                                    <input type="text" class="form-control" name="DocumentRoot" id="document-root" value="<?php echo htmlspecialchars($laragonRoot . '/html'); ?>" placeholder="<?php echo htmlspecialchars($laragonRoot . '/html'); ?>">
                                     <small class="text-secondary-light text-sm mt-4 d-block"><?php echo t_services('document_root_desc', 'Directory where your projects are stored'); ?></small>
                                 </div>
-                                
+
                                 <!-- Data Directory -->
                                 <div class="col-md-6">
                                     <label class="form-label fw-medium mb-8"><?php echo t_services('data_directory', 'Data Directory'); ?></label>
-                                    <input type="text" class="form-control" name="DataDirectory" id="data-directory" value="<?php echo htmlspecialchars($laragonConfig['DataDirectory'] ?? $laragonRoot . '/data'); ?>" placeholder="<?php echo htmlspecialchars($laragonRoot . '/data'); ?>">
-                                    <small class="text-secondary-light text-sm mt-4 d-block"><?php echo t_services('data_directory_desc', 'Directory for Laragon data files'); ?></small>
+                                    <input type="text" class="form-control" name="DataDirectory" id="data-directory" value="<?php echo htmlspecialchars($laragonRoot . '/data'); ?>" placeholder="<?php echo htmlspecialchars($laragonRoot . '/data'); ?>">
+                                    <small class="text-secondary-light text-sm mt-4 d-block"><?php echo t_services('data_directory_desc', 'Directory for Nucleus data files'); ?></small>
                                 </div>
-                                
+
                                 <!-- Domain Suffix -->
                                 <div class="col-md-6">
                                     <label class="form-label fw-medium mb-8"><?php echo t_services('domain_suffix', 'Domain Suffix'); ?></label>
-                                    <input type="text" class="form-control" name="DomainSuffix" id="domain-suffix" value="<?php echo htmlspecialchars($laragonConfig['DomainSuffix'] ?? '.local'); ?>" placeholder=".local">
+                                    <input type="text" class="form-control" name="DomainSuffix" id="domain-suffix" value=".local" placeholder=".local">
                                     <small class="text-secondary-light text-sm mt-4 d-block"><?php echo t_services('domain_suffix_desc', 'Default domain suffix for virtual hosts'); ?></small>
                                 </div>
-                                
+
                                 <!-- Hostname Format -->
                                 <div class="col-md-6">
                                     <label class="form-label fw-medium mb-8"><?php echo t_services('hostname_format', 'Hostname Format'); ?></label>
-                                    <input type="text" class="form-control" name="HostnameFormat" id="hostname-format" value="<?php echo htmlspecialchars($laragonConfig['HostnameFormat'] ?? '{name}.local'); ?>" placeholder="{name}.local">
+                                    <input type="text" class="form-control" name="HostnameFormat" id="hostname-format" value="{name}.local" placeholder="{name}.local">
                                     <small class="text-secondary-light text-sm mt-4 d-block"><?php echo t_services('hostname_format_desc', 'Format for auto-generated hostnames'); ?></small>
                                 </div>
-                                
+
                                 <!-- Auto-start Services -->
                                 <div class="col-12">
                                     <div class="form-check form-switch mb-16">
-                                        <?php 
-                                        $startAll = (isset($laragonConfig['StartAllAutomatically']) && $laragonConfig['StartAllAutomatically'] == '1') || 
-                                                   (isset($laragonConfig['StartAll']) && $laragonConfig['StartAll'] == '1');
-                                        ?>
-                                        <input class="form-check-input" type="checkbox" name="StartAllAutomatically" id="start-all-automatically" value="1" <?php echo $startAll ? 'checked' : ''; ?>>
+                                        <input class="form-check-input" type="checkbox" name="StartAllAutomatically" id="start-all-automatically" value="1">
                                         <label class="form-check-label fw-medium" for="start-all-automatically">
                                             <?php echo t_services('start_all_automatically', 'Start All Services Automatically'); ?>
                                         </label>
-                                        <small class="text-secondary-light text-sm mt-4 d-block"><?php echo t_services('start_all_automatically_desc', 'Automatically start all enabled services when Laragon starts'); ?></small>
+                                        <small class="text-secondary-light text-sm mt-4 d-block"><?php echo t_services('start_all_automatically_desc', 'Automatically start all enabled services on boot'); ?></small>
                                     </div>
                                 </div>
-                                
+
                                 <!-- Auto-create Virtual Hosts -->
                                 <div class="col-12">
                                     <div class="form-check form-switch mb-16">
-                                        <input class="form-check-input" type="checkbox" name="AutoCreateVirtualHosts" id="auto-create-vhosts" value="1" <?php echo (isset($laragonConfig['AutoCreateVirtualHosts']) && $laragonConfig['AutoCreateVirtualHosts'] == '1') ? 'checked' : ''; ?>>
+                                        <input class="form-check-input" type="checkbox" name="AutoCreateVirtualHosts" id="auto-create-vhosts" value="1">
                                         <label class="form-check-label fw-medium" for="auto-create-vhosts">
                                             <?php echo t_services('auto_create_vhosts', 'Auto-create Virtual Hosts'); ?>
                                         </label>
                                         <small class="text-secondary-light text-sm mt-4 d-block"><?php echo t_services('auto_create_vhosts_desc', 'Automatically create virtual hosts for new projects'); ?></small>
                                     </div>
                                 </div>
-                                
-                                <!-- Run on Windows Start -->
-                                <div class="col-12">
-                                    <div class="form-check form-switch mb-16">
-                                        <input class="form-check-input" type="checkbox" name="RunOnWindowsStart" id="run-on-windows-start" value="1" <?php echo (isset($laragonConfig['RunOnWindowsStart']) && $laragonConfig['RunOnWindowsStart'] == '1') ? 'checked' : ''; ?>>
-                                        <label class="form-check-label fw-medium" for="run-on-windows-start">
-                                            <?php echo t_services('run_on_windows_start', 'Run on Windows Start'); ?>
-                                        </label>
-                                        <small class="text-secondary-light text-sm mt-4 d-block"><?php echo t_services('run_on_windows_start_desc', 'Start Laragon automatically when Windows starts'); ?></small>
-                                    </div>
-                                </div>
-                                
-                                <!-- Run Minimized -->
-                                <div class="col-12">
-                                    <div class="form-check form-switch mb-16">
-                                        <input class="form-check-input" type="checkbox" name="RunMinimized" id="run-minimized" value="1" <?php echo (isset($laragonConfig['RunMinimized']) && $laragonConfig['RunMinimized'] == '1') ? 'checked' : ''; ?>>
-                                        <label class="form-check-label fw-medium" for="run-minimized">
-                                            <?php echo t_services('run_minimized', 'Run Minimized'); ?>
-                                        </label>
-                                        <small class="text-secondary-light text-sm mt-4 d-block"><?php echo t_services('run_minimized_desc', 'Start Laragon minimized to system tray'); ?></small>
-                                    </div>
-                                </div>
-                                
+
                                 <!-- Auto Backup -->
                                 <div class="col-12">
                                     <div class="form-check form-switch mb-16">
-                                        <input class="form-check-input" type="checkbox" name="AutoBackup" id="auto-backup" value="1" <?php echo (isset($laragonConfig['AutoBackup']) && $laragonConfig['AutoBackup'] == '1') ? 'checked' : ''; ?>>
+                                        <input class="form-check-input" type="checkbox" name="AutoBackup" id="auto-backup" value="1">
                                         <label class="form-check-label fw-medium" for="auto-backup">
                                             <?php echo t_services('auto_backup', 'Auto Backup'); ?>
                                         </label>
                                         <small class="text-secondary-light text-sm mt-4 d-block"><?php echo t_services('auto_backup_desc', 'Automatically backup projects at scheduled intervals'); ?></small>
                                     </div>
                                 </div>
-                                
+
                                 <!-- Backup Interval -->
                                 <div class="col-md-6">
                                     <label class="form-label fw-medium mb-8"><?php echo t_services('backup_interval', 'Backup Interval (hours)'); ?></label>
-                                    <input type="number" class="form-control" name="BackupInterval" id="backup-interval" value="<?php echo htmlspecialchars($laragonConfig['BackupInterval'] ?? '8'); ?>" min="1" max="168" step="1">
+                                    <input type="number" class="form-control" name="BackupInterval" id="backup-interval" value="8" min="1" max="168" step="1">
                                     <small class="text-secondary-light text-sm mt-4 d-block"><?php echo t_services('backup_interval_desc', 'Hours between automatic backups (1-168)'); ?></small>
                                 </div>
-                                
+
                                 <!-- Auto Update -->
                                 <div class="col-12">
                                     <div class="form-check form-switch mb-16">
-                                        <input class="form-check-input" type="checkbox" name="AutoUpdate" id="auto-update" value="1" <?php echo (isset($laragonConfig['AutoUpdate']) && $laragonConfig['AutoUpdate'] == '1') ? 'checked' : ''; ?>>
+                                        <input class="form-check-input" type="checkbox" name="AutoUpdate" id="auto-update" value="1">
                                         <label class="form-check-label fw-medium" for="auto-update">
                                             <?php echo t_services('auto_update', 'Auto Update'); ?>
                                         </label>
-                                        <small class="text-secondary-light text-sm mt-4 d-block"><?php echo t_services('auto_update_desc', 'Automatically check for Laragon updates'); ?></small>
+                                        <small class="text-secondary-light text-sm mt-4 d-block"><?php echo t_services('auto_update_desc', 'Automatically check for Nucleus updates'); ?></small>
                                     </div>
                                 </div>
                             </div>

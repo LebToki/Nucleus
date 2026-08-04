@@ -1,6 +1,6 @@
 <?php
 /**
- * Laragon Dashboard - Tools API
+ * Nucleus - Tools API
  * Version: 3.0.0
  * Description: API endpoint for development tools (Composer, NPM, Git, Cache, PHP Info)
  */
@@ -39,7 +39,9 @@ if (!defined('LARAGON_ROOT')) {
 }
 
 // Get document root
-$documentRoot = defined('DOCUMENT_ROOT') ? DOCUMENT_ROOT : (defined('LARAGON_ROOT') ? LARAGON_ROOT . '/www' : '');
+$documentRoot = (class_exists('\Nucleus\Core\System') && method_exists('\Nucleus\Core\System', 'getWwwPath'))
+    ? \Nucleus\Core\System::getWwwPath()
+    : (defined('DOCUMENT_ROOT') ? DOCUMENT_ROOT : (defined('LARAGON_ROOT') ? LARAGON_ROOT . '/html' : '/var/www/html'));
 
 // Find Composer executable
 function findComposer() {

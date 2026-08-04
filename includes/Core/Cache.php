@@ -1,6 +1,6 @@
 <?php
 
-namespace LaragonDashboard\Core;
+namespace Nucleus\Core;
 
 /**
  * Cache Class
@@ -10,7 +10,7 @@ namespace LaragonDashboard\Core;
 class Cache {
     private static $cacheDir;
 
-    public static function init($dir = null) {
+    public static function init(?string $dir = null): void {
         if ($dir) {
             self::$cacheDir = $dir;
         } else {
@@ -22,7 +22,7 @@ class Cache {
         }
     }
 
-    public static function get($key) {
+    public static function get(string $key): mixed {
         if (!self::$cacheDir) self::init();
         $file = self::$cacheDir . '/' . md5($key) . '.json';
         
@@ -36,7 +36,7 @@ class Cache {
         return null;
     }
 
-    public static function set($key, $value, $ttl = 300) {
+    public static function set(string $key, mixed $value, int $ttl = 300): bool {
         if (!self::$cacheDir) self::init();
         $file = self::$cacheDir . '/' . md5($key) . '.json';
         
@@ -48,7 +48,7 @@ class Cache {
         return file_put_contents($file, json_encode($data)) !== false;
     }
 
-    public static function delete($key) {
+    public static function delete(string $key): bool {
         if (!self::$cacheDir) self::init();
         $file = self::$cacheDir . '/' . md5($key) . '.json';
         if (file_exists($file)) {
@@ -57,7 +57,7 @@ class Cache {
         return false;
     }
 
-    public static function clear() {
+    public static function clear(): void {
         if (!self::$cacheDir) self::init();
         $files = glob(self::$cacheDir . '/*.json');
         foreach ($files as $file) {

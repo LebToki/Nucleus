@@ -1,6 +1,6 @@
 <?php
 
-namespace LaragonDashboard\Core;
+namespace Nucleus\Core;
 
 /**
  * Logger Class
@@ -13,7 +13,7 @@ class Logger {
     /**
      * Initialize logger
      */
-    public static function init($logFilePath = null) {
+    public static function init(?string $logFilePath = null): void {
         if ($logFilePath) {
             self::$logFile = $logFilePath;
         } else {
@@ -30,7 +30,7 @@ class Logger {
     /**
      * Log a message
      */
-    public static function log($message, $level = 'info') {
+    public static function log(string $message, string $level = 'info'): void {
         if (!self::$logFile) {
             self::init();
         }
@@ -47,15 +47,15 @@ class Logger {
         }
     }
 
-    public static function info($message) {
+    public static function info(string $message): void {
         self::log($message, 'info');
     }
 
-    public static function error($message) {
+    public static function error(string $message): void {
         self::log($message, 'error');
     }
 
-    public static function debug($message) {
+    public static function debug(string $message): void {
         if (defined('APP_DEBUG') && APP_DEBUG) {
             self::log($message, 'debug');
         }

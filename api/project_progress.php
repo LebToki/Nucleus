@@ -1,6 +1,6 @@
 <?php
 /**
- * Laragon Dashboard - Project Progress API
+ * Nucleus - Project Progress API
  * Version: 1.0.0
  * Reads project creation logs for real-time progress
  */

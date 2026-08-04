@@ -1,6 +1,6 @@
 <?php
 /**
- * Laragon Dashboard - Projects Page
+ * Nucleus - Projects Page
  * Version: 3.0.0
  * Description: Project management
  */

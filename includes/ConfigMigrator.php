@@ -1,6 +1,6 @@
 <?php
 /**
- * Laragon Dashboard - Configuration Migrator
+ * Nucleus - Configuration Migrator
  * Migrates user configuration during updates
  * 
  * Version: 1.0.0

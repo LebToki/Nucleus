@@ -1,6 +1,6 @@
 <?php
 /**
- * Laragon Dashboard - Preferences API
+ * Nucleus - Preferences API
  * Version: 3.0.0
  * Description: API endpoint for dashboard preferences
  */
@@ -29,7 +29,7 @@ try {
             if (isset($input['laragon_root'])) {
                 $path = trim($input['laragon_root']);
                 if (!empty($path)) {
-                    $normalizedPath = rtrim(str_replace('\\', '/', $path), '/');
+                    $normalizedPath = rtrim($path, '/');
                     if (!is_dir($normalizedPath)) {
                         echo json_encode(['success' => false, 'error' => 'Invalid Laragon Root Path: Directory does not exist']);
                         exit;

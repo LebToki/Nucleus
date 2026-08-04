@@ -1,6 +1,6 @@
 <?php
 /**
- * Laragon Dashboard - Config Editor API
+ * Nucleus - Config Editor API
  * Version: 1.0.0
  * Description: API for reading and writing service configuration files
  */

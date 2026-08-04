@@ -114,7 +114,7 @@ if (!empty($page)) {
     $validPages = [
         'dashboard', 'projects', 'databases', 'services', 'vitals',
         'mailbox', 'logs', 'tools', 'backup', 'sites', 'httpd', 'preferences',
-        'config_editor'
+        'config_editor', 'plugins'
     ];
     
     // Validate page exists
@@ -135,7 +135,7 @@ if (!empty($page)) {
             } catch (Exception $e) {
                 // If there's an error, show it in debug mode, otherwise show 404
                 if (defined('APP_DEBUG') && APP_DEBUG) {
-                    \LaragonDashboard\Core\Logger::error("Page load error ($page): " . $e->getMessage());
+                    \Nucleus\Core\Logger::error("Page load error ($page): " . $e->getMessage());
                     http_response_code(500);
                     echo '<h1>Error Loading Page</h1>';
                     echo '<p>' . htmlspecialchars($e->getMessage()) . '</p>';

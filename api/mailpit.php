@@ -1,6 +1,6 @@
 <?php
 /**
- * Laragon Dashboard - Mailpit API Proxy
+ * Nucleus - Mailpit API Proxy
  * Version: 3.0.0
  * Description: Proxy endpoint for Mailpit API to avoid CORS issues
  */

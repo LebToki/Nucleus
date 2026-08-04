@@ -99,8 +99,7 @@ if ($action === 'download') {
     // Validate target name (prevent directory traversal)
     if (!preg_match('/^[a-zA-Z0-9_-]+$/', $targetName) ||
         strpos($targetName, '..') !== false ||
-        strpos($targetName, '/') !== false ||
-        strpos($targetName, '\\') !== false) {
+        strpos($targetName, '/') !== false) {
         http_response_code(400);
         echo json_encode(['success' => false, 'message' => 'Invalid directory name. Only letters, numbers, underscores, and hyphens allowed.']);
         exit;
@@ -108,11 +107,6 @@ if ($action === 'download') {
 
     // Block dangerous names
     $blockedNames = [
-        'con', 'prn', 'aux', 'nul', 'CON', 'PRN', 'AUX', 'NUL',
-        'com1', 'com2', 'com3', 'com4', 'com5', 'com6', 'com7', 'com8', 'com9',
-        'COM1', 'COM2', 'COM3', 'COM4', 'COM5', 'COM6', 'COM7', 'COM8', 'COM9',
-        'lpt1', 'lpt2', 'lpt3', 'lpt4', 'lpt5', 'lpt6', 'lpt7', 'lpt8', 'lpt9',
-        'LPT1', 'LPT2', 'LPT3', 'LPT4', 'LPT5', 'LPT6', 'LPT7', 'LPT8', 'LPT9',
         '.', '..', 'dashboard', 'api', 'includes', 'config', 'laragon', 'www',
         'assets', 'build', 'pages', 'partials', 'i18n', 'cache', 'data', 'logs'
     ];
@@ -125,15 +119,17 @@ if ($action === 'download') {
 
     // Get document root
     $laraconfig = getLaragonConfig();
-    $documentRoot = $laraconfig['DocumentRoot'] ?? (defined('LARAGON_ROOT') ? LARAGON_ROOT . '/www' : '');
+    $documentRoot = (class_exists('\Nucleus\Core\System') && method_exists('\Nucleus\Core\System', 'getWwwPath'))
+        ? \Nucleus\Core\System::getWwwPath()
+        : (defined('LARAGON_ROOT') ? LARAGON_ROOT . '/html' : '/var/www/html');
 
     // Fallback to platform-aware www path
     if (empty($documentRoot) || !is_dir($documentRoot)) {
-        if (class_exists('\LaragonDashboard\Core\System') && method_exists('\LaragonDashboard\Core\System', 'getWwwPath')) {
-            $documentRoot = \LaragonDashboard\Core\System::getWwwPath();
+        if (class_exists('\Nucleus\Core\System') && method_exists('\Nucleus\Core\System', 'getWwwPath')) {
+            $documentRoot = \Nucleus\Core\System::getWwwPath();
         } else {
             $laragonRoot = getLaragonRoot();
-            $documentRoot = (PHP_OS_FAMILY !== 'Windows') ? $laragonRoot . '/html' : $laragonRoot . '/www';
+            $documentRoot = $laragonRoot . '/html';
         }
     }
 
@@ -144,7 +140,7 @@ if ($action === 'download') {
     }
 
     // Normalize and validate target path
-    $targetPath = realpath(rtrim($documentRoot, '/\\')) . DIRECTORY_SEPARATOR . $targetName;
+    $targetPath = realpath(rtrim($documentRoot, '/')) . DIRECTORY_SEPARATOR . $targetName;
 
     // Ensure path is under document root
     if (strpos($targetPath, realpath($documentRoot)) !== 0) {

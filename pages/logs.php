@@ -1,6 +1,6 @@
 <?php
 /**
- * Laragon Dashboard - Logs Page
+ * Nucleus - Logs Page
  * Version: 3.0.0
  * Description: Log viewer with code editor
  */
@@ -42,8 +42,8 @@ $selectedLog = $_GET['log'] ?? '';
 
 // Scan for log files dynamically using the centralized service
 $logFiles = [];
-if (class_exists('\\LaragonDashboard\\Core\\Services\\Logs')) {
-    $logFiles = \LaragonDashboard\Core\Services\Logs::scan();
+if (class_exists('\\Nucleus\\Core\\Services\\Logs')) {
+    $logFiles = \Nucleus\Core\Services\Logs::scan();
 }
 
 include __DIR__ . '/../partials/layouts/layoutTop.php';

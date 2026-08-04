@@ -1,6 +1,6 @@
 <?php
 /**
- * Laragon Dashboard - Update API
+ * Nucleus - Update API
  * Handles update checking, downloading, and installation
  * 
  * Version: 1.0.0

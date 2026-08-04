@@ -1,6 +1,6 @@
 <?php
 
-namespace LaragonDashboard\Core\Services;
+namespace Nucleus\Core\Services;
 
 /**
  * Logs Class
@@ -12,8 +12,8 @@ class Logs {
     /**
      * Scan for available log files
      */
-    public static function scan() {
-        $laragonRoot = \LaragonDashboard\Core\System::getLaragonRoot();
+    public static function scan(): array {
+        $laragonRoot = \Nucleus\Core\System::getLaragonRoot();
         $logFiles = [];
         
         // Apache (Linux + Legacy paths)
@@ -148,7 +148,7 @@ class Logs {
     /**
      * Read N lines from a log file
      */
-    public static function read($path, $lines = 1000) {
+    public static function read(string $path, int $lines = 1000): array|false {
         if (!file_exists($path) || !is_readable($path)) {
             return false;
         }
@@ -205,8 +205,8 @@ class Logs {
                 'path' => $path
             ];
         } catch (\Exception $e) {
-            if (class_exists('\\LaragonDashboard\\Core\\Logger')) {
-                \LaragonDashboard\Core\Logger::error("Failed to read log file $path: " . $e->getMessage());
+            if (class_exists('\\Nucleus\\Core\\Logger')) {
+                \Nucleus\Core\Logger::error("Failed to read log file $path: " . $e->getMessage());
             }
             return false;
         }
@@ -215,7 +215,7 @@ class Logs {
     /**
      * Clear a log file
      */
-    public static function clear($path) {
+    public static function clear(string $path): bool {
         if (file_exists($path) && is_writable($path)) {
             return file_put_contents($path, '') !== false;
         }

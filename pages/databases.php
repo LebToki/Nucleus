@@ -1,6 +1,6 @@
 <?php
 /**
- * Laragon Dashboard - Databases Page
+ * Nucleus - Databases Page
  * Version: 3.0.0
  * Description: Database management interface
  */

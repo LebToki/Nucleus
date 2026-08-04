@@ -1,6 +1,6 @@
 <?php
 /**
- * Laragon Dashboard - Update Manager
+ * Nucleus - Update Manager
  * Handles automatic updates from GitHub while preserving user configuration
  * 
  * Version: 1.1.0
@@ -12,7 +12,7 @@ if (!class_exists('UpdateManager')) {
         private $appRoot;
         private $backupDir;
         private $tempDir;
-        private $githubRepo = 'LebToki/Laragon-Dashboard';
+        private $githubRepo = 'LebToki/Nucleus';
         private $githubApiUrl = 'https://api.github.com/repos';
         
         public function __construct() {
@@ -104,7 +104,7 @@ if (!class_exists('UpdateManager')) {
             $ch = curl_init($url);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($ch, CURLOPT_USERAGENT, 'Laragon-Dashboard/1.0');
+            curl_setopt($ch, CURLOPT_USERAGENT, 'Nucleus/1.0');
             curl_setopt($ch, CURLOPT_TIMEOUT, 10);
             
             $response = curl_exec($ch);
@@ -212,7 +212,7 @@ if (!class_exists('UpdateManager')) {
             curl_setopt($ch, CURLOPT_FILE, $fp);
             curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($ch, CURLOPT_USERAGENT, 'Laragon-Dashboard-Updater/1.0');
+            curl_setopt($ch, CURLOPT_USERAGENT, 'Nucleus-Updater/1.0');
             curl_setopt($ch, CURLOPT_TIMEOUT, 300); // 5 minutes
             curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
             
@@ -559,7 +559,7 @@ if (!class_exists('UpdateManager')) {
             
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($ch, CURLOPT_USERAGENT, 'Laragon-Dashboard/1.0');
+            curl_setopt($ch, CURLOPT_USERAGENT, 'Nucleus/1.0');
             curl_setopt($ch, CURLOPT_TIMEOUT, 30);
             curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
             curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
@@ -620,7 +620,7 @@ if (!class_exists('UpdateManager')) {
                 return $extractPath;
             }
             
-            // Look for Laragon-Dashboard directory
+            // Look for Nucleus dashboard directory
             $dirs = glob($extractPath . '/*', GLOB_ONLYDIR);
             foreach ($dirs as $dir) {
                 if (file_exists($dir . '/config.php')) {

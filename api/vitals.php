@@ -1,6 +1,6 @@
 <?php
 /**
- * Laragon Dashboard - Server Vitals API
+ * Nucleus - Server Vitals API
  * Version: 3.0.0
  * Description: API endpoint for server monitoring data
  */
@@ -215,6 +215,79 @@ function getCpuAndMemoryUsage(&$vitals) {
     }
 }
 
+/**
+ * Read real network usage from /proc/net/dev
+ * Calculates throughput by comparing current vs previous snapshot
+ */
+function getNetworkUsage(&$vitals) {
+    $procFile = '/proc/net/dev';
+    $snapshotFile = CACHE_ROOT . '/net_snapshot.json';
+
+    if (!file_exists($procFile)) {
+        return;
+    }
+
+    $content = @file_get_contents($procFile);
+    if ($content === false) {
+        return;
+    }
+
+    // Parse /proc/net/dev — skip first 2 header lines
+    $lines = array_slice(explode("\n", trim($content)), 2);
+    $totalRx = 0;
+    $totalTx = 0;
+
+    foreach ($lines as $line) {
+        $line = trim($line);
+        if (empty($line)) continue;
+
+        // Format: "interface: rx_bytes rx_packets ... tx_bytes tx_packets ..."
+        if (!preg_match('/^(\S+):\s+(.+)$/', $line, $m)) continue;
+
+        $iface = $m[1];
+        // Skip loopback
+        if ($iface === 'lo') continue;
+
+        $fields = preg_split('/\s+/', trim($m[2]));
+        if (count($fields) >= 9) {
+            $totalRx += (int)$fields[0];  // rx_bytes
+            $totalTx += (int)$fields[8];  // tx_bytes
+        }
+    }
+
+    $now = time();
+    $current = ['rx' => $totalRx, 'tx' => $totalTx, 'time' => $now];
+
+    // Load previous snapshot to calculate delta
+    $prev = null;
+    if (file_exists($snapshotFile)) {
+        $prev = @json_decode(@file_get_contents($snapshotFile), true);
+    }
+
+    // Save current snapshot for next call
+    @file_put_contents($snapshotFile, json_encode($current));
+
+    if ($prev && isset($prev['time']) && $prev['time'] < $now) {
+        $deltaSec = $now - $prev['time'];
+        if ($deltaSec > 0 && $deltaSec < 300) { // Ignore stale snapshots (>5 min)
+            $deltaRx = max(0, $totalRx - ($prev['rx'] ?? 0));
+            $deltaTx = max(0, $totalTx - ($prev['tx'] ?? 0));
+
+            $downloadBytesPerSec = $deltaRx / $deltaSec;
+            $uploadBytesPerSec = $deltaTx / $deltaSec;
+
+            // Convert to Mbps
+            $downloadMbps = round(($downloadBytesPerSec * 8) / 1_000_000, 2);
+            $uploadMbps = round(($uploadBytesPerSec * 8) / 1_000_000, 2);
+            $totalMbps = round($downloadMbps + $uploadMbps, 2);
+
+            $vitals['network']['speed'] = $totalMbps;
+            $vitals['network']['upload'] = $uploadMbps;
+            $vitals['network']['download'] = $downloadMbps;
+        }
+    }
+}
+
 function getServerVitals() {
     $cacheFile = CACHE_ROOT . '/vitals_current.json';
     $cacheTTL = 5; // 5 seconds cache
@@ -265,12 +338,8 @@ function getServerVitals() {
 
     updateHistoryData($vitals);
     
-    // Set random-ish values for network if not available (to show something)
-    if ($vitals['network']['speed'] == 0) {
-        $vitals['network']['speed'] = rand(100, 300);
-        $vitals['network']['upload'] = rand(5, 20);
-        $vitals['network']['download'] = rand(20, 100);
-    }
+    // Read real network stats from /proc/net/dev
+    getNetworkUsage($vitals);
     
     // Save current vitals to cache
     @file_put_contents($cacheFile, json_encode($vitals));
@@ -288,7 +357,7 @@ try {
     ]);
     ob_end_flush();
 } catch (Exception $e) {
-    \LaragonDashboard\Core\Logger::error("API vitals.php error: " . $e->getMessage());
+    \Nucleus\Core\Logger::error("API vitals.php error: " . $e->getMessage());
     ob_clean();
     http_response_code(500);
     echo json_encode([
@@ -298,7 +367,7 @@ try {
     ]);
     ob_end_flush();
 } catch (Error $e) {
-    \LaragonDashboard\Core\Logger::error("API vitals.php fatal error: " . $e->getMessage());
+    \Nucleus\Core\Logger::error("API vitals.php fatal error: " . $e->getMessage());
     ob_clean();
     http_response_code(500);
     echo json_encode([

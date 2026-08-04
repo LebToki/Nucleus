@@ -1,6 +1,6 @@
 <?php
 
-namespace LaragonDashboard\Core;
+namespace Nucleus\Core;
 
 /**
  * Services Class
@@ -25,14 +25,14 @@ class Services {
     /**
      * Get real service name
      */
-    public static function getRealName($name) {
+    public static function getRealName(string $name): string {
         return self::$serviceMap[$name] ?? $name;
     }
 
     /**
      * Check if a service is running
      */
-    public static function isRunning($name) {
+    public static function isRunning(string $name): bool {
         $realName = escapeshellarg(self::getRealName($name));
         $output = @shell_exec('systemctl is-active ' . $realName . ' 2>&1');
         return $output && trim($output) === 'active';
@@ -41,7 +41,7 @@ class Services {
     /**
      * Start a service
      */
-    public static function start($name) {
+    public static function start(string $name): bool {
         $realName = escapeshellarg(self::getRealName($name));
         $output = @shell_exec('sudo systemctl start ' . $realName . ' 2>&1');
         // systemctl start returns empty on success; verify the service is now active
@@ -52,7 +52,7 @@ class Services {
     /**
      * Stop a service
      */
-    public static function stop($name) {
+    public static function stop(string $name): bool {
         $realName = escapeshellarg(self::getRealName($name));
         $output = @shell_exec('sudo systemctl stop ' . $realName . ' 2>&1');
         // systemctl stop returns empty on success; verify the service is now inactive
@@ -63,7 +63,7 @@ class Services {
     /**
      * Check if a port is in use
      */
-    public static function isPortInUse($port) {
+    public static function isPortInUse(int $port): bool {
         $port = intval($port);
         $output = @shell_exec('ss -tlnp 2>&1 | grep -q ":' . $port . '" && echo "in_use"');
         return $output && trim($output) === 'in_use';
@@ -72,7 +72,7 @@ class Services {
     /**
      * Get resource usage for a service (Linux)
      */
-    public static function getResourceUsage($name) {
+    public static function getResourceUsage(string $name): array {
         $realName = self::getRealName($name);
         $safeName = escapeshellarg($realName);
 

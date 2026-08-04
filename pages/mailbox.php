@@ -1,6 +1,6 @@
 <?php
 /**
- * Laragon Dashboard - Mailbox Page (Mailpit Integration)
+ * Nucleus - Mailbox Page (Mailpit Integration)
  * Version: 3.0.0
  * Description: Email management using Mailpit API, styled like WowDash
  */

@@ -1,6 +1,6 @@
 <?php
 /**
- * Laragon Dashboard - Projects API
+ * Nucleus - Projects API
  * Version: 3.1.0
  * Description: API for project management operations
  */

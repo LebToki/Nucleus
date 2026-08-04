@@ -1,6 +1,6 @@
 <?php
 /**
- * Laragon Dashboard - Project Creation API
+ * Nucleus - Project Creation API
  * Version: 3.0.0
  * Description: Handles project creation with framework detection and database setup
  */
@@ -67,12 +67,6 @@ if (!preg_match('/^[a-zA-Z0-9_-]+$/', $projectName) ||
 
 // Block potentially dangerous project names
 $blockedNames = [
-    'con', 'prn', 'aux', 'nul', // Windows reserved names
-    'CON', 'PRN', 'AUX', 'NUL',
-    'com1', 'com2', 'com3', 'com4', 'com5', 'com6', 'com7', 'com8', 'com9',
-    'COM1', 'COM2', 'COM3', 'COM4', 'COM5', 'COM6', 'COM7', 'COM8', 'COM9',
-    'lpt1', 'lpt2', 'lpt3', 'lpt4', 'lpt5', 'lpt6', 'lpt7', 'lpt8', 'lpt9',
-    'LPT1', 'LPT2', 'LPT3', 'LPT4', 'LPT5', 'LPT6', 'LPT7', 'LPT8', 'LPT9',
     '.', '..', 'dashboard', 'api', 'includes', 'config', 'laragon', 'www'
 ];
 
@@ -103,11 +97,14 @@ if ($createDatabase && !empty($databaseName)) {
     }
 }
 
-// Get document root
-$laraconfig = getLaragonConfig();
-$documentRoot = $laraconfig['DocumentRoot'] ?? (defined('LARAGON_ROOT') ? LARAGON_ROOT . '/www' : '');
+// Get document root — Linux-native via System class
+if (class_exists('\Nucleus\Core\System') && method_exists('\Nucleus\Core\System', 'getWwwPath')) {
+    $documentRoot = \Nucleus\Core\System::getWwwPath();
+} else {
+    $documentRoot = defined('LARAGON_ROOT') ? LARAGON_ROOT . '/html' : '/var/www/html';
+}
 
-// Ensure document root is a valid Laragon path
+// Ensure document root is a valid path
 if (empty($documentRoot) || !is_dir($documentRoot)) {
     http_response_code(500);
     echo json_encode(['success' => false, 'message' => 'Document root not found']);
@@ -115,7 +112,7 @@ if (empty($documentRoot) || !is_dir($documentRoot)) {
 }
 
 // Normalize and validate the project path
-$projectPath = realpath(rtrim($documentRoot, '/\\')) . DIRECTORY_SEPARATOR . $projectName;
+$projectPath = rtrim($documentRoot, '/') . '/' . $projectName;
 
 // Additional check to ensure the path is under the document root (prevent directory traversal)
 if (strpos($projectPath, realpath($documentRoot)) !== 0) {
@@ -218,20 +215,60 @@ try {
 }
 
 /**
- * Initialize WordPress project
+ * Initialize WordPress project — Linux-native
+ * Downloads latest WordPress from wordpress.org and sets up wp-config.php
  */
 function initializeWordPress($path, $name, $logFile) {
     file_put_contents($logFile, "Downloading WordPress...\n", FILE_APPEND);
-    
-    $laragonRoot = getLaragonRoot();
-    $command = "cd " . escapeshellarg(dirname($path)) . " && composer create-project wordpress/wordpress " . escapeshellarg($name) . " --prefer-dist --no-interaction 2>&1";
-    
+
+    // Try WP-CLI first (fastest, most reliable)
+    $wpCli = trim(@shell_exec('which wp 2>/dev/null') ?? '');
+    if (!empty($wpCli) && is_executable($wpCli)) {
+        $command = "cd " . escapeshellarg($path) . " && wp core download --allow-root 2>&1";
+        $output = shell_exec($command);
+        file_put_contents($logFile, $output . "\n", FILE_APPEND);
+
+        if (file_exists($path . '/wp-config-sample.php')) {
+            // Configure wp-config.php with database settings
+            $dbName = preg_replace('/[^a-zA-Z0-9_]/', '', $name);
+            $command = "cd " . escapeshellarg($path) . " && wp config create --dbname=" . escapeshellarg($dbName)
+                . " --dbuser=" . escapeshellarg(defined('MYSQL_USER') ? MYSQL_USER : 'root')
+                . " --dbpass=" . escapeshellarg(defined('MYSQL_PASSWORD') ? MYSQL_PASSWORD : '')
+                . " --dbhost=" . escapeshellarg(defined('MYSQL_HOST') ? MYSQL_HOST : 'localhost')
+                . " --allow-root 2>&1";
+            shell_exec($command);
+            file_put_contents($logFile, "WordPress configured via WP-CLI.\n", FILE_APPEND);
+            return;
+        }
+    }
+
+    // Fallback: direct download from wordpress.org
+    $wpUrl = 'https://wordpress.org/latest.tar.gz';
+    $tarPath = $path . '/wordpress.tar.gz';
+
+    $command = "cd " . escapeshellarg($path)
+        . " && curl -sL " . escapeshellarg($wpUrl) . " -o " . escapeshellarg($tarPath)
+        . " && tar -xzf " . escapeshellarg($tarPath) . " --strip-components=1"
+        . " && rm -f " . escapeshellarg($tarPath)
+        . " 2>&1";
     $output = shell_exec($command);
-    file_put_contents($logFile, $output . "\n", FILE_APPEND);
-    
-    if (!file_exists($path . '/wp-config-sample.php')) {
-        file_put_contents($logFile, "Composer failed, falling back to manual download...\n", FILE_APPEND);
-        // Fallback or handle error
+    file_put_contents($logFile, ($output ?: "Downloaded WordPress from wordpress.org") . "\n", FILE_APPEND);
+
+    // Create wp-config.php from sample
+    if (file_exists($path . '/wp-config-sample.php') && !file_exists($path . '/wp-config.php')) {
+        $sample = file_get_contents($path . '/wp-config-sample.php');
+        $dbName = preg_replace('/[^a-zA-Z0-9_]/', '', $name);
+        $replacements = [
+            'database_name_here' => $dbName,
+            'username_here' => defined('MYSQL_USER') ? MYSQL_USER : 'root',
+            'password_here' => defined('MYSQL_PASSWORD') ? MYSQL_PASSWORD : '',
+            'localhost' => defined('MYSQL_HOST') ? MYSQL_HOST : 'localhost',
+        ];
+        foreach ($replacements as $search => $replace) {
+            $sample = str_replace($search, $replace, $sample);
+        }
+        file_put_contents($path . '/wp-config.php', $sample);
+        file_put_contents($logFile, "wp-config.php created from sample.\n", FILE_APPEND);
     }
 }
 
@@ -374,83 +411,76 @@ function createDatabase($dbName) {
 }
 
 /**
- * Initialize Git repository
+ * Initialize Git repository — Linux-native
  */
 function initializeGit($path) {
-    if (!defined('LARAGON_ROOT')) {
-        return; // Skip if Laragon root not defined
+    $gitPath = trim(@shell_exec('which git 2>/dev/null') ?? '');
+    if (empty($gitPath)) {
+        return; // Git not installed, skip silently
     }
-    
-    $gitPath = LARAGON_ROOT . '/bin/git/git.exe';
-    if (!file_exists($gitPath)) {
-        // Try system git
-        $gitPath = 'git';
-    }
-    
+
     $oldCwd = getcwd();
     chdir($path);
-    
+
     try {
-        // Initialize git
-        exec(escapeshellarg($gitPath) . ' init', $output, $returnVar);
-        
+        exec('git init', $output, $returnVar);
+
         // Create .gitignore
-        $gitignore = "vendor/\nnode_modules/\n.env\n*.log\n";
+        $gitignore = "vendor/\nnode_modules/\n.env\n*.log\ncache/\ndata/\n";
         file_put_contents($path . '/.gitignore', $gitignore);
-        
+
         // Initial commit
-        exec(escapeshellarg($gitPath) . ' add .', $output, $returnVar);
-        exec(escapeshellarg($gitPath) . ' commit -m "Initial commit"', $output, $returnVar);
-    } catch (Exception $e) {
+        exec('git add .', $output, $returnVar);
+        exec('git commit -m "Initial commit" --allow-empty', $output, $returnVar);
+    } catch (\Exception $e) {
         // Git init might fail, that's okay
     }
-    
+
     chdir($oldCwd);
 }
 
 /**
- * Create virtual host
+ * Create Apache virtual host — Linux-native
  */
 function createVirtualHost($name, $path) {
-    if (!defined('LARAGON_ROOT')) {
-        return; // Skip if Laragon root not defined
-    }
-    
     $domainSuffix = defined('DOMAIN_SUFFIX') ? DOMAIN_SUFFIX : '.local';
-    $vhostFile = LARAGON_ROOT . '/etc/apache2/sites-enabled/' . $name . $domainSuffix . '.conf';
-    
-    // Normalize path separators
-    $normalizedPath = str_replace('\\', '/', $path);
-    
+    $domain = $name . $domainSuffix;
+    $vhostFile = '/etc/apache2/sites-available/' . $domain . '.conf';
+
     $vhostContent = <<<APACHE
 <VirtualHost *:80>
-    ServerName {$name}{$domainSuffix}
-    DocumentRoot "{$normalizedPath}"
-    <Directory "{$normalizedPath}">
+    ServerName {$domain}
+    DocumentRoot "{$path}"
+    <Directory "{$path}">
         Options Indexes FollowSymLinks
         AllowOverride All
         Require all granted
     </Directory>
+    ErrorLog \${APACHE_LOG_DIR}/{$name}-error.log
+    CustomLog \${APACHE_LOG_DIR}/{$name}-access.log combined
 </VirtualHost>
 APACHE;
-    
-    // Create directory if it doesn't exist
-    $vhostDir = dirname($vhostFile);
-    if (!is_dir($vhostDir)) {
-        mkdir($vhostDir, 0755, true);
+
+    // Write vhost config (requires write permission to /etc/apache2/)
+    $written = @file_put_contents($vhostFile, $vhostContent);
+
+    if ($written !== false) {
+        // Enable the site and reload Apache
+        @exec('sudo a2ensite ' . escapeshellarg($domain) . ' 2>&1');
+        @exec('sudo systemctl reload apache2 2>&1');
     }
-    
-    file_put_contents($vhostFile, $vhostContent);
-    
-    // Add to hosts file (requires admin privileges)
-    $hostsFile = 'C:/Windows/System32/drivers/etc/hosts';
-    $hostsEntry = "\n127.0.0.1\t{$name}{$domainSuffix}";
-    
-    // Try to add to hosts file (may require admin privileges)
-    if (is_writable($hostsFile)) {
+
+    // Add to /etc/hosts if not already present
+    $hostsFile = '/etc/hosts';
+    $hostsEntry = "127.0.0.1\t{$domain}";
+
+    if (file_exists($hostsFile) && is_readable($hostsFile)) {
         $hostsContent = file_get_contents($hostsFile);
-        if (strpos($hostsContent, $name . $domainSuffix) === false) {
-            file_put_contents($hostsFile, $hostsEntry, FILE_APPEND | LOCK_EX);
+        if (strpos($hostsContent, $domain) === false) {
+            $added = @file_put_contents($hostsFile, "\n" . $hostsEntry . "\n", FILE_APPEND);
+            if ($added === false) {
+                @exec('echo ' . escapeshellarg($hostsEntry) . ' | sudo tee -a /etc/hosts > /dev/null 2>&1');
+            }
         }
     }
 }

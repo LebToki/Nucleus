@@ -1,6 +1,6 @@
 <?php
 /**
- * Laragon Dashboard - 404 Page Not Found
+ * Nucleus - 404 Page Not Found
  * Version: 3.0.0
  */
 

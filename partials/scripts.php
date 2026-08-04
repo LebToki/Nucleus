@@ -1312,20 +1312,21 @@ if (substr($assetsUrl, 0, 1) !== '/') {
         // Start service
         window.startService = function(serviceName) {
             fetch(SERVICES_API + '?action=start&service=' + encodeURIComponent(serviceName), {
-                method: 'POST'
+                method: 'POST',
+                headers: { 'X-CSRF-Token': window.csrfToken }
             })
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        alert('Service started successfully');
-                        setTimeout(refreshServiceStatus, 1000); // Refresh status after 1 second
+                        showNotification('Service started successfully', 'success');
+                        setTimeout(refreshServiceStatus, 1000);
                     } else {
-                        alert('Error: ' + (data.error || 'Failed to start service'));
+                        showNotification('Error: ' + (data.error || 'Failed to start service'), 'error');
                     }
                 })
                 .catch(error => {
                     console.error('Error starting service:', error);
-                    alert('Error: Failed to start service');
+                    showNotification('Error: Failed to start service', 'error');
                 });
         };
         
@@ -1334,22 +1335,48 @@ if (substr($assetsUrl, 0, 1) !== '/') {
             if (!confirm('Stop ' + serviceName + '?')) {
                 return;
             }
-            
+
             fetch(SERVICES_API + '?action=stop&service=' + encodeURIComponent(serviceName), {
-                method: 'POST'
+                method: 'POST',
+                headers: { 'X-CSRF-Token': window.csrfToken }
             })
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        alert('Service stopped successfully');
-                        setTimeout(refreshServiceStatus, 1000); // Refresh status after 1 second
+                        showNotification('Service stopped successfully', 'success');
+                        setTimeout(refreshServiceStatus, 1000);
                     } else {
-                        alert('Error: ' + (data.error || 'Failed to stop service'));
+                        showNotification('Error: ' + (data.error || 'Failed to stop service'), 'error');
                     }
                 })
                 .catch(error => {
                     console.error('Error stopping service:', error);
-                    alert('Error: Failed to stop service');
+                    showNotification('Error: Failed to stop service', 'error');
+                });
+        };
+
+        // Restart service
+        window.restartService = function(serviceName) {
+            if (!confirm('Restart ' + serviceName + '?')) {
+                return;
+            }
+
+            fetch(SERVICES_API + '?action=restart&service=' + encodeURIComponent(serviceName), {
+                method: 'POST',
+                headers: { 'X-CSRF-Token': window.csrfToken }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showNotification('Service restarted successfully', 'success');
+                        setTimeout(refreshServiceStatus, 1500);
+                    } else {
+                        showNotification('Error: ' + (data.error || 'Failed to restart service'), 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error restarting service:', error);
+                    showNotification('Error: Failed to restart service', 'error');
                 });
         };
         
@@ -3351,7 +3378,7 @@ if (substr($assetsUrl, 0, 1) !== '/') {
         
         if (createBtn) {
             createBtn.addEventListener('click', function() {
-                if (textarea) textarea.value = "# Created by Laragon Dashboard\nAPP_NAME=" + currentEnvProject + "\nAPP_ENV=local\nAPP_KEY=\nAPP_DEBUG=true\nAPP_URL=http://" + currentEnvProject + ".local\n\nDB_CONNECTION=mysql\nDB_HOST=127.0.0.1\nDB_PORT=3306\nDB_DATABASE=" + currentEnvProject.replace(/[^a-zA-Z0-9_]/g, '_') + "\nDB_USERNAME=root\nDB_PASSWORD=";
+                if (textarea) textarea.value = "# Created by Nucleus\nAPP_NAME=" + currentEnvProject + "\nAPP_ENV=local\nAPP_KEY=\nAPP_DEBUG=true\nAPP_URL=http://" + currentEnvProject + ".local\n\nDB_CONNECTION=mysql\nDB_HOST=127.0.0.1\nDB_PORT=3306\nDB_DATABASE=" + currentEnvProject.replace(/[^a-zA-Z0-9_]/g, '_') + "\nDB_USERNAME=root\nDB_PASSWORD=";
                 if (emptyState) emptyState.style.display = 'none';
                 if (container) container.style.display = 'block';
             });

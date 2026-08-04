@@ -1,6 +1,6 @@
 <?php
 /**
- * Laragon Dashboard - File Editor API
+ * Nucleus - File Editor API
  * Version: 3.0.0
  * Description: API endpoint for reading/writing configuration files
  */

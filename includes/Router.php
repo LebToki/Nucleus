@@ -1,6 +1,6 @@
 <?php
 /**
- * Laragon Dashboard - Router
+ * Nucleus - Router
  * Handles page routing with security and validation
  * 
  * Version: 1.0.0

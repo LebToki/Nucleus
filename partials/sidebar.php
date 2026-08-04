@@ -161,7 +161,14 @@ function getSidebarTranslation($key, $fallback = '') {
                     <span><?php echo getSidebarTranslation('backup', 'Backup'); ?></span>
                 </a>
             </li>
-            
+
+            <li>
+                <a href="index.php?page=plugins" class="<?php echo $currentPage === 'plugins' ? 'active' : ''; ?>">
+                    <iconify-icon icon="solar:plugin-bold" class="menu-icon"></iconify-icon>
+                    <span>Plugins</span>
+                </a>
+            </li>
+
             <!-- Configuration Section -->
             <li class="sidebar-menu-group-title"><?php echo getSidebarTranslation('configuration', 'Configuration'); ?></li>
             
