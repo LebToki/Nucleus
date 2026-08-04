@@ -17,6 +17,9 @@ nul
 # --- Downloaded at runtime (install via Plugins page) ---
 phpmyadmin/
 
+# --- Working drafts (not part of the codebase) ---
+promo/
+
 # --- Source assets (deployed copies live in assets/) ---
 nucleus-logo/
 
