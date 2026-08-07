@@ -1,7 +1,7 @@
 <?php
 /**
  * Nucleus Configuration
- * Version: 2.0.0 — The Missing Dashboard for Linux Developers
+ * Version: 1.0.1 — The Missing Dashboard for Linux Developers
  * Author: Tarek Tarabichi
  * Company: 2TInteractive (2tinteractive.com)
  * Platform: ZorinOS / Ubuntu / Mint (Linux Apache + systemd)

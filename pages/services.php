@@ -36,7 +36,7 @@ function t_services($key, $fallback = '') {
     return $servicesTranslations[$key] ?? ($fallback ?: $key);
 }
 
-$laragonRoot = defined('LARAGON_ROOT') ? LARAGON_ROOT : '';
+$nucleusRoot = defined('NUCLEUS_ROOT') ? NUCLEUS_ROOT : __DIR__ . '/../..'; // Nucleus root directory fallback
 
 // Define available services with default ports (Linux/Nucleus)
 $availableServices = [
@@ -252,6 +252,7 @@ include __DIR__ . '/../partials/layouts/layoutTop.php';
                                             <th scope="col" class="bg-transparent rounded-0" style="width: 120px;"><?php echo t_services('ssl_port', 'SSL Port'); ?></th>
                                             <th scope="col" class="bg-transparent rounded-0" style="width: 100px;"><?php echo t_services('enabled', 'Enabled'); ?></th>
                                             <th scope="col" class="bg-transparent rounded-0" style="width: 100px;"><?php echo t_services('status', 'Status'); ?></th>
+                                            <th scope="col" class="bg-transparent rounded-0" style="width: 150px;"><?php echo t_services('resources', 'Resources'); ?></th>
                                             <th scope="col" class="bg-transparent rounded-0"><?php echo t_services('actions', 'Actions'); ?></th>
                                         </tr>
                                     </thead>
@@ -287,8 +288,8 @@ include __DIR__ . '/../partials/layouts/layoutTop.php';
 
                                             $runningPortsStr = !empty($runningPorts) ? implode('/', $runningPorts) : '-';
                                         ?>
-                                        <tr>
-                                            <td>
+                                        <tr class="service-row" data-key="<?php echo $key; ?>">
+                                            <td data-field="service">
                                                 <div class="d-flex align-items-center gap-2">
                                                     <div class="form-check style-check">
                                                         <input class="form-check-input service-enabled-checkbox" type="checkbox" id="service-<?php echo $key; ?>" name="services[<?php echo $key; ?>][enabled]" value="1" data-service="<?php echo $key; ?>" <?php echo $service['enabled'] ? 'checked' : ''; ?>>
@@ -301,22 +302,22 @@ include __DIR__ . '/../partials/layouts/layoutTop.php';
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td>
+                                            <td data-field="port">
                                                 <input type="number" class="form-control form-control-sm" name="services[<?php echo $key; ?>][port]" value="<?php echo htmlspecialchars($service['port']); ?>" min="1" max="65535">
                                             </td>
-                                            <td>
+                                            <td data-field="ssl_port">
                                                 <?php if ($service['has_ssl']): ?>
                                                     <input type="number" class="form-control form-control-sm" name="services[<?php echo $key; ?>][ssl_port]" value="<?php echo htmlspecialchars($service['ssl_port'] ?? ''); ?>" min="1" max="65535" placeholder="<?php echo $key === 'Mailpit' ? 'HTTP Port' : 'SSL Port'; ?>">
                                                 <?php else: ?>
                                                     <span class="text-secondary-light">-</span>
                                                 <?php endif; ?>
                                             </td>
-                                            <td>
+                                            <td data-field="enabled">
                                                 <div class="form-switch switch-<?php echo $service['color']; ?> d-flex align-items-center">
                                                     <input class="form-check-input service-enabled-switch" type="checkbox" role="switch" name="services[<?php echo $key; ?>][enabled_check]" data-service="<?php echo $key; ?>" <?php echo $service['enabled'] ? 'checked' : ''; ?>>
                                                 </div>
                                             </td>
-                                            <td>
+                                            <td data-field="status">
                                                 <span class="bg-<?php echo $status === 'running' ? 'success' : 'secondary'; ?>-focus text-<?php echo $status === 'running' ? 'success' : 'secondary'; ?>-main px-24 py-4 rounded-pill fw-medium text-sm">
                                                     <?php echo $status === 'running' ? t_services('running', 'Running') : t_services('stopped', 'Stopped'); ?>
                                                 </span>
@@ -324,7 +325,13 @@ include __DIR__ . '/../partials/layouts/layoutTop.php';
                                                     <br><small class="text-secondary-light mt-4 d-block"><?php echo htmlspecialchars($runningPortsStr); ?></small>
                                                 <?php endif; ?>
                                             </td>
-                                            <td>
+                                            <td data-field="resources">
+                                                <!-- Resources Column Content -->
+                                                <div class="d-flex align-items-center gap-2 text-secondary-light">
+                                                    <a href="#" class="text-primary-600 hover-text-primary small cursor-pointer" title="<?php echo t_services('resources', 'Resources'); ?>"><?php echo t_services('resource_info', 'Resource Info'); ?></a>
+                                                </div>
+                                            </td>
+                                            <td data-field="actions">
                                                 <div class="d-flex align-items-center gap-2">
                                                     <?php if ($key === 'Apache'): ?>
                                                         <button type="button" class="btn btn-sm btn-primary-100 text-primary-600" onclick="reloadApache()" aria-label="<?php echo t_services('reload', 'Reload') . ' ' . htmlspecialchars($key); ?>">
@@ -349,7 +356,7 @@ include __DIR__ . '/../partials/layouts/layoutTop.php';
                                         </tr>
                                         <?php endforeach; ?>
                                     </tbody>
-                                </table>
+                                </table >
                             </div>
                             
                             <div class="d-flex align-items-center justify-content-between mt-24">
@@ -471,4 +478,3 @@ $GLOBALS['installedServices'] = $installedServices;
 ?>
 
 <?php include __DIR__ . '/../partials/layouts/layoutBottom.php'; ?>
-

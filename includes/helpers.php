@@ -13,6 +13,26 @@ if (file_exists(__DIR__ . '/autoload.php')) {
 // Start output buffering to prevent stray output
 ob_start();
 
+/**
+ * Standalone wrapper for Security::getCSRFToken()
+ * Used by layoutTop.php and AJAX scripts
+ */
+if (!function_exists('getCSRFToken')) {
+    function getCSRFToken(): string {
+        return \Nucleus\Core\Security::getCSRFToken();
+    }
+}
+
+/**
+ * Standalone wrapper for Security::check_auth()
+ * Used by index.php entry point
+ */
+if (!function_exists('check_auth')) {
+    function check_auth(): void {
+        \Nucleus\Core\Security::checkAuth();
+    }
+}
+
 // Note: getLaragonRoot(), getLaragonSendmailDir(), getLaragonDomainSuffix(), getAppVersion()
 // are defined in config.php which loads before this file.
 
@@ -1119,9 +1139,6 @@ if (!function_exists('t')) {
  */
 if (!function_exists('getPHPIniPath')) {
     function getPHPIniPath() {
-        $loadedIni = php_ini_loaded_file();
-        if ($loadedIni && file_exists($loadedIni)) return $loadedIni;
-
         $linuxPaths = [
             '/etc/php/8.3/apache2/php.ini',
             '/etc/php/8.3/cli/php.ini',
@@ -1159,186 +1176,58 @@ if (!function_exists('getMySQLIniPath')) {
 // Clear any output that may have been generated
 ob_end_clean();
 
-/**
- * Generate a CSRF token and store it in the session
- */
-if (!function_exists('generateCSRFToken')) {
-    function generateCSRFToken() {
-        return \Nucleus\Core\Security::generateCSRFToken();
-    }
-}
 
 /**
- * Get the current CSRF token
+ * Check Docker container status and list info.
  */
-if (!function_exists('getCSRFToken')) {
-    function getCSRFToken() {
-        return \Nucleus\Core\Security::getCSRFToken();
-    }
-}
-
-/**
- * Verify a CSRF token
- */
-if (!function_exists('verifyCSRFToken')) {
-    function verifyCSRFToken($token) {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-        if (empty($_SESSION['csrf_token']) || empty($token)) {
-            return false;
-        }
-        return hash_equals($_SESSION['csrf_token'], $token);
-    }
-}
-
-/**
- * Check if the user is authenticated
- */
-if (!function_exists('is_authenticated')) {
-    function is_authenticated() {
-        return \Nucleus\Core\Security::isAuthenticated();
-    }
-}
-
-/**
- * Enforce authentication
- */
-if (!function_exists('check_auth')) {
-    function check_auth() {
-        \Nucleus\Core\Security::checkAuth();
-    }
-}
-
-/**
- * Get structured changelog from CHANGELOG.md
- */
-if (!function_exists('getChangelog')) {
-    function getChangelog() {
-        $changelogFile = dirname(__DIR__) . '/CHANGELOG.md';
-        if (!file_exists($changelogFile)) return [];
-        
-        $content = file_get_contents($changelogFile);
-        $lines = explode("\n", $content);
-        
-        $changelog = [];
-        $currentVersion = null;
-        
-        foreach ($lines as $line) {
-            if (preg_match('/^## \[(.*?)\]/', $line, $matches)) {
-                $version = $matches[1];
-                $currentVersion = $version;
-                $changelog[$version] = [
-                    'version' => $version,
-                    'date' => '',
-                    'changes' => []
-                ];
-                
-                if (preg_match('/ - (.*)$/', $line, $dateMatches)) {
-                    $changelog[$version]['date'] = $dateMatches[1];
-                }
-            } elseif ($currentVersion && preg_match('/^- (.*)$/', trim($line), $matches)) {
-                $changelog[$currentVersion]['changes'][] = $matches[1];
-            }
-        }
-        
-        return $changelog;
-    }
-}
-
-/**
- * Sanitize output for preventing XSS
- */
-if (!function_exists('esc')) {
-    function esc($string, $encoding = 'utf-8') {
-        if (is_array($string)) {
-            foreach ($string as $key => $value) {
-                $string[$key] = esc($value, $encoding);
-            }
-            return $string;
-        }
-        
-        if (is_object($string) && method_exists($string, '__toString')) {
-            return htmlspecialchars((string)$string, ENT_QUOTES | ENT_HTML5, $encoding);
-        } elseif (is_scalar($string)) {
-            return htmlspecialchars((string)$string, ENT_QUOTES | ENT_HTML5, $encoding);
-        }
-        
-        return '';
-    }
-}
-
-/**
- * Validate CSRF token from request
- */
-if (!function_exists('validate_request')) {
-    function validate_request() {
-        $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
-        
-        // For POST, PUT, DELETE requests, validate CSRF token
-        if (in_array($method, ['POST', 'PUT', 'DELETE', 'PATCH'])) {
-            $token = $_POST[CSRF_TOKEN_NAME] ?? $_SERVER['HTTP_X_CSRF_TOKEN'] ?? null;
-            
-            if (!$token || !validate_csrf_token($token)) {
-                http_response_code(403);
-                die('Invalid CSRF token');
-            }
-        }
-        
-        return true;
-    }
-}
-
-/**
- * Generate a secure random string
- */
-if (!function_exists('secure_random_string')) {
-    function secure_random_string($length = 32) {
-        return bin2hex(random_bytes($length));
-    }
-}
-
-/**
- * Check if a request is AJAX
- */
-if (!function_exists('is_ajax_request')) {
-    function is_ajax_request() {
-        return !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && 
-               strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
-    }
-}
-
-/**
- * Get client IP with proxy support
- */
-if (!function_exists('get_client_ip')) {
-    function get_client_ip() {
-        $ipKeys = [
-            'HTTP_CF_CONNECTING_IP',      // Cloudflare
-            'HTTP_CLIENT_IP',             // Proxy
-            'HTTP_X_FORWARDED_FOR',       // Multiple proxies
-            'HTTP_X_FORWARDED',           // Squid proxy
-            'HTTP_X_CLUSTER_CLIENT_IP',   // Cluster
-            'HTTP_FORWARDED_FOR',         // RFC 7239
-            'HTTP_FORWARDED',             // RFC 7239
-            'REMOTE_ADDR'                 // Standard
+if (!function_exists('checkDockerStatus')) {
+    function checkDockerStatus() {
+        $results = [
+            'is_installed' => false,
+            'containers' => [],
+            'status_message' => 'Docker not available or running.',
+            'docker_output' => '',
         ];
-        
-        foreach ($ipKeys as $key) {
-            if (!empty($_SERVER[$key])) {
-                $ip = $_SERVER[$key];
-                // Handle multiple IPs in X-Forwarded-For
-                if (strpos($ip, ',') !== false) {
-                    $ips = array_map('trim', explode(',', $ip));
-                    $ip = $ips[0]; // Use the first IP
+
+        // 1. Check if Docker is installed and reachable
+        $checkOutput = @shell_exec('docker info > /dev/null 2>&1');
+        if ($checkOutput) {
+            $results['is_installed'] = true;
+            
+            // 2. Get running containers (and optionally, all containers for full visibility)
+            // Using 'ps' is standard for active services
+            $containerListRaw = @shell_exec('docker ps --format "table {{.Names}}\t{{.Image}}\t{{.Status}}" 2>&1');
+            if (!empty(trim($containerListRaw))) {
+                // Adding a pseudo-header row for cleaner presentation in JS/HTML, though parsing needs care.
+                $results['containers'][] = [
+                    'names' => 'Container Name', 
+                    'images' => 'Image', 
+                    'status' => 'Status'
+                ]; 
+
+                $lines = explode("\n", trim($containerListRaw));
+                foreach ($lines as $line) {
+                    if (empty(trim($line))) continue;
+                    // Attempt to parse space-separated values: Name | Image | Status
+                    $parts = preg_split('/\s+/', trim($line), -1, PREG_SPLIT_NO_EMPTY);
+                    if (count($parts) >= 3) {
+                        $results['containers'][] = [
+                            'names' => $parts[0], 
+                            'images' => $parts[1] ?? 'N/A', 
+                            'status' => $parts[2] 
+                        ];
+                    }
                 }
-                
-                if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
-                    return $ip;
-                }
+            } else {
+                $results['containers'][] = ['names' => 'No running containers found.', 'images' => '', 'status' => ''];
             }
+
+            // Capture the full output for debugging/info panel
+            $results['docker_output'] = @shell_exec('docker ps -a 2>&1');
+        } else {
+             $results['status_message'] = 'Docker CLI command failed. Is Docker service running?';
         }
-        
-        return $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+
+        return $results;
     }
 }

@@ -1,0 +1,45 @@
+/* Gallery Css Start */
+.mfp-gallery .mfp-image-holder .mfp-figure {
+    transform: scale(1.6);
+    @media (min-width: 1367px) { 
+        cursor: pointer;
+        transform: scale(2);
+    }
+}
+
+
+.masonry-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 8px;
+    @media (min-width: 576px) {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        grid-auto-rows: 232px;
+        grid-gap: 16px;
+        grid-auto-flow: dense;
+        div {
+            &:nth-child(12n + 1) {
+                grid-row: span 2;
+            }
+            &:nth-child(12n + 3) {
+                grid-row: span 2;
+                grid-column: span 2;
+            }
+            &:nth-child(12n + 5) {
+                grid-row: span 2;
+                grid-column: span 2;
+            }
+            &:nth-child(12n + 6) {
+                grid-row: span 2;
+            }
+            &:nth-child(12n + 9) {
+                grid-row: span 2;
+            }
+            &:nth-child(12n + 10) {
+                grid-column: span 2;
+            }
+        }
+    }
+}
+/* Gallery Css End */

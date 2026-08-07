@@ -1,0 +1,191 @@
+// when parent div hover change bg color
+@each $color, $shades in $colors {
+  @each $shade, $value in $shades {
+    .group-item {
+      &:hover {
+        .group-hover\:bg-#{$color}-#{$shade} {
+          background-color: var(--#{$color}-#{$shade}) !important;
+        }
+      }
+    }
+  }
+}
+
+@each $color, $shades in $semantic-colors {
+  @each $shade, $value in $shades {
+    .group-item {
+      &:hover {
+        .group-hover\:bg-#{$color}-#{$shade} {
+          background-color: var(--#{$color}-#{$shade}) !important;
+        }
+      }
+    }
+  }
+}
+
+@each $property, $value in $extra-colors {
+  .group-item {
+    &:hover {
+      .group-hover\:bg-#{$property} {
+        background-color: var(--#{$property}) !important;
+      }
+    }
+  }
+}
+
+// when parent div hover change text color
+@each $color, $shades in $colors {
+  @each $shade, $value in $shades {
+    .group-item {
+      &:hover {
+        .group-hover\:text-#{$color}-#{$shade} {
+          color: var(--#{$color}-#{$shade}) !important;
+        }
+      }
+    }
+  }
+}
+
+@each $color, $shades in $semantic-colors {
+  @each $shade, $value in $shades {
+    .group-item {
+      &:hover {
+        .group-hover\:text-#{$color}-#{$shade} {
+          color: var(--#{$color}-#{$shade}) !important;
+        }
+      }
+    }
+  }
+}
+
+@each $property, $value in $extra-colors {
+  .text-#{$property} {
+    color: var(--#{$property});
+  }
+  .group-item {
+    &:hover {
+      .group-hover\:text-#{$property} {
+        color: var(--#{$property}) !important;
+      }
+    }
+  }
+}
+
+.group-item {
+  &:hover {
+    .group-hover\:text-white {
+      color: var(--base);
+    }
+  }
+}
+
+
+.text-hover {
+  &-white {
+    &:hover {
+      color: #fff !important;
+    }
+  }
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+.cursor-default {
+  cursor: default !important;
+}
+
+.hover-scale-img {
+  &__img {
+    transition: .2s linear;
+  }
+  &:hover {
+    .hover-scale-img__img {
+      transform: scale(1.16);
+    }
+  }
+  &.style-two {
+    &:hover {
+      .hover-scale-img__img {
+        transform: translateX(48px) scale(1.3);
+      }
+    }
+  }
+  &.style-three {
+    .hover-scale-img__img {
+      transform: scale(1.3);
+    }
+    &:hover {
+      .hover-scale-img__img {
+        transform: scale(1);
+      }
+    }
+  }
+  &.style-four {
+    .hover-scale-img__img {
+      transform: scale(1.3);
+    }
+    &:hover {
+      .hover-scale-img__img {
+        transform: translateY(-40px) scale(1.3);
+      }
+    }
+  }
+  &.style-five {
+    .hover-scale-img__img {
+      transform: scale(1.3) rotate(16deg);
+    }
+    &:hover {
+      .hover-scale-img__img {
+        transform: scale(1) rotate(0deg);
+      }
+    }
+  }
+  &.style-six {
+    .hover-scale-img__img {
+      filter: blur(4px);
+    }
+    &:hover {
+      .hover-scale-img__img {
+        transform: scale(1);
+        filter: blur(0px);
+      }
+    }
+  }
+  &.style-seven {
+    .hover-scale-img__img {
+      filter: grayscale(100%);
+    }
+    &:hover {
+      .hover-scale-img__img {
+        transform: scale(1);
+        filter: grayscale(0);
+      }
+    }
+  }
+  &.style-eight {
+    .hover-scale-img__img {
+      filter: sepia(100%);
+    }
+    &:hover {
+      .hover-scale-img__img {
+        transform: scale(1);
+        filter: sepia(0);
+      }
+    }
+  }
+  &.style-nine {
+    .hover-scale-img__img {
+      transform: scale(1.3);
+    }
+    &:hover {
+      .hover-scale-img__img {
+        transform: translateY(40px) scale(1.3);
+      }
+    }
+  }
+}
+
+.visibility-hidden {
+  visibility: hidden;
+}

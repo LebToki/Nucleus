@@ -40,10 +40,7 @@ function t_databases($key, $fallback = '') {
     }
     return $databasesTranslations[$key] ?? ($fallback ?: $key);
 }
-
-include __DIR__ . '/../partials/layouts/layoutTop.php';
-?>
-
+include __DIR__ . '/../partials/layouts/layoutTop.php'; ?>
 <div class="dashboard-main-body">
     <div class="container-fluid">
         <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">

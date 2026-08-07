@@ -72,12 +72,37 @@ include __DIR__ . '/../partials/layouts/layoutTop.php';
                     <div class="card-header border-bottom bg-base py-16 px-24">
                         <h6 class="text-lg fw-semibold mb-0"><?php echo t_logs('log_files', 'Log Files'); ?></h6>
                     </div>
+                    <!-- Log Search Filter Form -->
+                    <form action="?page=logs" method="get" class="mb-3">
+                        <input type="text" name="search" placeholder="<?php echo t_logs('search', 'Search logs by name or content'); ?>" class="form-control form-control-lg" style="max-width: 400px;">
+                        <button type="submit" class="btn btn-primary">Filter</button>
+                    </form>
+<!-- Log Search Filter Form -->
                     <div class="card-body p-24">
                         <ul class="list-group radius-8" id="log-list">
                             <?php 
-                            $logCount = count($logFiles);
+                            // --- START Filtering Logic ---
+                            $searchQuery = $_GET['search'] ?? '';
+                            $logsToIterate = $logFiles; // Default to all files
+
+                            if (!empty($searchQuery)) {
+                                $filteredLogFiles = [];
+                                foreach ($logFiles as $key => $log) {
+                                    // Check if log name or icon contains the search query (case-insensitive check using stripos)
+                                    $matchName = stripos($log['name'], $searchQuery, 0);
+                                    $matchIcon = stripos($log['icon'], $searchQuery, 0);
+
+                                    if ($matchName !== false || $matchIcon !== false) {
+                                        // Store the full log entry for display
+                                        $filteredLogFiles[$key] = $log;
+                                    }
+                                }
+                                $logsToIterate = $filteredLogFiles; // Use filtered list if search is active
+                            }
+
+                            $logCount = count($logsToIterate);
                             $index = 0;
-                            foreach ($logFiles as $key => $log): 
+                            foreach ($logsToIterate as $key => $log): 
                                 $isActive = $selectedLog === $key;
                                 $isLast = (++$index === $logCount);
                                 $borderClass = $isLast ? '' : 'border-bottom-0';

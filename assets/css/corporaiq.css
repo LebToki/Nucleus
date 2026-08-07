@@ -652,6 +652,16 @@ body {
     background-color: var(--sidebar-hover);
 }
 
+/* Dark Theme Overrides for Headings and Text */
+[data-theme="dark"] h1, [data-theme="dark"] h2, [data-theme="dark"] h3 {
+    color: var(--text-color); /* Ensure headings use the correct text color in dark mode */
+}
+
+/* Global content fallback for general body/section elements when in dark mode */
+[data-theme="dark"] p, [data-theme="dark"] div:not(.card) {
+    color: var(--text-muted); 
+}
+
 /* Utility Classes */
 .text-gradient {
     background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);

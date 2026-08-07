@@ -1,4 +1,4 @@
-<?php
+on<?php
 /**
  * Nucleus - Preferences Page
  * Version: 3.0.0
@@ -38,7 +38,7 @@ function t_preferences($key, $fallback = '') {
 
 // Get current preferences
 $prefs = getDashboardPreferences();
-$laragonRoot = defined('LARAGON_ROOT') ? LARAGON_ROOT : '';
+$nucleusRoot = defined('NUCLEUS_ROOT') ? NUCLEUS_ROOT : __DIR__ . '/../..'; // Nucleus root directory fallback
 
 include __DIR__ . '/../partials/layouts/layoutTop.php';
 ?>
@@ -178,7 +178,7 @@ include __DIR__ . '/../partials/layouts/layoutTop.php';
                         <p class="text-secondary-light text-sm mb-16"><?php echo t_preferences('preferences_desc', 'Dashboard preferences override auto-detected values. These settings are stored locally and only affect the dashboard interface.'); ?></p>
                         <div class="d-flex align-items-center gap-2 mb-8">
                             <iconify-icon icon="solar:info-circle-bold" class="text-info-600"></iconify-icon>
-                            <span class="text-secondary-light text-sm"><?php echo t_preferences('detected_path', 'Detected Path'); ?>: <code><?php echo htmlspecialchars($laragonRoot); ?></code></span>
+                            <span class="text-secondary-light text-sm"><?php echo t_preferences('detected_path', 'Detected Path'); ?>: <code><?php echo htmlspecialchars($nucleusRoot); ?></code></span>
                         </div>
                     </div>
                 </div>

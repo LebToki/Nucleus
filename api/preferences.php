@@ -25,21 +25,21 @@ try {
             
             $prefs = [];
             
-            // Only include provided values
-            if (isset($input['laragon_root'])) {
-                $path = trim($input['laragon_root']);
-                if (!empty($path)) {
-                    $normalizedPath = rtrim($path, '/');
-                    if (!is_dir($normalizedPath)) {
-                        echo json_encode(['success' => false, 'error' => 'Invalid Laragon Root Path: Directory does not exist']);
-                        exit;
-                    }
-                    $prefs['laragon_root'] = $normalizedPath;
-                } else {
-                    $prefs['laragon_root'] = null; // Revert to auto-detect
-                }
-            }
-            if (isset($input['mysql_host'])) {
+			// Only include provided values
+			if (isset($input['root_path'])) {
+				$path = trim($input['root_path']);
+				if (!empty($path)) {
+					$normalizedPath = rtrim($path, DIRECTORY_SEPARATOR);
+					if (!is_dir($normalizedPath)) {
+						echo json_encode(['success' => false, 'error' => 'Invalid root path: Directory does not exist']);
+						exit;
+					}
+					$prefs['root_path'] = $normalizedPath;
+				} else {
+					$prefs['root_path'] = null; // Revert to auto-detect
+				}
+			}
+			if (isset($input['mysql_host'])) {
                 $prefs['mysql_host'] = $input['mysql_host'];
             }
             if (isset($input['mysql_user'])) {

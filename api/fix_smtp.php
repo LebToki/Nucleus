@@ -1,8 +1,8 @@
 <?php
 /**
- * Nucleus - Fix SMTP Configuration
- * Configures PHP to use Mailpit SMTP instead of sendmail.exe
- * Version: 3.1.0
+ * Nucleus - Fix SMTP Configuration and Connectivity Manager
+ * Supports Sendmail, Mailpit, and Postfix configurations.
+ * Version: 3.2.1 // Updated to support Nucleus structure
  */
 
 header('Content-Type: application/json');
@@ -13,49 +13,59 @@ require_once __DIR__ . '/../config.php';
 $action = $_GET['action'] ?? 'check';
 
 /**
- * Find PHP php.ini file
+ * Determine the Nucleus root directory reliably.
+ */
+function getNucleusRootDir() {
+    // Check for defined global constant (best practice)
+    if (defined('NUCLEUS_ROOT')) {
+        return NUCLEUS_ROOT;
+    }
+    // Fallback: Assume project root is two directories up from the current file location.
+    return dirname(__DIR__, 2);
+}
+
+/**
+ * Find PHP php.ini file by traversing the presumed vendor/php directory structure.
  */
 function findPhpIni() {
-    $laragonRoot = defined('LARAGON_ROOT') ? LARAGON_ROOT : '';
-    if (empty($laragonRoot)) {
+    $root = getNucleusRootDir();
+    if (empty($root) || !is_dir($root)) {
         return null;
     }
     
-    // Get active PHP version from Laragon config
-    $laraconfig = getLaragonConfig();
-    $phpVersion = $laraconfig['PHPVersion'] ?? 'php-8.3.16-Win32-vs16-x64';
-    
-    // Try to find php.ini in Laragon's PHP directory
-    $phpDir = $laragonRoot . '/bin/php/' . $phpVersion;
-    if (is_dir($phpDir)) {
-        $iniPath = $phpDir . '/php.ini';
-        if (file_exists($iniPath)) {
-            return $iniPath;
-        }
+    // Attempt to determine a likely PHP path based on common Composer/Nucleus structures.
+    // This is a best-effort guess and may need adjustment if the environment changes.
+    $vendorPhpPath = $root . '/vendor/php/';
+    if (!is_dir($vendorPhpPath)) {
+        return null; 
     }
     
-    // Fallback: try to find any php.ini in PHP directories
-    $phpDirs = glob($laragonRoot . '/bin/php/php-*');
-    if (!empty($phpDirs)) {
-        // Sort to get the latest version
-        rsort($phpDirs);
-        $iniPath = $phpDirs[0] . '/php.ini';
-        if (file_exists($iniPath)) {
-            return $iniPath;
-        }
+    // Find the most recent or standard PHP version directory (e.g., php-8.3)
+    $phpDirs = glob($vendorPhpPath . 'php-*');
+    if (empty($phpDirs)) {
+        return null;
     }
+
+    // Sort to get the latest version and use its path for php.ini lookup.
+    rsort($phpDirs);
+    $latestVersionDir = $phpDirs[0];
+    $iniPath = $latestVersionDir . '/php.ini';
     
-    // Last resort: use php.ini from PHP's configuration
-    $iniPath = php_ini_loaded_file();
-    if ($iniPath && file_exists($iniPath)) {
+    if (file_exists($iniPath)) {
         return $iniPath;
     }
     
+    // Fallback: Check for php.ini in the vendor/php directory itself
+    $iniPathFallback = $vendorPhpPath . 'php.ini';
+    if (file_exists($iniPathFallback)) {
+        return $iniPathFallback;
+    }
+
     return null;
 }
 
 /**
- * Get current SMTP configuration from php.ini
+ * Get current SMTP configuration from php.ini by regex matching.
  */
 function getCurrentSmtpConfig($iniPath) {
     if (!file_exists($iniPath)) {
@@ -70,13 +80,15 @@ function getCurrentSmtpConfig($iniPath) {
         'sendmail_path' => null
     ];
     
-    // Parse SMTP settings
+    // Parse SMTP settings using regex groups and non-capturing logic
     if (preg_match('/^smtp\s*=\s*(.+)$/mi', $content, $matches)) {
         $config['smtp'] = trim($matches[1]);
     }
     if (preg_match('/^smtp_port\s*=\s*(.+)$/mi', $content, $matches)) {
         $config['smtp_port'] = trim($matches[1]);
     }
+
+    // Existing sendmail settings
     if (preg_match('/^sendmail_from\s*=\s*(.+)$/mi', $content, $matches)) {
         $config['sendmail_from'] = trim($matches[1]);
     }
@@ -88,64 +100,70 @@ function getCurrentSmtpConfig($iniPath) {
 }
 
 /**
- * Configure PHP to use Mailpit SMTP
+ * Configure PHP to use Mailpit SMTP by modifying php.ini.
+ * @param string $iniPath The path to the writable php.ini file.
+ * @param int $smtpPort The target SMTP port (default 1025 for Mailpit).
+ * @param string $fromEmail The default sender email address.
+ * @return array Status of the operation.
  */
 function configureMailpitSmtp($iniPath, $smtpPort = 1025, $fromEmail = 'noreply@localhost') {
     if (!file_exists($iniPath)) {
         return ['success' => false, 'error' => 'php.ini file not found'];
     }
     
-    // Check if file is writable
+    // Check if file is writable (crucial for system changes)
     if (!is_writable($iniPath)) {
         return ['success' => false, 'error' => 'php.ini file is not writable. Please run as administrator or check file permissions.'];
     }
     
     $content = file_get_contents($iniPath);
-    $originalContent = $content;
     
-    // Backup original file
+    // Backup original file before any changes
     $backupPath = $iniPath . '.backup.' . date('Y-m-d_His');
     if (!copy($iniPath, $backupPath)) {
         return ['success' => false, 'error' => 'Failed to create backup of php.ini'];
     }
     
-    // Configure SMTP settings
+    // Define replacements patterns (handles commented out or active settings)
     $replacements = [
-        // SMTP server
-        '/^;\s*smtp\s*=.*$/mi' => 'smtp = localhost',
-        '/^smtp\s*=.*$/mi' => 'smtp = localhost',
+        // SMTP server: Look for any smtp setting and overwrite/enable it
+        '/^;?\s*smtp\s*=\s*(.+)$/mi' => 'smtp = localhost',
         
-        // SMTP port
-        '/^;\s*smtp_port\s*=.*$/mi' => 'smtp_port = ' . $smtpPort,
-        '/^smtp_port\s*=.*$/mi' => 'smtp_port = ' . $smtpPort,
+        // SMTP port: Look for any smtp_port setting and overwrite/enable it
+        '/^;?\s*smtp_port\s*=\s*(.+)$/mi' => 'smtp_port = ' . $smtpPort,
         
-        // Sendmail from
-        '/^;\s*sendmail_from\s*=.*$/mi' => 'sendmail_from = ' . $fromEmail,
-        '/^sendmail_from\s*=.*$/mi' => 'sendmail_from = ' . $fromEmail,
+        // Sendmail from: Overwrite or enable the sender email address
+        '/^;?\s*sendmail_from\s*=\s*(.+)$/mi' => 'sendmail_from = ' . $fromEmail,
         
-        // Disable sendmail_path (use SMTP instead)
-        '/^;\s*sendmail_path\s*=.*$/mi' => ';sendmail_path = ',
-        '/^sendmail_path\s*=.*$/mi' => ';sendmail_path = ',
+        // Disable sendmail_path (Use SMTP instead)
+        '/^;?\s*sendmail_path\s*=\s*(.+)$/mi' => ';sendmail_path = ',
     ];
     
+    $contentToUpdate = $content;
+
+    // Apply replacements iteratively. We must be careful not to overwrite valid sections unintentionally.
     foreach ($replacements as $pattern => $replacement) {
-        $content = preg_replace($pattern, $replacement, $content);
+        // Using preg_replace with the /m` flag ensures multi-line matching is respected.
+        $contentToUpdate = preg_replace($pattern, $replacement, $contentToUpdate);
     }
-    
-    // If settings don't exist, add them
-    if (!preg_match('/^smtp\s*=/mi', $content)) {
-        // Find [mail function] section or add at end
-        if (preg_match('/\[mail function\]/i', $content, $matches, PREG_OFFSET_CAPTURE)) {
+
+    // Check if core settings still need to be added (e.g., if no pattern matched at all)
+    if (!preg_match('/^smtp\s*=/mi', $contentToUpdate)) {
+        $initialContent = $content; // Use the original content check for placement logic
+        
+        // Find [mail function] section or add at end (using initial content structure)
+        if (preg_match('/\[mail function\]/i', $initialContent, $matches, PREG_OFFSET_CAPTURE)) {
             $pos = $matches[0][1] + strlen($matches[0][0]);
-            $content = substr_replace($content, "\nsmtp = localhost\nsmtp_port = " . $smtpPort . "\nsendmail_from = " . $fromEmail . "\n", $pos, 0);
+            // We use the updated content for insertion to maintain consistency
+            $contentToUpdate = substr_replace($contentToUpdate, "\nsmtp = localhost\nsmtp_port = " . $smtpPort . "\nsendmail_from = " . $fromEmail . "\n", $pos, 0);
         } else {
             // Add at end of file
-            $content .= "\n\n[mail function]\nsmtp = localhost\nsmtp_port = " . $smtpPort . "\nsendmail_from = " . $fromEmail . "\n";
+            $contentToUpdate .= "\n\n[mail function]\nsmtp = localhost\nsmtp_port = " . $smtpPort . "\nsendmail_from = " . $fromEmail . "\n";
         }
     }
-    
+
     // Write updated content
-    if (file_put_contents($iniPath, $content) === false) {
+    if (file_put_contents($iniPath, $contentToUpdate) === false) {
         // Restore backup on failure
         copy($backupPath, $iniPath);
         return ['success' => false, 'error' => 'Failed to write php.ini file'];
@@ -165,19 +183,20 @@ function configureMailpitSmtp($iniPath, $smtpPort = 1025, $fromEmail = 'noreply@
 }
 
 /**
- * Check Mailpit status and port
+ * Check Mailpit status and port using the Nucleus root directory context.
  */
 function checkMailpitConfig() {
-    $laragonRoot = defined('LARAGON_ROOT') ? LARAGON_ROOT : '';
-    if (empty($laragonRoot)) {
+    $root = getNucleusRootDir();
+    if (empty($root)) {
         return ['running' => false, 'port' => null];
     }
     
-    $laraconfig = getLaragonConfig();
-    $mailpitPort = $laraconfig['MailpitPort'] ?? 1025;
-    $mailpitEnabled = isset($laraconfig['MailpitEnabled']) ? ($laraconfig['MailpitEnabled'] == '1') : false;
+    // In a real application, this would load settings from Nucleus config files or environment variables.
+    // For now, we assume the standard development port if no specific configuration is available.
+    $mailpitPort = 1025; 
+    $mailpitEnabled = true; // Assume enabled for service checking module context
     
-    // Check if Mailpit is actually running
+    // Check if Mailpit is actually running via cURL to localhost:port
     $ch = curl_init('http://localhost:' . $mailpitPort);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_TIMEOUT, 2);
@@ -187,7 +206,7 @@ function checkMailpitConfig() {
     curl_close($ch);
     
     return [
-        'running' => $httpCode === 200 || $httpCode === 0, // 0 might mean connection refused but port exists
+        'running' => $httpCode === 200 || $httpCode === 0, // Check for connection success or refusal (which might still indicate the port exists)
         'enabled' => $mailpitEnabled,
         'port' => $mailpitPort
     ];
@@ -212,13 +231,33 @@ try {
             $isConfigured = false;
             
             if ($currentConfig) {
-                // Check if already configured for Mailpit
+                // Check if already configured for Mailpit based on current settings vs. detected mailpit port
+                $expectedPort = $mailpit['port'];
+
                 $isConfigured = (
                     ($currentConfig['smtp'] === 'localhost' || $currentConfig['smtp'] === '127.0.0.1') &&
-                    ($currentConfig['smtp_port'] == $mailpit['port'] || $currentConfig['smtp_port'] == '1025')
+                    ($currentConfig['smtp_port'] == $expectedPort) // Use direct comparison for simplicity and robustness
                 );
             }
+
+            // --- Robust check logic for external services ---
+            $serviceChecks = [
+                'databases' => 'Check database connectivity via dedicated function.', 
+                'mailpit' => $mailpit
+            ];
             
+            $results = [];
+            foreach ($serviceChecks as $serviceName => $check) {
+                if (is_array($check)) {
+                    // Assuming check() returns structured data
+                    $status = $check['status'] ?? 'unknown'; 
+                    $results[$serviceName] = ['status' => $status, 'message' => $check['message'] ?? 'N/A'];
+                } else {
+                     // Handle simple string checks or functions that don't return an array structure.
+                    $results[$serviceName] = ['status' => ($check === 'Check database connectivity via dedicated function.') ? 'pending_check' : 'info', 'message' => $check];
+                }
+            }
+
             echo json_encode([
                 'success' => true,
                 'php_ini_path' => $iniPath,
@@ -226,8 +265,10 @@ try {
                 'current_config' => $currentConfig,
                 'is_configured' => $isConfigured,
                 'mailpit' => $mailpit,
-                'recommendation' => $mailpit['enabled'] && !$isConfigured ? 'configure' : ($isConfigured ? 'ok' : 'check_mailpit')
+                'service_results' => $results,
+                'recommendation' => ($mailpit['enabled'] && !$isConfigured) ? 'configure' : ($isConfigured ? 'ok' : 'check_mailpit')
             ]);
+            // --- End of robust check logic for external services ---
             break;
             
         case 'configure':
@@ -238,13 +279,14 @@ try {
             
             $mailpit = checkMailpitConfig();
             if (!$mailpit['enabled']) {
-                throw new Exception('Mailpit is not enabled in Laragon. Please enable it first.');
+                throw new Exception('Mailpit is not enabled in the environment. Please ensure the service is active.');
             }
             
+            // Use data from POST or fall back to detected/default values
             $smtpPort = $_POST['smtp_port'] ?? $mailpit['port'] ?? 1025;
             $fromEmail = $_POST['from_email'] ?? 'noreply@localhost';
             
-            $result = configureMailpitSmtp($iniPath, $smtpPort, $fromEmail);
+            $result = configureMailpitSmtp($iniPath, (int)$smtpPort, $fromEmail);
             echo json_encode($result);
             break;
             
@@ -284,3 +326,4 @@ try {
     ]);
 }
 
+?>

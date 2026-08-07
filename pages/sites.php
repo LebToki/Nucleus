@@ -37,7 +37,7 @@ function t_sites($key, $fallback = '') {
 }
 
 // Get Laragon / Nucleus root and virtual host directory
-$laragonRoot = defined('LARAGON_ROOT') ? LARAGON_ROOT : '/var/www/html';
+$nucleusRoot = defined('NUCLEUS_ROOT') ? NUCLEUS_ROOT : __DIR__ . '/../..'; // Assuming the root is now determined differently
 $sitesEnabledDir = '/etc/apache2/sites-enabled';
 if (!is_dir($sitesEnabledDir)) {
     $sitesEnabledDir = '/etc/apache2/sites-available';
