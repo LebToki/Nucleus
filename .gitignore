@@ -13,12 +13,18 @@ sas
 worldmonitor/
 chrome/
 nul
+audiencepulse/
+BeitNoura/
 
 # --- Downloaded at runtime (install via Plugins page) ---
 phpmyadmin/
 
 # --- Working drafts (not part of the codebase) ---
 promo/
+
+# --- Nucleus Pro (private, proprietary — hosted on local Gitea, never OSS) ---
+nucleus-pro/
+nucleus-pro-*.md
 
 # --- Source assets (deployed copies live in assets/) ---
 nucleus-logo/

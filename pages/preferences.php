@@ -69,9 +69,9 @@ include __DIR__ . '/../partials/layouts/layoutTop.php';
                                 
                                 <div class="row mb-16">
                                     <div class="col-12">
-                                        <label class="form-label fw-medium mb-8"><?php echo t_preferences('laragon_root', 'Platform Root Path'); ?></label>
-                                        <input type="text" class="form-control" id="laragon-root" name="laragon_root" value="<?php echo htmlspecialchars($prefs['laragon_root'] ?? $laragonRoot); ?>" placeholder="/var/www/html">
-                                        <small class="text-secondary-light text-sm mt-4 d-block"><?php echo t_preferences('laragon_root_desc', 'Override auto-detected web server root path'); ?></small>
+                                        <label class="form-label fw-medium mb-8"><?php echo t_preferences('nucleus_root', 'Platform Root Path'); ?></label>
+                                        <input type="text" class="form-control" id="nucleus-root" name="nucleus_root" value="<?php echo htmlspecialchars($prefs['nucleus_root'] ?? $laragonRoot); ?>" placeholder="/var/www/html">
+                                        <small class="text-secondary-light text-sm mt-4 d-block"><?php echo t_preferences('nucleus_root_desc', 'Override auto-detected web server root path'); ?></small>
                                     </div>
                                 </div>
                                 

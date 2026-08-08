@@ -43,6 +43,9 @@ if (file_exists($langConfigFile)) {
 
 // Get current language
 $currentLang = strtolower($_GET['lang'] ?? $_COOKIE['lang'] ?? 'en');
+if (!isset($langConfig[$currentLang])) {
+    $currentLang = 'en';
+}
 
 // Set up asset paths
 $assetsImageUrl = defined('ASSETS_URL') ? ASSETS_URL . '/images' : 'assets/images';
@@ -166,6 +169,13 @@ function getSidebarTranslation($key, $fallback = '') {
                 <a href="index.php?page=plugins" class="<?php echo $currentPage === 'plugins' ? 'active' : ''; ?>">
                     <iconify-icon icon="solar:plugin-bold" class="menu-icon"></iconify-icon>
                     <span>Plugins</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="index.php?page=changelog" class="<?php echo $currentPage === 'changelog' ? 'active' : ''; ?>">
+                    <iconify-icon icon="solar:notes-bold" class="menu-icon"></iconify-icon>
+                    <span><?php echo getSidebarTranslation('changelog', 'Changelog'); ?></span>
                 </a>
             </li>
 

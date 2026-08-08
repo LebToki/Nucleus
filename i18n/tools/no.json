@@ -1,0 +1,20 @@
+{
+    "title": "Verktøy",
+    "manage_tools": "Administrer verktøy",
+    "tool_name": "Verktøynavn",
+    "description": "Beskrivelse",
+    "category": "Kategori",
+    "actions": "Handlinger",
+    "run": "Kjør",
+    "open": "Åpne",
+    "composer": "Composer",
+    "npm": "NPM",
+    "git": "Git",
+    "node": "Node.js",
+    "python": "Python",
+    "terminal": "Terminal",
+    "file_manager": "Filbehandler",
+    "phpmyadmin": "phpMyAdmin",
+    "redis_commander": "Redis Commander",
+    "mongodb_compass": "MongoDB Compass"
+}

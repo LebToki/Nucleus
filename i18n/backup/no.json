@@ -1,0 +1,20 @@
+{
+    "title": "Sikkerhetskopi",
+    "create_backup": "Opprett sikkerhetskopi",
+    "restore_backup": "Gjenopprett sikkerhetskopi",
+    "backup_name": "Navn på sikkerhetskopi",
+    "backup_type": "Type sikkerhetskopi",
+    "created_at": "Opprettet",
+    "size": "Størrelse",
+    "status": "Status",
+    "actions": "Handlinger",
+    "download": "Last ned",
+    "delete": "Slett",
+    "full_backup": "Full sikkerhetskopi",
+    "database_backup": "Database-sikkerhetskopi",
+    "files_backup": "Fil-sikkerhetskopi",
+    "scheduled_backups": "Planlagte sikkerhetskopier",
+    "backup_settings": "Sikkerhetskopi-innstillinger",
+    "auto_backup": "Automatisk sikkerhetskopi",
+    "backup_location": "Plassering for sikkerhetskopi"
+}

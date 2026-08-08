@@ -39,7 +39,6 @@ if (substr($assetsUrl, 0, 1) !== '/') {
 <meta property="twitter:image" content="/assets/images/nucleus-og.png">
 
 <!-- Additional Meta Tags -->
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#4f46e5">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">

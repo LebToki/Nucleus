@@ -1,7 +1,31 @@
+<?php
+// Running version + (cached) latest repo version shown in the footer.
+$footerVersion = function_exists('getAppVersion') ? getAppVersion() : (defined('APP_VERSION') ? APP_VERSION : '1.0.0');
+$footerLatest = function_exists('getCachedLatestVersion') ? getCachedLatestVersion() : null;
+$footerReleaseUrl = defined('APP_GITHUB') && strpos(APP_GITHUB, 'github.com/') !== false
+    ? rtrim(APP_GITHUB, '/') . '/releases'
+    : 'https://github.com/LebToki/Nucleus/releases';
+?>
 <footer class="d-footer">
     <div class="row align-items-center justify-content-between">
         <div class="col-auto">
-            <p class="mb-0">© <?php echo date('Y'); ?> Nucleus by Tarek Tarabichi — <span class="text-secondary-light">The Missing Dashboard for Linux Developers</span></p>
+            <p class="mb-0 d-inline-flex align-items-center gap-2 flex-wrap">
+                © <?php echo date('Y'); ?> Nucleus by Tarek Tarabichi
+                <span class="badge bg-primary-600">v<?php echo htmlspecialchars((string)$footerVersion); ?></span>
+                <?php if (!empty($footerLatest['latest_version'])): ?>
+                    <a href="<?php echo htmlspecialchars((string)$footerReleaseUrl); ?>" target="_blank" rel="noopener"
+                       class="text-secondary-light hover-text-primary d-inline-flex align-items-center gap-1"
+                       title="<?php echo $footerLatest['available'] ? (function_exists('t') ? t('dashboard.update_available', 'Update available') : 'Update available') : (function_exists('t') ? t('dashboard.up_to_date', 'Up to date') : 'Up to date'); ?> — latest release on GitHub">
+                        <iconify-icon icon="solar:download-bold" class="text-sm"></iconify-icon>
+                        <?php if ($footerLatest['available']): ?>
+                            <?php echo function_exists('t') ? t('dashboard.update_available', 'Update available') : 'Update available'; ?>
+                        <?php else: ?>
+                            <?php echo function_exists('t') ? t('dashboard.up_to_date', 'Up to date') : 'Up to date'; ?>
+                        <?php endif; ?>
+                        v<?php echo htmlspecialchars((string)$footerLatest['latest_version']); ?>
+                    </a>
+                <?php endif; ?>
+            </p>
         </div>
         <div class="col-auto">
             <p class="mb-0">Made with ❤️ by <a href="https://2tinteractive.com" target="_blank" class="text-primary-600 hover-text-primary">2TInteractive</a></p>

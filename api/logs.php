@@ -37,7 +37,7 @@ $action = $_GET['action'] ?? 'read';
 $logType = $_GET['type'] ?? '';
 $lines = $_GET['lines'] ?? 1000;
 
-if (!defined('LARAGON_ROOT')) {
+if (!defined('NUCLEUS_ROOT')) {
     ob_clean();
     http_response_code(500);
     echo json_encode(['success' => false, 'error' => 'Laragon root not defined']);

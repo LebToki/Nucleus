@@ -13,7 +13,7 @@ if (!defined('APP_NAME')) {
     define('APP_NAME', 'Nucleus');
 }
 if (!defined('APP_VERSION')) {
-    define('APP_VERSION', '1.0.2');
+    define('APP_VERSION', '1.2.0');
 }
 if (!defined('APP_AUTHOR')) {
     define('APP_AUTHOR', 'Tarek Tarabichi');
@@ -51,6 +51,12 @@ if (APP_DEBUG) {
     @ini_set('display_startup_errors', 0);
 }
 
+// Load the core class autoloader so Nucleus\Core classes (e.g. Security) are
+// available before Security::* / System::* helpers are referenced below.
+if (file_exists(__DIR__ . '/includes/autoload.php')) {
+    require_once __DIR__ . '/includes/autoload.php';
+}
+
 // Security settings
 if (!defined('SECURITY_HEADERS_ENABLED')) {
     define('SECURITY_HEADERS_ENABLED', true);
@@ -77,7 +83,7 @@ if (!defined('AUTH_SHARED_WORKSPACE')) {
 }
 if (!defined('ADMIN_PASSWORD')) {
     // Priority: env var → auto-generated file → random fallback
-    $envPassword = getenv('NUCLEUS_PASSWORD') ?: getenv('LARAGON_DASHBOARD_PASSWORD');
+    $envPassword = getenv('NUCLEUS_PASSWORD');
     if ($envPassword) {
         define('ADMIN_PASSWORD', $envPassword);
     } else {
@@ -140,9 +146,9 @@ if (!defined('BASE_URL')) {
     $basePath = '';
     
     // Method 1: Use SCRIPT_NAME (most reliable - always reflects the actual script being executed)
-    // When accessing via index.php?page=projects, SCRIPT_NAME is /Laragon-Dashboard/index.php
-    // When accessing pages/projects.php directly, SCRIPT_NAME is /Laragon-Dashboard/pages/projects.php
-    // When accessing via custom domain (laragon-dashboard.local), SCRIPT_NAME is /index.php
+    // When accessing via index.php?page=projects, SCRIPT_NAME is /nucleus/index.php
+    // When accessing pages/projects.php directly, SCRIPT_NAME is /nucleus/pages/projects.php
+    // When accessing via custom domain (nucleus.local), SCRIPT_NAME is /index.php
     // When using PHP built-in server with -t ., SCRIPT_NAME is /index.php and DOCUMENT_ROOT is the dashboard dir
     $scriptName = $_SERVER['SCRIPT_NAME'] ?? $_SERVER['PHP_SELF'] ?? '';
     $docRoot = $_SERVER['DOCUMENT_ROOT'] ?? '';
@@ -159,7 +165,7 @@ if (!defined('BASE_URL')) {
         $basePath = '';
     } else if (!empty($scriptName)) {
         $basePath = dirname($scriptName);
-        // Normalize: dirname('/Laragon-Dashboard/index.php') = '/Laragon-Dashboard'
+        // Normalize: dirname('/nucleus/index.php') = '/nucleus'
         // dirname('/index.php') = '/' or '.'
         // For custom domains, if script is in subdirectory, preserve it
         if ($basePath === '.' || $basePath === '/') {
@@ -189,7 +195,6 @@ if (!defined('BASE_URL')) {
         // If script is in a subdirectory of document root, calculate the path
         if (!empty($docRoot) && !empty($scriptFile)) {
             $docRoot = rtrim($docRoot, '/');
-            $scriptFile = str_replace('\\', '/', $scriptFile);
 
             // Check if script is inside document root
             if (strpos($scriptFile, $docRoot) === 0) {
@@ -226,11 +231,11 @@ if (!defined('ASSETS_URL')) {
     $docRootNormalized = rtrim($docRoot, '/');
 
     if ($docRootNormalized === $appRootNormalized) {
-        // PHP built-in server or Laragon auto-vhost: dashboard IS the document root, so assets are at /assets
+        // PHP built-in server or auto-vhost: dashboard IS the document root, so assets are at /assets
         $assetsPath = '/assets';
     } else {
         // Check if assets directory exists at document root level
-        // This handles cases where Laragon auto-vhost points directly to Laragon-Dashboard
+        // This handles cases where the auto-vhost points directly to the dashboard
         $assetsAtDocRoot = $docRootNormalized . '/assets';
         if (is_dir($assetsAtDocRoot)) {
             // Assets are directly under document root (auto-vhost scenario)
@@ -256,7 +261,7 @@ if (!defined('TEMPLATE_URL')) {
 
 /**
  * Get Dashboard preferences (stored in JSON file)
- * Allows overriding Laragon detection
+ * Allows overriding auto-detection
  */
 if (!function_exists('getDashboardPreferences')) {
     function getDashboardPreferences() {
@@ -267,7 +272,7 @@ if (!function_exists('getDashboardPreferences')) {
         
         $prefsFile = $dataDir . '/preferences.json';
         $defaults = [
-            'laragon_root' => null, // null means auto-detect
+            'nucleus_root' => null, // null means auto-detect
             'mysql_host' => null,
             'mysql_user' => null,
             'mysql_password' => null,
@@ -308,14 +313,6 @@ if (!function_exists('saveDashboardPreferences')) {
         $prefsFile = $dataDir . '/preferences.json';
         $existing = getDashboardPreferences();
         
-        // Normalize paths before saving
-        if (isset($preferences['laragon_root'])) {
-            $preferences['laragon_root'] = rtrim(str_replace('\\', '/', $preferences['laragon_root']), '/');
-        }
-        if (isset($preferences['document_root'])) {
-            $preferences['document_root'] = rtrim(str_replace('\\', '/', $preferences['document_root']), '/');
-        }
-        
         $merged = array_merge($existing, $preferences);
         
         // Remove null and empty string values to allow auto-detection
@@ -331,68 +328,89 @@ if (!function_exists('saveDashboardPreferences')) {
  * Get the project root directory
  * Linux-only: checks env vars, Apache DocumentRoot, then fallback to /var/www
  */
-function getLaragonRoot() {
-    static $laragonRoot = null;
-    if ($laragonRoot !== null) {
-        return $laragonRoot;
+function getNucleusRoot() {
+    static $nucleusRoot = null;
+    if ($nucleusRoot !== null) {
+        return $nucleusRoot;
     }
 
     // Check if constant already defined
-    if (defined('LARAGON_ROOT')) {
-        return $laragonRoot = LARAGON_ROOT;
+    if (defined('NUCLEUS_ROOT')) {
+        return $nucleusRoot = NUCLEUS_ROOT;
     }
 
     // Delegate to the Linux-aware System class if available
     if (class_exists('\Nucleus\Core\System')) {
-        return $laragonRoot = \Nucleus\Core\System::getLaragonRoot();
+        return $nucleusRoot = \Nucleus\Core\System::getNucleusRoot();
     }
 
-    // 1. Check Dashboard Preferences override
+    // 1. Check Dashboard Preferences override (nucleus_root, legacy laragon_root)
     $prefs = getDashboardPreferences();
-    if (!empty($prefs['laragon_root'])) {
-        $prefPath = rtrim($prefs['laragon_root'], '/');
+    $prefKey = !empty($prefs['nucleus_root']) ? 'nucleus_root' : (!empty($prefs['laragon_root']) ? 'laragon_root' : null);
+    if ($prefKey !== null && !empty($prefs[$prefKey])) {
+        $prefPath = rtrim($prefs[$prefKey], '/');
         if (is_dir($prefPath)) {
-            return $laragonRoot = $prefPath;
+            return $nucleusRoot = $prefPath;
         }
     }
 
     // 2. Check environment variables
-    $envPath = getenv('PROJECTS_ROOT') ?: getenv('LARAGON_ROOT');
+    $envPath = getenv('PROJECTS_ROOT') ?: getenv('LARAGON_ROOT') ?: getenv('NUCLEUS_ROOT');
     if (!empty($envPath) && is_dir($envPath)) {
-        return $laragonRoot = rtrim($envPath, '/');
+        return $nucleusRoot = rtrim($envPath, '/');
     }
 
     // 3. Try Apache DocumentRoot detection
     $docRoot = $_SERVER['DOCUMENT_ROOT'] ?? '';
     if (!empty($docRoot) && is_dir($docRoot)) {
-        return $laragonRoot = rtrim($docRoot, '/');
+        return $nucleusRoot = rtrim($docRoot, '/');
     }
 
     // 4. Fallback
-    return $laragonRoot = '/var/www';
+    return $nucleusRoot = '/var/www';
 }
 
 /**
- * Get Laragon configuration
- * On Linux (Nucleus), laragon.ini does not exist — returns empty array.
+ * Backward-compatible alias for getNucleusRoot()
+ * @deprecated since v1.2.0
+ */
+if (!function_exists('getLaragonRoot')) {
+    function getLaragonRoot() {
+        return getNucleusRoot();
+    }
+}
+
+/**
+ * Get Nucleus configuration
+ * On Linux (Nucleus), no Windows ini exists — returns empty array.
  * MySQL settings fall through to defaults in the MySQL config section.
  */
-function getLaragonConfig() {
+function getNucleusConfig() {
     return [];
 }
 
 /**
- * Get Laragon general preferences
- * Linux-only: no laragon.ini, uses Dashboard preferences and Linux defaults
+ * Backward-compatible alias for getNucleusConfig()
+ * @deprecated since v1.2.0
  */
-function getLaragonPreferences() {
-    $laragonRoot = getLaragonRoot();
+if (!function_exists('getLaragonConfig')) {
+    function getLaragonConfig() {
+        return getNucleusConfig();
+    }
+}
+
+/**
+ * Get Nucleus general preferences
+ * Linux-only: uses Dashboard preferences and Linux defaults
+ */
+function getNucleusPreferences() {
+    $nucleusRoot = getNucleusRoot();
     $dashboardPrefs = getDashboardPreferences();
 
     $defaults = [
         'StartAllAutomatically' => false,
-        'DocumentRoot' => $laragonRoot . '/html',
-        'DataDirectory' => $laragonRoot . '/data',
+        'DocumentRoot' => $nucleusRoot . '/html',
+        'DataDirectory' => $nucleusRoot . '/data',
         'HostnameFormat' => '{name}.local',
         'AutoBackup' => false,
         'BackupInterval' => 8,
@@ -413,10 +431,20 @@ function getLaragonPreferences() {
 }
 
 /**
+ * Backward-compatible alias for getNucleusPreferences()
+ * @deprecated since v1.2.0
+ */
+if (!function_exists('getLaragonPreferences')) {
+    function getLaragonPreferences() {
+        return getNucleusPreferences();
+    }
+}
+
+/**
  * Auto-detect domain suffix
  * Linux-only: returns '.local' as default, with Dashboard preference override
  */
-function getLaragonDomainSuffix() {
+function getNucleusDomainSuffix() {
     $prefs = getDashboardPreferences();
     if (!empty($prefs['domain_suffix'])) {
         $suffix = ltrim($prefs['domain_suffix'], '.');
@@ -427,13 +455,33 @@ function getLaragonDomainSuffix() {
 }
 
 /**
+ * Backward-compatible alias for getNucleusDomainSuffix()
+ * @deprecated since v1.2.0
+ */
+if (!function_exists('getLaragonDomainSuffix')) {
+    function getLaragonDomainSuffix() {
+        return getNucleusDomainSuffix();
+    }
+}
+
+/**
  * Auto-detect sendmail output directory (Linux-only)
  */
-function getLaragonSendmailDir() {
+function getNucleusSendmailDir() {
     if (class_exists('\Nucleus\Core\System')) {
         return \Nucleus\Core\System::getSendmailDir();
     }
     return '/var/log/nucleus/mail/';
+}
+
+/**
+ * Backward-compatible alias for getNucleusSendmailDir()
+ * @deprecated since v1.2.0
+ */
+if (!function_exists('getLaragonSendmailDir')) {
+    function getLaragonSendmailDir() {
+        return getNucleusSendmailDir();
+    }
 }
 
 /**
@@ -477,21 +525,25 @@ function getAppVersion() {
     }
     
     // Default fallback
-    return $appVersion = defined('APP_VERSION') ? APP_VERSION : '4.0.0';
+    return $appVersion = APP_VERSION;
 }
 
-// Get Laragon root path (only define if not already defined)
+// Get Nucleus root path (only define if not already defined)
+if (!defined('NUCLEUS_ROOT')) {
+    define('NUCLEUS_ROOT', getNucleusRoot());
+}
+
+// Backward-compatible alias (deprecated since v1.2.0)
 if (!defined('LARAGON_ROOT')) {
-    $LARAGON_ROOT = getLaragonRoot();
-    define('LARAGON_ROOT', $LARAGON_ROOT);
+    define('LARAGON_ROOT', NUCLEUS_ROOT);
 }
 
 // Auto-detect configuration values (only define if not already defined)
 if (!defined('SENDMAIL_OUTPUT_DIR')) {
-    define('SENDMAIL_OUTPUT_DIR', getenv('SENDMAIL_OUTPUT_DIR') ?: getLaragonSendmailDir());
+    define('SENDMAIL_OUTPUT_DIR', getenv('SENDMAIL_OUTPUT_DIR') ?: getNucleusSendmailDir());
 }
 if (!defined('DOMAIN_SUFFIX')) {
-    define('DOMAIN_SUFFIX', getenv('DOMAIN_SUFFIX') ?: getLaragonDomainSuffix());
+    define('DOMAIN_SUFFIX', getenv('DOMAIN_SUFFIX') ?: getNucleusDomainSuffix());
 }
 
 // Force HTTPS for project URLs

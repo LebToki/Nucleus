@@ -26,7 +26,7 @@
     "send": "Send",
     "cancel": "Cancel",
     "mailpit_not_running": "Mailpit is not running",
-    "mailpit_not_running_desc": "Please start Mailpit from Laragon's service manager or open it directly.",
+    "mailpit_not_running_desc": "Please start the Mailpit service from the Nucleus Services page or open it directly.",
     "open_mailpit": "Open Mailpit",
     "open_mailpit_web": "Open Mailpit Web"
 }

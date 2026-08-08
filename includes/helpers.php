@@ -1,7 +1,7 @@
 <?php
 /**
  * Nucleus - Helper Functions
- * Version: 4.0.3
+ * Version: 1.0.x
  * Provides utility functions for the dashboard
  */
 
@@ -43,7 +43,7 @@ if (!function_exists('check_auth')) {
     }
 }
 
-// Note: getLaragonRoot(), getLaragonSendmailDir(), getLaragonDomainSuffix(), getAppVersion()
+// Note: getNucleusRoot(), getNucleusSendmailDir(), getNucleusDomainSuffix(), getAppVersion()
 // are defined in config.php which loads before this file.
 
 /**
@@ -240,17 +240,8 @@ if (!function_exists('getDocumentRoot')) {
             return $docRoot;
         }
 
-        $laragonRoot = getLaragonRoot();
-        return $laragonRoot . '/html';
-    }
-}
-
-/**
- * Get Nucleus version (replaces legacy Laragon version)
- */
-if (!function_exists('getLaragonVersion')) {
-    function getLaragonVersion() {
-        return 'Nucleus';
+        $nucleusRoot = getNucleusRoot();
+        return $nucleusRoot . '/html';
     }
 }
 
@@ -263,8 +254,8 @@ if (!function_exists('getAllProjects')) {
         if (class_exists('\Nucleus\Core\System') && method_exists('\Nucleus\Core\System', 'getWwwPath')) {
             $wwwPath = \Nucleus\Core\System::getWwwPath();
         } else {
-            $laragonRoot = getLaragonRoot();
-            $wwwPath = $laragonRoot . '/html';
+            $nucleusRoot = getNucleusRoot();
+            $wwwPath = $nucleusRoot . '/html';
         }
 
         if (!is_dir($wwwPath)) {
@@ -796,7 +787,7 @@ if (!function_exists('readLogFile')) {
             return ['error' => 'Log file not found'];
         }
         
-        // ⚡ Bolt: Use native PHP implementation to avoid slow powershell subprocess creation
+        // Use native PHP implementation to avoid shell subprocess creation
         if (class_exists('\\Nucleus\\Core\\Services\\Logs')) {
             $result = \Nucleus\Core\Services\Logs::read($path, $lines);
             if ($result) {
@@ -833,8 +824,8 @@ if (!function_exists('clearLogFile')) {
  */
 if (!function_exists('createProject')) {
     function createProject($name, $type, $options = []) {
-        $laragonRoot = getLaragonRoot();
-        $wwwDir = $laragonRoot . '/html';
+        $nucleusRoot = getNucleusRoot();
+        $wwwDir = $nucleusRoot . '/html';
         $wwwPath = $wwwDir . '/' . $name;
 
         if (is_dir($wwwPath)) {
@@ -888,8 +879,8 @@ if (!function_exists('createProject')) {
  */
 if (!function_exists('deleteProject')) {
     function deleteProject($name) {
-        $laragonRoot = getLaragonRoot();
-        $wwwDir = $laragonRoot . '/html';
+        $nucleusRoot = getNucleusRoot();
+        $wwwDir = $nucleusRoot . '/html';
         $projectPath = $wwwDir . '/' . $name;
 
         if (!is_dir($projectPath)) {
@@ -919,7 +910,7 @@ if (!function_exists('getDashboardPreferences')) {
         
         $prefsFile = $dataDir . '/preferences.json';
         $defaults = [
-            'laragon_root' => null,
+            'nucleus_root' => null,
             'mysql_host' => null,
             'mysql_user' => null,
             'mysql_password' => null,
@@ -979,44 +970,28 @@ if (!function_exists('clearAllCaches')) {
         $results = [];
 
         // Clear dashboard cache
-        $cacheDir = dirname(__DIR__) . '/temp/cache';
-        if (is_dir($cacheDir)) {
-            $files = glob($cacheDir . '/*');
-            foreach ($files as $file) {
-                if (is_file($file)) {
-                    @unlink($file);
-                }
-            }
-            $results['dashboard_cache'] = true;
-        }
+        $cacheRoot = defined('CACHE_ROOT') ? CACHE_ROOT : dirname(__DIR__) . '/cache';
+        $cacheDirs = [
+            'dashboard_cache' => $cacheRoot,
+            'cache_data' => $cacheRoot . '/data',
+        ];
 
-        // Clear session cache
-        $sessionDir = dirname(__DIR__) . '/temp/sessions';
-        if (is_dir($sessionDir)) {
-            $files = glob($sessionDir . '/*');
-            foreach ($files as $file) {
-                if (is_file($file)) {
-                    @unlink($file);
+        foreach ($cacheDirs as $key => $cacheDir) {
+            if (!is_dir($cacheDir)) {
+                continue;
+            }
+            $files = glob($cacheDir . '/*');
+            if ($files !== false) {
+                foreach ($files as $file) {
+                    if (is_file($file)) {
+                        @unlink($file);
+                    }
                 }
             }
-            $results['session_cache'] = true;
+            $results[$key] = true;
         }
 
         return $results;
-    }
-}
-
-/**
- * Optimize databases
- */
-if (!function_exists('optimizeDatabases')) {
-    function optimizeDatabases() {
-        // This would require MySQL credentials
-        // For now, return a placeholder
-        return [
-            'success' => false,
-            'message' => 'Database optimization requires MySQL credentials. Please configure in config.php',
-        ];
     }
 }
 
@@ -1098,24 +1073,6 @@ if (!function_exists('checkGitStatus')) {
 }
 
 /**
- * Get Nucleus config (replaces legacy Laragon config)
- */
-if (!function_exists('getLaragonConfig')) {
-    function getLaragonConfig() {
-        $configFile = dirname(__DIR__) . '/data/nucleus.json';
-
-        if (!file_exists($configFile)) {
-            return [];
-        }
-
-        $content = @file_get_contents($configFile);
-        $config = @json_decode($content, true);
-
-        return is_array($config) ? $config : [];
-    }
-}
-
-/**
  * Fix SMTP configuration
  */
 if (!function_exists('fixSMTP')) {
@@ -1180,8 +1137,199 @@ if (!function_exists('getMySQLIniPath')) {
     }
 }
 
+/**
+ * Get Apache main configuration path (Linux)
+ */
+if (!function_exists('getApacheConfPath')) {
+    function getApacheConfPath() {
+        $linuxPaths = [
+            '/etc/apache2/apache2.conf',
+            '/etc/httpd/conf/httpd.conf',
+            '/etc/apache2/httpd.conf',
+            '/etc/apache/httpd.conf'
+        ];
+        foreach ($linuxPaths as $path) {
+            if (file_exists($path)) return $path;
+        }
+
+        // Fallback: derive from apache2ctl -V HTTPD_ROOT
+        $output = @shell_exec('apache2ctl -V 2>/dev/null');
+        if ($output && preg_match('/HTTPD_ROOT="([^"]+)"/', $output, $m)) {
+            foreach (['apache2.conf', 'httpd.conf', 'conf/httpd.conf'] as $rel) {
+                $candidate = rtrim($m[1], '/') . '/' . $rel;
+                if (file_exists($candidate)) return $candidate;
+            }
+        }
+
+        return null;
+    }
+}
+
 // Clear any output that may have been generated
 ob_end_clean();
+
+/**
+ * Parse CHANGELOG.md into a structured array.
+ * Format: "## [1.0.x] - 2026-08-08" header, followed by "### Section" headings
+ * and "- bullet" change lines. Returns [version => ['date' => ..., 'changes' => [...]]].
+ */
+if (!function_exists('getChangelog')) {
+    function getChangelog() {
+        static $changelog = null;
+        if ($changelog !== null) {
+            return $changelog;
+        }
+
+        $file = dirname(__DIR__) . '/CHANGELOG.md';
+        if (!file_exists($file)) {
+            return $changelog = [];
+        }
+
+        $content = @file_get_contents($file);
+        if ($content === false) {
+            return $changelog = [];
+        }
+
+        $versions = [];
+        $currentVersion = null;
+
+        foreach (preg_split('/\R/', $content) as $line) {
+            $line = rtrim($line);
+
+            // Version header, e.g. "## [1.0.2] - 2026-08-08"
+            if (preg_match('/^##\s+\[([\d.]+)\]\s*-\s*(.+)$/', $line, $matches)) {
+                $currentVersion = trim($matches[1]);
+                $versions[$currentVersion] = [
+                    'date' => trim($matches[2]),
+                    'changes' => [],
+                ];
+                continue;
+            }
+
+            // Change bullet, e.g. "- Fix something" under the current version
+            if ($currentVersion !== null && preg_match('/^[-*+]\s+(.+)$/', $line, $matches)) {
+                $versions[$currentVersion]['changes'][] = trim($matches[1]);
+            }
+        }
+
+        return $changelog = $versions;
+    }
+}
+
+/**
+ * Probe the GitHub repo for the latest released Nucleus version.
+ * Reads the raw VERSION file on the default branch — cheap single request.
+ *
+ * @return string|null Normalized latest version string, or null when offline/unreachable.
+ */
+if (!function_exists('fetchLatestVersionFromRepo')) {
+    function fetchLatestVersionFromRepo() {
+        $repo = 'LebToki/Nucleus';
+        if (defined('APP_GITHUB') && strpos(APP_GITHUB, 'github.com/') !== false) {
+            $repo = preg_replace('#^https?://github.com/#', '', APP_GITHUB);
+            $repo = rtrim($repo, '/');
+        }
+        $url = 'https://raw.githubusercontent.com/' . $repo . '/main/VERSION';
+
+        // Prefer cURL when available
+        if (function_exists('curl_init')) {
+            $ch = @curl_init($url);
+            if ($ch !== false) {
+                curl_setopt_array($ch, [
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_TIMEOUT => 6,
+                    CURLOPT_CONNECTTIMEOUT => 3,
+                    CURLOPT_FOLLOWLOCATION => true,
+                    CURLOPT_SSL_VERIFYPEER => false,
+                    CURLOPT_USERAGENT => 'Nucleus/' . (function_exists('getAppVersion') ? getAppVersion() : '1.0'),
+                ]);
+                $body = curl_exec($ch);
+                $code = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                curl_close($ch);
+                if ($code === 200 && $body !== false && trim($body) !== '') {
+                    return ltrim(trim($body), 'v');
+                }
+                return null;
+            }
+        }
+
+        // Fallback: allow_url_fopen
+        $body = @file_get_contents($url);
+        if ($body === false || trim($body) === '') {
+            return null;
+        }
+        return ltrim(trim($body), 'v');
+    }
+}
+
+/**
+ * Read the cached repo version probe (TTL 6h). Never performs a network
+ * request here; callers warm the cache via refreshLatestVersionCache().
+ *
+ * @return array|null ['latest_version','current_version','available','fetched_at'] or null.
+ */
+if (!function_exists('getCachedLatestVersion')) {
+    function getCachedLatestVersion() {
+        $cacheDir = defined('CACHE_ROOT') ? CACHE_ROOT : dirname(__DIR__) . '/cache';
+        $cacheFile = $cacheDir . '/latest_version.json';
+
+        if (!file_exists($cacheFile)) {
+            return null;
+        }
+        $data = @json_decode((string)@file_get_contents($cacheFile), true);
+        if (!is_array($data) || empty($data['latest_version'])) {
+            return null;
+        }
+
+        // Stale? Treat as unavailable (caller refreshes on demand).
+        $ttl = 6 * 3600;
+        if (!empty($data['fetched_at']) && (time() - (int)$data['fetched_at']) > $ttl) {
+            return null;
+        }
+
+        $data['current_version'] = function_exists('getAppVersion') ? getAppVersion() : (defined('APP_VERSION') ? APP_VERSION : '1.0.0');
+        $data['available'] = version_compare($data['latest_version'], $data['current_version'], '>');
+        return $data;
+    }
+}
+
+/**
+ * Refresh and persist the repo version probe. Accepts an already-fetched info
+ * array (shape of UpdateManager::checkForUpdates result) to avoid a second
+ * network request; otherwise probes GitHub directly.
+ *
+ * @param array|null $info Optional pre-fetched ['latest_version'|'version' => ...] data.
+ * @return array|null Cached data on success, null when offline/failing.
+ */
+if (!function_exists('refreshLatestVersionCache')) {
+    function refreshLatestVersionCache($info = null) {
+        $latest = null;
+        if (is_array($info)) {
+            $latest = $info['latest_version'] ?? ($info['version'] ?? null);
+        }
+        if (empty($latest)) {
+            $latest = fetchLatestVersionFromRepo();
+        }
+        if ($latest === null || $latest === '') {
+            return null;
+        }
+
+        $current = function_exists('getAppVersion') ? getAppVersion() : (defined('APP_VERSION') ? APP_VERSION : '1.0.0');
+        $data = [
+            'latest_version' => ltrim($latest, 'v'),
+            'current_version' => $current,
+            'available' => version_compare(ltrim($latest, 'v'), $current, '>'),
+            'fetched_at' => time(),
+        ];
+
+        $cacheDir = defined('CACHE_ROOT') ? CACHE_ROOT : dirname(__DIR__) . '/cache';
+        if (!is_dir($cacheDir)) {
+            @mkdir($cacheDir, 0755, true);
+        }
+        @file_put_contents($cacheDir . '/latest_version.json', json_encode($data, JSON_PRETTY_PRINT));
+        return $data;
+    }
+}
 
 
 /**

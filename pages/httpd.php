@@ -20,7 +20,7 @@ if (file_exists(__DIR__ . '/../includes/i18n.php')) {
 }
 
 // Get Laragon / Nucleus root
-$laragonRoot = defined('LARAGON_ROOT') ? LARAGON_ROOT : '/var/www/html';
+$laragonRoot = defined('NUCLEUS_ROOT') ? NUCLEUS_ROOT : '/var/www/html';
 
 // Find Apache configuration dynamically (Linux + Legacy)
 $httpdCandidates = [

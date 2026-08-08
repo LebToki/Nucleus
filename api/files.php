@@ -25,10 +25,10 @@ header('Content-Type: application/json');
 $action = $_GET['action'] ?? 'read';
 $filePath = $_GET['path'] ?? '';
 
-if (!defined('LARAGON_ROOT')) {
+if (!defined('NUCLEUS_ROOT')) {
     // Try to get Laragon root from config
     if (function_exists('getLaragonRoot')) {
-        define('LARAGON_ROOT', getLaragonRoot());
+        define('NUCLEUS_ROOT', getLaragonRoot());
     } else {
         ob_clean();
         http_response_code(500);
@@ -38,7 +38,7 @@ if (!defined('LARAGON_ROOT')) {
     }
 }
 
-if (empty(LARAGON_ROOT)) {
+if (empty(NUCLEUS_ROOT)) {
     ob_clean();
     http_response_code(500);
     echo json_encode(['success' => false, 'error' => 'Laragon root is empty']);
@@ -48,7 +48,7 @@ if (empty(LARAGON_ROOT)) {
 
 // Security: Only allow files within Laragon directory
 function validatePath($path) {
-    $laragonRoot = defined('LARAGON_ROOT') ? LARAGON_ROOT : '';
+    $laragonRoot = defined('NUCLEUS_ROOT') ? NUCLEUS_ROOT : '';
     
     if (empty($laragonRoot)) {
         return false;

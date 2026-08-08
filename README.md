@@ -6,7 +6,7 @@ A lightweight, central control panel for Linux development environments. Nucleus
 
 Born from [Laragon Dashboard](https://github.com/LebToki/Laragon-Dashboard) (v4.0.5 for Windows), Nucleus is the Linux-native evolution — purpose-built for ZorinOS, Ubuntu, and Linux Mint.
 
-[![Version](https://img.shields.io/badge/version-1.0.1-blue.svg)](https://github.com/LebToki/Nucleus)
+[![Version](https://img.shields.io/badge/version-1.2.0-blue.svg)](https://github.com/LebToki/Nucleus)
 [![PHP](https://img.shields.io/badge/PHP-8.1%2B-green.svg)](https://php.net)
 [![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3.2-purple.svg)](https://getbootstrap.com)
 [![Platform](https://img.shields.io/badge/platform-linux%20%7C%20ZorinOS%20%7C%20Ubuntu%20%7C%20Mint-orange.svg)]()
@@ -142,8 +142,8 @@ Or download the [latest release](https://github.com/LebToki/Nucleus/releases):
 
 ```bash
 cd /var/www/html
-sudo wget https://github.com/LebToki/Nucleus/releases/download/v1.0.1/nucleus-v1.0.1.zip
-sudo unzip nucleus-v1.0.1.zip -d .
+sudo wget https://github.com/LebToki/Nucleus/releases/download/v1.2.0/nucleus-v1.2.0.zip
+sudo unzip nucleus-v1.2.0.zip -d .
 ```
 
 #### 2. Set Permissions
@@ -206,7 +206,7 @@ Nucleus auto-detects your Linux environment. Edit `config.php` to customize:
 ```php
 // Auto-detected (no manual configuration needed)
 APP_NAME = 'Nucleus'
-APP_VERSION = '1.0.1'
+APP_VERSION = '1.2.0'
 
 // Project root detection order:
 // 1. PROJECTS_ROOT environment variable
@@ -445,21 +445,38 @@ MIT License — see [LICENSE](LICENSE) for details.
 
 ## ☕ Support the Project
 
-If Nucleus helps your workflow, consider supporting development:
+If Nucleus helps your workflow and you want to support its ongoing development, consider buying me a coffee or donating via PayPal! Your support helps keep the project active and enables the creation of more advanced features.
 
 [![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-Donate-yellow?style=for-the-badge&logo=buy-me-a-coffee)](https://buymeacoffee.com/LebToki)
 [![Donate via Paypal](https://img.shields.io/badge/Donate%20with%20Paypal-Donate-blue?style=for-the-badge&logo=paypal)](https://www.paypal.com/donate/?hosted_button_id=TEEJNYQJA9B6U)
 
 ---
 
-## 💼 Professional Services
+## 💼 Professional Services & Premium Solutions
 
-**2TInteractive** — Custom development, premium solutions, and consulting.
+### 🚀 2TInteractive - Your Development Partner
 
-[https://2tinteractive.com](https://2tinteractive.com)
+Looking for **custom development**, **premium solutions**, or **professional services**?
+
+**2TInteractive** offers:
+
+- **Custom Web Development** - Tailored solutions for your business needs
+- **Premium Dashboard Solutions** - Enterprise-grade dashboard and admin panel development
+- **Nucleus Customization & Extensions** - Custom features, integrations, and modifications for your Nucleus setup
+- **Full-Stack Development** - Modern web applications with cutting-edge technologies
+- **Consulting Services** - Expert guidance for your development projects
+- **Maintenance & Support** - Ongoing support and updates for your applications
+
+**Visit us**: [https://2tinteractive.com](https://2tinteractive.com)
+
+**Contact**: For inquiries about premium solutions, custom development, or professional services, please visit our website or reach out through our contact channels.
+
+---
+
+*This dashboard is open-source and free to use. For enterprise features, custom integrations, or professional support, consider our premium services.*
 
 ---
 
 **Made with ❤️ on Linux, for Linux.**
 
-**Author**: Tarek Tarabichi | **Company**: 2TInteractive | **Location**: Beirut, Lebanon
+**Author**: Tarek Tarabichi | **Company**: 2TInteractive | **Website**: https://2tinteractive.com

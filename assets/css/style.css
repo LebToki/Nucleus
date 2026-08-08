@@ -12030,6 +12030,7 @@ select option {
   padding: 0;
   background: transparent;
   padding-inline-end: 68px;
+  color: var(--text-secondary-light);
 }
 
 .accordion .accordion-button::after {
@@ -12042,6 +12043,7 @@ select option {
 
 .accordion .accordion-button:not(.collapsed) {
   box-shadow: none;
+  color: var(--primary-600);
 }
 
 .accordion .accordion-button:not(.collapsed)::after {
@@ -14295,4 +14297,9 @@ td.fc-header-center {
 /* Override vendored .fc-event-bg using a better selector */
 .fc-event .fc-event-bg {
   display: none;
+}
+
+/* Project cards: keep small labels clear of checkboxes (padding-left: 40px matches the checkbox hit-area) */
+.project-card .txt-sm {
+  padding-left: 40px;
 }

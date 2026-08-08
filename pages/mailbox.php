@@ -88,7 +88,7 @@ include __DIR__ . '/../partials/layouts/layoutTop.php';
         <!-- Page Title and Navigation Breadcrumbs -->
         <header class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-5 border-bottom pb-3">
             <h6 class="fw-semibold mb-0 breadcrumb-title"><?php echo t_mailbox('mailbox', 'Mailbox'); ?></h6>
-            <ul class="d-flex align-items-center gap-2 text-secondary">
+            <ul class="d-flex align-items-center gap-2 text-secondary-light">
                 <!-- Dashboard Link (Placeholder structure retained) -->
                 <li>
                     <a href="index.php" class="d-flex align-items-center gap-1 text-decoration-none hover-text-primary">
@@ -113,11 +113,11 @@ include __DIR__ . '/../partials/layouts/layoutTop.php';
                     <!-- Info container -->
                     <div class="flex-grow-1 min-width-0">
                         <h6 class="text-md fw-semibold mb-3">Linux Mail Services Status</h6>
-                        <small class="form-text text-muted">Monitoring Postfix and Mailpit to ensure reliable email capture.</small>
+                        <small class="text-secondary-light text-sm d-block mb-4">Monitoring Postfix and Mailpit to ensure reliable email capture.</small>
                         <div class="d-flex align-items-center gap-4 mt-2 flex-wrap">
                             <!-- Postfix Status -->
                             <div>
-                                <span class="me-3 fw-medium">Postfix Daemon:</span> 
+                                <span class="me-3 fw-medium text-secondary-light">Postfix Daemon:</span> 
                                 <?php if ($postfixRunning): ?>
                                     <span class="badge bg-success-main text-white px-4 py-1 rounded-pill shadow-sm">ACTIVE</span>
                                 <?php else: ?>
@@ -126,7 +126,7 @@ include __DIR__ . '/../partials/layouts/layoutTop.php';
                             </div>
                             <!-- Mailpit Status -->
                             <div>
-                                <span class="me-3 fw-medium">Mailpit Web UI:</span> 
+                                <span class="me-3 fw-medium text-secondary-light">Mailpit Web UI:</span> 
                                 <?php if ($mailpitRunning): ?>
                                     <span class="badge bg-success-main text-white px-4 py-1 rounded-pill shadow-sm">CONNECTED</span>
                                 <?php else: ?>
@@ -231,7 +231,7 @@ include __DIR__ . '/../partials/layouts/layoutTop.php';
                                 <div class="spinner-border text-primary-600" role="status">
                                     <span class="visually-hidden">Loading...</span>
                                 </div>
-                                <p class="mt-3 text-muted">Loading email content...</p>
+                                <p class="mt-3 text-secondary-light">Loading email content...</p>
                             </div>
                         </div>
                     </div>

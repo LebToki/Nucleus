@@ -1,7 +1,7 @@
 <?php
 /**
  * Nucleus - Plugins Page
- * Manage installable plugins (Mailpit, etc.)
+ * Manage installable service nodes (Mailpit, etc.)
  */
 
 if (file_exists(__DIR__ . '/../config.php')) {
@@ -41,6 +41,8 @@ include __DIR__ . '/../partials/layouts/layoutTop.php';
                 $isInstalled = isset($installed[$key]);
                 $isRunning = $isInstalled && ($installed[$key]['running'] ?? false);
                 $isWebapp = ($plugin['type'] ?? 'binary') === 'webapp';
+                $needsSudo = !$isWebapp && \Nucleus\Core\PluginManager::needsElevation($plugin);
+                $installScope = $installed[$key]['scope'] ?? ($installed[$key]['running_scope'] ?? '');
                 $gradientVariant = (($key === 'mailpit') ? 5 : 1);
             ?>
             <div class="col-lg-4 col-md-6" id="plugin-card-<?php echo htmlspecialchars($key); ?>">
@@ -72,6 +74,15 @@ include __DIR__ . '/../partials/layouts/layoutTop.php';
 
                         <!-- Description -->
                         <p class="text-secondary-light mb-16"><?php echo htmlspecialchars($plugin['description']); ?></p>
+
+                        <?php if ($isInstalled && !$isWebapp && !empty($installScope)): ?>
+                            <div class="mb-12">
+                                <span class="badge bg-info-100 text-info-600 text-sm px-8 py-4">
+                                    <iconify-icon icon="solar:server-square-bold" class="icon"></iconify-icon>
+                                    Node scope: <?php echo $installScope === 'system' ? 'System service' : ($installScope === 'user' ? 'User service' : ($installScope === 'detected' ? 'Detected (running)' : htmlspecialchars($installScope))); ?>
+                                </span>
+                            </div>
+                        <?php endif; ?>
 
                         <!-- Details -->
                         <div class="d-flex flex-wrap gap-2 mb-16">
@@ -142,6 +153,12 @@ include __DIR__ . '/../partials/layouts/layoutTop.php';
                                 <iconify-icon icon="solar:download-bold"></iconify-icon>
                                 Install <?php echo htmlspecialchars($plugin['name']); ?>
                             </button>
+                            <?php if ($needsSudo): ?>
+                                <small class="d-block mt-8 text-warning-600 text-xs d-flex align-items-center gap-1">
+                                    <iconify-icon icon="solar:lock-keyhole-bold"></iconify-icon>
+                                    Installing this node requires root access (sudo password)
+                                </small>
+                            <?php endif; ?>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -160,7 +177,50 @@ include __DIR__ . '/../partials/layouts/layoutTop.php';
     </div>
 </div>
 
+<!-- Root access (sudo) modal for elevated node operations -->
+<div class="modal fade" id="sudoModal" tabindex="-1" aria-labelledby="sudoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0">
+            <div class="modal-header border-bottom">
+                <h5 class="modal-title fw-semibold" id="sudoModalLabel">
+                    <iconify-icon icon="solar:lock-keyhole-bold" class="text-warning-600 me-2"></iconify-icon>
+                    Root access required
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-24">
+                <p class="text-secondary-light text-sm mb-16" id="sudo-modal-desc">
+                    Installing this node registers a system service and binary under /usr/local/bin.
+                    Enter your sudo (root) password to continue.
+                </p>
+                <div class="mb-16">
+                    <label for="sudo-password" class="form-label fw-medium mb-8">Sudo password</label>
+                    <div class="position-relative">
+                        <input type="password" class="form-control pe-48" id="sudo-password" placeholder="••••••••" autocomplete="current-password">
+                        <button type="button" class="btn btn-sm position-absolute top-50 translate-middle-y end-0 me-8 text-secondary-light"
+                                id="sudo-password-toggle" tabindex="-1">
+                            <iconify-icon icon="solar:eye-bold"></iconify-icon>
+                        </button>
+                    </div>
+                    <small class="text-secondary-light text-xs mt-4 d-block">
+                        Used only to run the install commands for this operation. It is never stored, logged, or reused.
+                    </small>
+                </div>
+            </div>
+            <div class="modal-footer border-top">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary-600" id="sudo-confirm-btn">
+                    <iconify-icon icon="solar:lock-keyhole-unlocked-bold" class="icon"></iconify-icon>
+                    Authenticate &amp; continue
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
+let pendingPluginAction = null;
+
 function pluginAction(pluginKey, action) {
     const labels = {
         install: 'Installing',
@@ -178,38 +238,103 @@ function pluginAction(pluginKey, action) {
     btn.disabled = true;
     btn.innerHTML = '<iconify-icon icon="solar:restart-bold" class="spin"></iconify-icon> ' + (labels[action] || 'Working') + '...';
 
-    const formData = new FormData();
-    formData.append('action', action);
-    formData.append('plugin', pluginKey);
-    formData.append('csrf_token', window.csrfToken);
-
-    fetch('api/plugins.php', {
-        method: 'POST',
-        body: formData
-    })
-    .then(r => r.json())
-    .then(data => {
-        btn.disabled = false;
-        if (data.success) {
-            if (typeof showNotification === 'function') {
-                showNotification(data.message || 'Success', 'success');
-            }
-            setTimeout(() => window.location.reload(), 1000);
-        } else {
-            btn.innerHTML = originalHtml;
-            if (typeof showNotification === 'function') {
-                showNotification(data.error || 'Action failed', 'error');
-            } else {
-                alert(data.error || 'Action failed');
-            }
+    function send(sudoPassword) {
+        const formData = new FormData();
+        formData.append('action', action);
+        formData.append('plugin', pluginKey);
+        formData.append('csrf_token', window.csrfToken);
+        if (sudoPassword) {
+            formData.append('sudo_password', sudoPassword);
         }
-    })
-    .catch(err => {
-        btn.disabled = false;
-        btn.innerHTML = originalHtml;
-        alert('Error: ' + err.message);
-    });
+
+        return fetch('api/plugins.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.needs_sudo) {
+                // Elevation required — ask for the root password and retry
+                pendingPluginAction = { send: send, btn: btn, originalHtml: originalHtml };
+                document.getElementById('sudo-modal-desc').textContent =
+                    data.error || 'Installing this node requires root privileges.';
+                document.getElementById('sudo-password').value = '';
+                new bootstrap.Modal(document.getElementById('sudoModal')).show();
+                return null;
+            }
+            if (data.success) {
+                if (typeof showNotification === 'function') {
+                    showNotification(data.message || 'Success', 'success');
+                }
+                setTimeout(() => window.location.reload(), 1000);
+            } else {
+                btn.disabled = false;
+                btn.innerHTML = originalHtml;
+                if (typeof showNotification === 'function') {
+                    showNotification(data.error || 'Action failed', 'error');
+                } else {
+                    alert(data.error || 'Action failed');
+                }
+            }
+            return null;
+        })
+        .catch(err => {
+            btn.disabled = false;
+            btn.innerHTML = originalHtml;
+            alert('Error: ' + err.message);
+        });
+    }
+
+    send(null);
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    const sudoModalEl = document.getElementById('sudoModal');
+    const confirmBtn = document.getElementById('sudo-confirm-btn');
+    const pwInput = document.getElementById('sudo-password');
+
+    confirmBtn.addEventListener('click', function() {
+        const password = pwInput.value;
+        if (!password) {
+            pwInput.classList.add('is-invalid');
+            return;
+        }
+        if (!pendingPluginAction) return;
+
+        const btn = pendingPluginAction.btn;
+        btn.disabled = true;
+        btn.innerHTML = '<iconify-icon icon="solar:restart-bold" class="spin"></iconify-icon> Installing with root...';
+
+        this.disabled = true;
+        this.innerHTML = '<iconify-icon icon="solar:restart-bold" class="spin"></iconify-icon> Verifying...';
+
+        const action = pendingPluginAction;
+        pendingPluginAction = null;
+
+        bootstrap.Modal.getInstance(sudoModalEl).hide();
+        action.send(password).finally(() => {
+            this.disabled = false;
+            this.innerHTML = '<iconify-icon icon="solar:lock-keyhole-unlocked-bold" class="icon"></iconify-icon> Authenticate &amp; continue';
+        });
+    });
+
+    sudoModalEl.addEventListener('shown.bs.modal', function() {
+        pwInput.focus();
+    });
+    sudoModalEl.addEventListener('hidden.bs.modal', function() {
+        pwInput.classList.remove('is-invalid');
+        if (pendingPluginAction) {
+            pendingPluginAction.btn.disabled = false;
+            pendingPluginAction.btn.innerHTML = pendingPluginAction.originalHtml;
+            pendingPluginAction = null;
+        }
+    });
+
+    document.getElementById('sudo-password-toggle').addEventListener('click', function() {
+        const isPw = pwInput.type === 'password';
+        pwInput.type = isPw ? 'text' : 'password';
+    });
+});
 </script>
 
 <?php include __DIR__ . '/../partials/layouts/layoutBottom.php'; ?>

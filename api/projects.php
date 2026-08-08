@@ -176,28 +176,3 @@ try {
     ob_end_flush();
 }
 ?>
-</task_progress>
-<write_to_file>
-</write_to_file>
-
-</final_file_content>
-
-IMPORTANT: For any future changes to this file, use the final_file_content shown above as your reference. This content reflects the current state of the file, including any auto-formatting (e.g., if you used single quotes but the formatter converted them to double quotes). Always base your SEARCH/REPLACE operations on this final version to ensure accuracy.
-
-
-<environment_details>
-# Visual Studio Code Visible Files
-api/tunnel.php
-
-# Visual Studio Code Open Tabs
-api/tunnel.php
-
-# Current Time
-8/5/2026, 12:46:37 PM (Asia/Beirut, UTC+3:00)
-
-# Context Window Usage
-21,900 / 32.768K tokens used (66%)
-
-# Current Mode
-ACT MODE
-</environment_details>

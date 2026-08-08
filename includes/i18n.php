@@ -27,7 +27,7 @@ function get_current_language(): string {
     if (isset($_GET['lang']) && !empty($_GET['lang'])) {
         $lang = strtolower($_GET['lang']);
         set_current_language($lang);
-        return $lang;
+        return $_SESSION['lang'] ?? 'en';
     }
     
     // Check session

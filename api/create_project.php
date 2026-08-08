@@ -101,7 +101,7 @@ if ($createDatabase && !empty($databaseName)) {
 if (class_exists('\Nucleus\Core\System') && method_exists('\Nucleus\Core\System', 'getWwwPath')) {
     $documentRoot = \Nucleus\Core\System::getWwwPath();
 } else {
-    $documentRoot = defined('LARAGON_ROOT') ? LARAGON_ROOT . '/html' : '/var/www/html';
+    $documentRoot = defined('NUCLEUS_ROOT') ? NUCLEUS_ROOT . '/html' : '/var/www/html';
 }
 
 // Ensure document root is a valid path

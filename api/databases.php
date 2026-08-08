@@ -77,7 +77,7 @@ try {
         default:
             throw new Exception('Invalid action');
     }
-} catch (Exception $e) {
+} catch (\Throwable $e) {
     ob_clean();
     http_response_code(400);
     echo json_encode(['success' => false, 'error' => $e->getMessage()]);

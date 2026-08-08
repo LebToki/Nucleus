@@ -1,0 +1,20 @@
+{
+    "title": "Sikkerhedskopi",
+    "create_backup": "Opret sikkerhedskopi",
+    "restore_backup": "Gendan sikkerhedskopi",
+    "backup_name": "Navn på sikkerhedskopi",
+    "backup_type": "Type sikkerhedskopi",
+    "created_at": "Oprettet",
+    "size": "Størrelse",
+    "status": "Status",
+    "actions": "Handlinger",
+    "download": "Download",
+    "delete": "Slet",
+    "full_backup": "Fuld sikkerhedskopi",
+    "database_backup": "Database-sikkerhedskopi",
+    "files_backup": "Fil-sikkerhedskopi",
+    "scheduled_backups": "Planlagte sikkerhedskopier",
+    "backup_settings": "Sikkerhedskopi-indstillinger",
+    "auto_backup": "Automatisk sikkerhedskopi",
+    "backup_location": "Placering af sikkerhedskopi"
+}

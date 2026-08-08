@@ -13,6 +13,9 @@ if (file_exists($langConfigFile)) {
 
 // Get current language
 $currentLang = strtolower($_GET['lang'] ?? $_COOKIE['lang'] ?? 'en');
+if (!isset($langConfig[$currentLang])) {
+    $currentLang = 'en';
+}
 $currentLangData = $langConfig[$currentLang] ?? $langConfig['en'] ?? ['flag' => 'US', 'name' => 'English'];
 
 // Set up asset paths - use root assets directory
@@ -42,7 +45,7 @@ $GLOBALS['navbarAssetsImageUrl'] = $assetsImageUrl;
                 <!-- Search Dropdown -->
                 <div class="dropdown">
                     <form class="navbar-search" id="project-search-form">
-                        <input type="text" name="search" id="project-search-input" placeholder="Search projects..." autocomplete="off">
+                        <input type="text" name="search" id="project-search-input" placeholder="<?php echo function_exists('t') ? t('dashboard.search_projects', 'Search projects...') : 'Search projects...'; ?>" autocomplete="off">
                         <iconify-icon icon="ion:search-outline" class="icon"></iconify-icon>
                     </form>
                     <div class="dropdown-menu dropdown-menu-lg p-0" id="project-search-results" style="display: none; min-width: 400px; max-width: 500px;">
@@ -54,7 +57,7 @@ $GLOBALS['navbarAssetsImageUrl'] = $assetsImageUrl;
                         </div>
                         <div class="max-h-400-px overflow-y-auto scroll-sm pe-4" id="project-list">
                             <div class="px-24 py-12 text-center">
-                                <p class="text-secondary-light mb-0">Start typing to search projects...</p>
+                                <p class="text-secondary-light mb-0"><?php echo function_exists('t') ? t('dashboard.search_projects_hint', 'Start typing to search projects...') : 'Start typing to search projects...'; ?></p>
                             </div>
                         </div>
                     </div>
@@ -67,7 +70,7 @@ $GLOBALS['navbarAssetsImageUrl'] = $assetsImageUrl;
                 <div class="d-flex align-items-center gap-2 px-12 py-6 bg-neutral-100 rounded-8">
                     <iconify-icon icon="solar:clock-circle-bold" class="text-primary-600 text-lg" id="greeting-icon"></iconify-icon>
                     <div>
-                        <div class="fw-semibold text-xs text-secondary-light mb-1" id="time-greeting">Good Evening</div>
+                        <div class="fw-semibold text-xs text-secondary-light mb-1" id="time-greeting"><?php echo function_exists('t') ? t('dashboard.good_evening', 'Good evening') : 'Good evening'; ?></div>
                         <div class="fw-medium text-xxs text-secondary-light" id="local-time-display">
                             <span id="local-date"></span> <span id="local-time"></span>
                         </div>

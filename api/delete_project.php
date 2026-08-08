@@ -186,7 +186,7 @@ function deleteProject($projectName, $createBackup = true, $deleteDatabase = tru
         if (class_exists('\Nucleus\Core\System') && method_exists('\Nucleus\Core\System', 'getWwwPath')) {
             $documentRoot = \Nucleus\Core\System::getWwwPath();
         } else {
-            $documentRoot = defined('DOCUMENT_ROOT') ? DOCUMENT_ROOT : (defined('LARAGON_ROOT') ? LARAGON_ROOT . '/html' : '/var/www/html');
+            $documentRoot = defined('DOCUMENT_ROOT') ? DOCUMENT_ROOT : (defined('NUCLEUS_ROOT') ? NUCLEUS_ROOT . '/html' : '/var/www/html');
         }
         $projectPath = rtrim($documentRoot, '/') . '/' . $projectName;
 
@@ -310,7 +310,7 @@ try {
             if (class_exists('\Nucleus\Core\System') && method_exists('\Nucleus\Core\System', 'getWwwPath')) {
                 $documentRoot = \Nucleus\Core\System::getWwwPath();
             } else {
-                $documentRoot = defined('DOCUMENT_ROOT') ? DOCUMENT_ROOT : (defined('LARAGON_ROOT') ? LARAGON_ROOT . '/html' : '/var/www/html');
+                $documentRoot = defined('DOCUMENT_ROOT') ? DOCUMENT_ROOT : (defined('NUCLEUS_ROOT') ? NUCLEUS_ROOT . '/html' : '/var/www/html');
             }
             $projectPath = rtrim($documentRoot, '/') . '/' . basename($projectName);
             

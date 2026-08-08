@@ -35,6 +35,13 @@ if (!verifyCSRFToken($token)) {
 $action = $_POST['action'] ?? ($_GET['action'] ?? 'list');
 $pluginKey = $_POST['plugin'] ?? ($_GET['plugin'] ?? '');
 
+// Root password for elevated node installs. Used only for the current request's
+// install/uninstall/service commands via `sudo -S`; never stored or logged.
+$sudoPassword = $_POST['sudo_password'] ?? null;
+if (!is_string($sudoPassword) || strlen($sudoPassword) > 512) {
+    $sudoPassword = null;
+}
+
 try {
     switch ($action) {
         case 'list':
@@ -46,7 +53,9 @@ try {
                 if ($plugin['installed']) {
                     $plugin['running'] = $installed[$key]['running'] ?? false;
                     $plugin['installed_version'] = $installed[$key]['installed_version'] ?? 'unknown';
+                    $plugin['scope'] = $installed[$key]['scope'] ?? ($installed[$key]['running_scope'] ?? 'system');
                 }
+                $plugin['needs_sudo'] = \Nucleus\Core\PluginManager::needsElevation($plugin);
             }
             unset($plugin);
 
@@ -63,7 +72,7 @@ try {
             if (empty($pluginKey)) {
                 throw new Exception('Plugin name required');
             }
-            $result = \Nucleus\Core\PluginManager::install($pluginKey);
+            $result = \Nucleus\Core\PluginManager::install($pluginKey, $sudoPassword);
             http_response_code($result['success'] ? 200 : 500);
             echo json_encode($result);
             break;
@@ -72,7 +81,7 @@ try {
             if (empty($pluginKey)) {
                 throw new Exception('Plugin name required');
             }
-            $result = \Nucleus\Core\PluginManager::uninstall($pluginKey);
+            $result = \Nucleus\Core\PluginManager::uninstall($pluginKey, $sudoPassword);
             http_response_code($result['success'] ? 200 : 500);
             echo json_encode($result);
             break;
@@ -81,7 +90,7 @@ try {
             if (empty($pluginKey)) {
                 throw new Exception('Plugin name required');
             }
-            $result = \Nucleus\Core\PluginManager::startService($pluginKey);
+            $result = \Nucleus\Core\PluginManager::startService($pluginKey, $sudoPassword);
             echo json_encode($result);
             break;
 
@@ -89,7 +98,7 @@ try {
             if (empty($pluginKey)) {
                 throw new Exception('Plugin name required');
             }
-            $result = \Nucleus\Core\PluginManager::stopService($pluginKey);
+            $result = \Nucleus\Core\PluginManager::stopService($pluginKey, $sudoPassword);
             echo json_encode($result);
             break;
 
@@ -101,5 +110,8 @@ try {
     http_response_code(500);
     echo json_encode(['success' => false, 'error' => $e->getMessage()]);
 }
+
+// Ensure the password never persists beyond this request
+unset($sudoPassword);
 
 ob_end_flush();

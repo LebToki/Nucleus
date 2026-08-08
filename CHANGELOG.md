@@ -2,6 +2,26 @@
 
 All notable changes to Nucleus will be documented in this file.
 
+## [1.2.0] - 2026-08-08
+
+### Nodes & Plugins
+- **Plugins as node installers with user-provided root access** — installing a service node (e.g. Mailpit) now detects when root is required and prompts for the sudo password. The password is used only for the install commands via `sudo -S`, never stored or logged; a temporary 0600 file is wiped immediately after use.
+- **Passwordless-sudo detection** — if the web user already has a `NOPASSWD` sudoers rule, node installs run without any prompt.
+- **Dual-scope detection** — plugins are detected as *System service*, *User service*, or *Detected (running)* (port probe), so already-running instances are never shown as "Not Installed".
+- **Elevated uninstall/start/stop** — service operations reuse the same elevation flow instead of blindly calling `sudo`.
+
+### Mail Services (Linux)
+- **Mailpit support** — installable as a systemd node from the Plugins page; the Mailbox page now shows live CONNECTED/OFFLINE status and loads emails through the Mailpit API.
+- **SMTP tooling** — php.ini discovery now works on Linux (`/etc/php/*/{apache2,cli}/php.ini`), with MTA-aware configuration (Mailpit `sendmail` vs Postfix `/usr/sbin/sendmail -t -i`).
+- **Dark-mode fixes** — Mailbox service banner and status text now use theme-native classes (`text-secondary-light`, `bg-neutral-50`) instead of Bootstrap-standard ones.
+
+### UI / Theme
+- **Changelog page cleanup** — no standard font classes or inline font overrides; accordion and buttons restyled with theme-native classes.
+- **Databases page fix** — restored missing structural `</div>` so the footer pins to the bottom again.
+
+### Housekeeping
+- `audiencepulse/` and `BeitNoura/` are separate projects and are now untracked/ignored.
+
 ## [1.0.2] - 2026-08-08
 
 ### Critical Fixes

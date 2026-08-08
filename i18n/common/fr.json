@@ -1,8 +1,8 @@
 {
-    "app_name": "Tableau de bord Laragon",
-    "app_name_seo": "Tableau de bord Laragon - Gestionnaire d'environnement de développement moderne",
-    "meta_title": "Tableau de bord Laragon",
-    "meta_description": "Tableau de bord Laragon — Tableau de bord Web complet pour gérer l'environnement de développement Laragon",
+    "app_name": "Tableau de bord Nucleus",
+    "app_name_seo": "Tableau de bord Nucleus - Gestionnaire d'environnement de développement moderne",
+    "meta_title": "Tableau de bord Nucleus",
+    "meta_description": "Tableau de bord Nucleus — Tableau de bord Web complet pour gérer l'environnement de développement Nucleus",
     "dashboard": "Tableau de bord",
     "search": "Rechercher...",
     "save": "Enregistrer",
@@ -77,4 +77,3 @@
     "good_afternoon": "Bon après-midi",
     "good_evening": "Bonsoir"
 }
-

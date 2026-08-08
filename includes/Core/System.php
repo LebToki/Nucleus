@@ -14,13 +14,13 @@ class System {
      * Get the project root directory
      * Returns /var/www so that getWwwPath() = /var/www/html
      */
-    public static function getLaragonRoot(): string {
+    public static function getNucleusRoot(): string {
         // Environment variable override
         if (getenv('PROJECTS_ROOT')) {
             return rtrim(getenv('PROJECTS_ROOT'), '/');
         }
-        if (getenv('LARAGON_ROOT')) {
-            return rtrim(getenv('LARAGON_ROOT'), '/');
+        if (getenv('NUCLEUS_ROOT')) {
+            return rtrim(getenv('NUCLEUS_ROOT'), '/');
         }
 
         // On Linux with Apache, DocumentRoot is typically /var/www/html
@@ -49,9 +49,9 @@ class System {
      * Get the www directory where projects live
      */
     public static function getWwwPath(): string {
-        $root = self::getLaragonRoot();
+        $root = self::getNucleusRoot();
         // On Linux, www is /var/www/html (Apache DocumentRoot)
-        // But if getLaragonRoot() already returned the DocumentRoot itself,
+        // But if getNucleusRoot() already returned the DocumentRoot itself,
         // just return that
         if ($root === ($_SERVER['DOCUMENT_ROOT'] ?? '')) {
             return $root;

@@ -61,6 +61,28 @@ if (is_dir($sitesEnabledDir)) {
     }
 }
 
+// Parse /etc/hosts for pretty URL management
+$hostsContent = @file_get_contents('/etc/hosts');
+$hostsEntries = [];
+if ($hostsContent !== false) {
+    foreach (explode("\n", $hostsContent) as $index => $line) {
+        $trimmed = trim($line);
+        if ($trimmed === '' || strpos($trimmed, '#') === 0) {
+            continue;
+        }
+        $body = preg_replace('/\s+#.*$/', '', $trimmed);
+        $parts = preg_split('/\s+/', $body);
+        if (count($parts) >= 2 && filter_var($parts[0], FILTER_VALIDATE_IP)) {
+            $hostsEntries[] = [
+                'index' => $index,
+                'ip' => $parts[0],
+                'hosts' => implode(' ', array_slice($parts, 1)),
+                'name' => $parts[1],
+            ];
+        }
+    }
+}
+
 include __DIR__ . '/../partials/layouts/layoutTop.php';
 ?>
 
@@ -136,6 +158,57 @@ include __DIR__ . '/../partials/layouts/layoutTop.php';
                         <?php endif; ?>
                     </div>
                 </div>
+
+                <!-- Hosts File (Pretty URLs) -->
+                <div class="card shadow-none border radius-12 mt-24">
+                    <div class="card-header border-bottom bg-base py-16 px-24">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <strong><p class="fw-semibold mb-0"><?php echo t_sites('hosts_file', '/etc/hosts — Pretty URLs'); ?></p></strong>
+                            <button type="button" class="btn btn-sm btn-primary-100 text-primary-600" onclick="editHostsRaw()">
+                                <iconify-icon icon="solar:code-bold" class="icon"></iconify-icon>
+                                <?php echo t_sites('edit_raw', 'Edit Raw'); ?>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body p-24">
+                        <form id="hosts-add-form" class="mb-16">
+                            <div class="row g-2">
+                                <div class="col-5">
+                                    <input type="text" class="form-control form-control-sm" id="hosts-ip" placeholder="127.0.0.1" pattern="^[0-9a-fA-F.:]+$" required>
+                                </div>
+                                <div class="col-7">
+                                    <input type="text" class="form-control form-control-sm" id="hosts-names" placeholder="mysite.local www.mysite.local" required>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-sm btn-primary-600 w-100 mt-8 d-flex align-items-center justify-content-center gap-2">
+                                <iconify-icon icon="solar:add-circle-bold" class="icon"></iconify-icon>
+                                <?php echo t_sites('add_host', 'Add Host'); ?>
+                            </button>
+                        </form>
+                        <?php if (empty($hostsEntries)): ?>
+                            <div class="text-center p-16 text-secondary-light">
+                                <p class="mb-0"><?php echo t_sites('no_hosts', 'No host entries found (or /etc/hosts unreadable)'); ?></p>
+                            </div>
+                        <?php else: ?>
+                            <ul class="list-group radius-8" id="hosts-list" style="max-height: 340px; overflow-y: auto;">
+                                <?php foreach ($hostsEntries as $entry): ?>
+                                    <li class="list-group-item d-flex align-items-center gap-2 border text-secondary-light p-12">
+                                        <div class="form-check form-switch mb-0 flex-shrink-0">
+                                            <input class="form-check-input hosts-toggle" type="checkbox" role="switch" checked data-index="<?php echo $entry['index']; ?>">
+                                        </div>
+                                        <div class="flex-grow-1 min-width-0">
+                                            <p class="mb-0 fw-medium text-sm text-primary-600"><?php echo htmlspecialchars($entry['name']); ?></p>
+                                            <small class="text-secondary-light text-xs d-block text-truncate"><?php echo htmlspecialchars($entry['ip'] . '  ' . $entry['hosts']); ?></small>
+                                        </div>
+                                        <button type="button" class="btn btn-sm p-0 border-0 bg-transparent text-danger hosts-remove" data-index="<?php echo $entry['index']; ?>" title="Disable entry">
+                                            <iconify-icon icon="solar:trash-bin-trash-bold" class="text-lg"></iconify-icon>
+                                        </button>
+                                    </li>
+                                <?php endforeach; ?>
+                            </ul>
+                        <?php endif; ?>
+                    </div>
+                </div>
             </div>
 
             <!-- Code Editor -->
@@ -181,6 +254,71 @@ $GLOBALS['sitesScript'] = true;
 $GLOBALS['selectedFile'] = $selectedFile;
 $GLOBALS['sitesEnabledDir'] = $sitesEnabledDir;
 ?>
+
+<script>
+(function() {
+    'use strict';
+    const HOSTS_API = 'api/hosts.php';
+
+    function hostsRequest(action, payload) {
+        const formData = new FormData();
+        formData.append('csrf_token', window.csrfToken || '');
+        for (const key in payload) {
+            formData.append(key, payload[key]);
+        }
+        return fetch(HOSTS_API + '?action=' + action, { method: 'POST', body: formData })
+            .then(response => response.json());
+    }
+
+    function hostsReload() {
+        window.location.reload();
+    }
+
+    const addForm = document.getElementById('hosts-add-form');
+    if (addForm) {
+        addForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const ip = document.getElementById('hosts-ip').value.trim();
+            const names = document.getElementById('hosts-names').value.trim();
+            if (!ip || !names) return;
+            hostsRequest('add', { ip: ip, hosts: names })
+                .then(data => {
+                    alert(data.success ? 'Host added' : 'Error: ' + (data.error || 'Failed'));
+                    if (data.success) hostsReload();
+                })
+                .catch(error => alert('Error: ' + error.message));
+        });
+    }
+
+    document.querySelectorAll('.hosts-toggle').forEach(toggle => {
+        toggle.addEventListener('change', function() {
+            hostsRequest('toggle', { index: this.dataset.index })
+                .then(data => {
+                    if (!data.success) {
+                        alert('Error: ' + (data.error || 'Failed to toggle'));
+                        this.checked = !this.checked;
+                    }
+                })
+                .catch(error => {
+                    alert('Error: ' + error.message);
+                    this.checked = !this.checked;
+                });
+        });
+    });
+
+    document.querySelectorAll('.hosts-remove').forEach(btn => {
+        btn.addEventListener('click', function() {
+            if (!confirm('Disable this host entry? It will be commented out in /etc/hosts.')) return;
+            hostsRequest('remove', { index: this.dataset.index })
+                .then(data => {
+                    alert(data.success ? 'Host entry disabled' : 'Error: ' + (data.error || 'Failed'));
+                    if (data.success) hostsReload();
+                })
+                .catch(error => alert('Error: ' + error.message));
+        });
+    });
+})();
+</script>
 
 <?php include __DIR__ . '/../partials/layouts/layoutBottom.php'; ?>
 

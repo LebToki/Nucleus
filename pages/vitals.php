@@ -1,4 +1,4 @@
-ost<?php
+<?php
 /**
  * Nucleus - Server Vitals Page
  * Version: 3.0.0
@@ -228,55 +228,6 @@ include __DIR__ . '/../partials/layouts/layoutTop.php';
                             </div>
                         </div>
                         <div id="disk-chart-mini" style="height: 50px;"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Hardware Vitals Card (NEW) -->
-            <div class="col-xxl-3 col-xl-4 col-sm-6">
-                <div class="card shadow-none border radius-12 h-100">
-                    <div class="card-body p-20">
-                        <div class="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-8">
-                            <div class="d-flex align-items-center gap-2">
-                                <span class="mb-0 w-48-px h-48-px bg-primary-100 text-primary-600 flex-shrink-0 d-flex justify-content-center align-items-center rounded-circle">
-                                    <iconify-icon icon="solar:cpu-bold" class="text-xl"></iconify-icon>
-                                </span>
-                                <div>
-                                    <p class="fw-semibold mb-2"><?php echo t_vitals('hardware', 'Hardware Vitals'); ?></p>
-                                    <span class="fw-medium text-secondary-light text-sm">Cores: <?php echo $globalVitalsData['cores']; ?></span>
-                                </div>
-                            </div>
-                        </div>
-                        <p class="text-sm mt-2 border-top pt-3">
-                            <?php if (!empty($vitalsHardwareData['error'])): ?>
-                                <span class="text-danger"><?php echo $vitalsHardwareData['error']; ?></span>
-                            <?php else : ?>
-                                <strong>CPU Temp:</strong> <span id="cpu-temp-val"><?php echo $vitalsHardwareData['cpu_temp'] ? $vitalsHardwareData['cpu_temp'] . '°C' : '--'; ?></span><br>
-                                <strong>Main Temp:</strong> <span id="main-temp-val"><?php echo $vitalsHardwareData['main_temp'] ? $vitalsHardwareData['main_temp'] . '°C' : '--'; ?></span><br>
-                                <strong>Fans:</strong> <span id="fan-status-val"><?php echo $vitalsHardwareData['fan_status']; ?></span>
-                            <?php endif; ?>
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-xxl-3 col-xl-4 col-sm-6">
-                <div class="card shadow-none border radius-12 h-100">
-                    <div class="card-body p-20">
-                        <div class="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-8">
-                            <div class="d-flex align-items-center gap-2">
-                                <span class="mb-0 w-48-px h-48-px bg-info-100 text-info-600 flex-shrink-0 d-flex justify-content-center align-items-center rounded-circle">
-                                    <iconify-icon icon="solar:network-bold" class="text-xl"></iconify-icon>
-                                </span>
-                                <div>
-                                    <p class="fw-semibold mb-2" id="network-status"><?php echo t_vitals('active', 'Active'); ?></p>
-                                    <span class="fw-medium text-secondary-light text-sm"><?php echo t_vitals('network', 'Network'); ?></span>
-                                </div>
-                            </div>
-                        </div>
-                        <p class="text-sm mb-0">
-                            <span class="text-info-600" id="network-speed">0</span> <?php echo t_vitals('mbps', 'Mbps'); ?>
-                        </p>
                     </div>
                 </div>
             </div>

@@ -28,7 +28,10 @@ function getConfigFiles() {
     
     // PHP.ini (active one)
     $phpIni = php_ini_loaded_file();
-    if ($phpIni) {
+    if (!$phpIni || !file_exists($phpIni)) {
+        $phpIni = function_exists('getPHPIniPath') ? getPHPIniPath() : null;
+    }
+    if ($phpIni && file_exists($phpIni)) {
         $files['php'] = [
             'name' => 'php.ini',
             'path' => $phpIni,
@@ -36,49 +39,43 @@ function getConfigFiles() {
         ];
     }
 
-    // MySQL/MariaDB my.ini
-    $myIniPatterns = [
-        LARAGON_ROOT . '/bin/mysql/mysql-*/my.ini',
-        LARAGON_ROOT . '/bin/mariadb/mariadb-*/my.ini'
-    ];
-    foreach ($myIniPatterns as $pattern) {
-        $matches = glob($pattern);
-        if ($matches) {
-            $files['mysql'] = [
-                'name' => 'my.ini',
-                'path' => end($matches), // Take the latest version if multiple
-                'service' => 'MySQL/MariaDB'
-            ];
-            break;
+    // MySQL/MariaDB (Linux config)
+    $myIni = function_exists('getMySQLIniPath') ? getMySQLIniPath() : null;
+    if ($myIni && file_exists($myIni)) {
+        $files['mysql'] = [
+            'name' => basename($myIni),
+            'path' => $myIni,
+            'service' => 'MySQL/MariaDB'
+        ];
+    } else {
+        foreach (['/etc/mysql/my.cnf', '/etc/my.cnf'] as $candidate) {
+            if (file_exists($candidate)) {
+                $files['mysql'] = [
+                    'name' => basename($candidate),
+                    'path' => $candidate,
+                    'service' => 'MySQL/MariaDB'
+                ];
+                break;
+            }
         }
     }
 
-    // Apache httpd.conf
-    $apacheConfPatterns = [
-        LARAGON_ROOT . '/bin/apache/httpd-*/conf/httpd.conf'
-    ];
-    foreach ($apacheConfPatterns as $pattern) {
-        $matches = glob($pattern);
-        if ($matches) {
-            $files['apache'] = [
-                'name' => 'httpd.conf',
-                'path' => end($matches),
-                'service' => 'Apache'
-            ];
-            break;
-        }
+    // Apache httpd.conf (Linux)
+    $apacheConf = function_exists('getApacheConfPath') ? getApacheConfPath() : null;
+    if ($apacheConf) {
+        $files['apache'] = [
+            'name' => basename($apacheConf),
+            'path' => $apacheConf,
+            'service' => 'Apache'
+        ];
     }
 
-    // Nginx nginx.conf
-    $nginxConfPatterns = [
-        LARAGON_ROOT . '/bin/nginx/nginx-*/conf/nginx.conf'
-    ];
-    foreach ($nginxConfPatterns as $pattern) {
-        $matches = glob($pattern);
-        if ($matches) {
+    // Nginx nginx.conf (Linux)
+    foreach (['/etc/nginx/nginx.conf', '/etc/nginx/conf.d/default.conf'] as $candidate) {
+        if (file_exists($candidate)) {
             $files['nginx'] = [
-                'name' => 'nginx.conf',
-                'path' => end($matches),
+                'name' => basename($candidate),
+                'path' => $candidate,
                 'service' => 'Nginx'
             ];
             break;
@@ -136,7 +133,7 @@ try {
         default:
             throw new Exception('Invalid action');
     }
-} catch (Exception $e) {
+} catch (\Throwable $e) {
     ob_clean();
     http_response_code(400);
     echo json_encode(['success' => false, 'error' => $e->getMessage()]);

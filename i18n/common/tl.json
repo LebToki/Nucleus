@@ -1,8 +1,8 @@
 {
-    "app_name": "Laragon Dashboard",
-    "app_name_seo": "Laragon Dashboard - Modern Development Environment Manager",
-    "meta_title": "Laragon Dashboard",
-    "meta_description": "Laragon Dashboard — Comprehensive web-based dashboard for managing Laragon development environment",
+    "app_name": "Nucleus Dashboard",
+    "app_name_seo": "Nucleus Dashboard - Modern Development Environment Manager",
+    "meta_title": "Nucleus Dashboard",
+    "meta_description": "Nucleus Dashboard — Comprehensive web-based dashboard for managing Nucleus development environment",
     "dashboard": "Dashboard",
     "search": "Maghanap...",
     "save": "I-save",
@@ -77,4 +77,3 @@
     "good_afternoon": "Magandang hapon",
     "good_evening": "Magandang gabi"
 }
-

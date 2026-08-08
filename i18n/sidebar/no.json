@@ -1,0 +1,18 @@
+{
+    "dashboard": "Dashbord",
+    "development": "Utvikling",
+    "projects": "Prosjekter",
+    "databases": "Databaser",
+    "services": "Tjenester",
+    "server_vitals": "Servermålinger",
+    "system": "System",
+    "mailbox": "Postkasse",
+    "logs": "Logger",
+    "tools": "Verktøy",
+    "quick_tools": "Hurtigverktøy",
+    "backup": "Sikkerhetskopi",
+    "changelog": "Endringslogg",
+    "preferences": "Innstillinger",
+    "configuration": "Konfigurasjon",
+    "sites_enabled": "Aktiverte nettsteder"
+}

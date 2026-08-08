@@ -83,9 +83,18 @@ if (!class_exists('UpdateManager')) {
                 }
                 
                 $updateAvailable = version_compare($latestVersion, $currentVersionNormalized, '>');
+                $repoBehind = version_compare($currentVersionNormalized, $latestVersion, '>');
+                
+                // Only advertise the update when it actually exists; otherwise the
+                // fallback release notes are misleading when the repo is stale.
+                if (!$updateAvailable) {
+                    $releaseNotes = '';
+                    $downloadUrl = null;
+                }
                 
                 return [
                     'available' => $updateAvailable,
+                    'repo_behind' => $repoBehind,
                     'current_version' => $currentVersion,
                     'latest_version' => $latestVersion,
                     'version' => $latestVersion,

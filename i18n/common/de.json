@@ -1,8 +1,8 @@
 {
-    "app_name": "Laragon Dashboard",
-    "app_name_seo": "Laragon Dashboard - Moderner Entwicklungsumgebungs-Manager",
-    "meta_title": "Laragon Dashboard",
-    "meta_description": "Laragon Dashboard — Umfassendes webbasiertes Dashboard zur Verwaltung der Laragon-Entwicklungsumgebung",
+    "app_name": "Nucleus Dashboard",
+    "app_name_seo": "Nucleus Dashboard - Moderner Entwicklungsumgebungs-Manager",
+    "meta_title": "Nucleus Dashboard",
+    "meta_description": "Nucleus Dashboard — Umfassendes webbasiertes Dashboard zur Verwaltung der Nucleus-Entwicklungsumgebung",
     "dashboard": "Dashboard",
     "search": "Suchen...",
     "save": "Speichern",
@@ -77,4 +77,3 @@
     "good_afternoon": "Guten Tag",
     "good_evening": "Guten Abend"
 }
-

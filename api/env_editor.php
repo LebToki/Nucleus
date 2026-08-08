@@ -35,7 +35,7 @@ $projectName = basename($projectName);
 $laraconfig = getLaragonConfig();
 $documentRoot = (class_exists('\Nucleus\Core\System') && method_exists('\Nucleus\Core\System', 'getWwwPath'))
     ? \Nucleus\Core\System::getWwwPath()
-    : (defined('LARAGON_ROOT') ? LARAGON_ROOT . '/html' : '/var/www/html');
+    : (defined('NUCLEUS_ROOT') ? NUCLEUS_ROOT . '/html' : '/var/www/html');
 $projectPath = rtrim($documentRoot, '/') . '/' . $projectName;
 $envPath = $projectPath . '/.env';
 
@@ -80,7 +80,7 @@ try {
         default:
             throw new Exception('Invalid action');
     }
-} catch (Exception $e) {
+} catch (\Throwable $e) {
     ob_clean();
     http_response_code(400);
     echo json_encode(['success' => false, 'error' => $e->getMessage()]);

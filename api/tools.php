@@ -30,10 +30,10 @@ header('Content-Type: application/json');
 
 $action = $_GET['action'] ?? $_POST['action'] ?? '';
 
-if (!defined('LARAGON_ROOT')) {
+if (!defined('NUCLEUS_ROOT')) {
     ob_clean();
     http_response_code(500);
-    echo json_encode(['success' => false, 'error' => 'Laragon root not defined']);
+    echo json_encode(['success' => false, 'error' => 'Install root not defined']);
     ob_end_flush();
     exit;
 }
@@ -41,63 +41,30 @@ if (!defined('LARAGON_ROOT')) {
 // Get document root
 $documentRoot = (class_exists('\Nucleus\Core\System') && method_exists('\Nucleus\Core\System', 'getWwwPath'))
     ? \Nucleus\Core\System::getWwwPath()
-    : (defined('DOCUMENT_ROOT') ? DOCUMENT_ROOT : (defined('LARAGON_ROOT') ? LARAGON_ROOT . '/html' : '/var/www/html'));
+    : (defined('DOCUMENT_ROOT') ? DOCUMENT_ROOT : (defined('NUCLEUS_ROOT') ? NUCLEUS_ROOT . '/html' : '/var/www/html'));
 
-// Find Composer executable
+// Find Composer executable on PATH
 function findComposer() {
-    $laragonRoot = defined('LARAGON_ROOT') ? LARAGON_ROOT : '';
-    if (empty($laragonRoot)) {
-        return 'composer'; // Try global composer
-    }
-    
-    // Check Laragon's composer location
-    $composerPath = $laragonRoot . '/bin/composer/composer.phar';
-    if (file_exists($composerPath)) {
-        return escapeshellarg($composerPath);
-    }
-    
-    // Try global composer
-    return 'composer';
+    $output = @shell_exec('command -v composer 2>/dev/null');
+    $path = trim((string)$output);
+    return $path !== '' ? $path : 'composer';
 }
 
-// Find NPM executable
+// Find NPM executable on PATH, with npx fallback
 function findNPM() {
-    $laragonRoot = defined('LARAGON_ROOT') ? LARAGON_ROOT : '';
-    if (empty($laragonRoot)) {
-        return 'npm'; // Try global npm
+    $output = @shell_exec('command -v npm 2>/dev/null');
+    if (trim((string)$output) === '') {
+        $output = @shell_exec('command -v npx 2>/dev/null');
     }
-    
-    // Check Laragon's Node.js location
-    $nodeDirs = glob($laragonRoot . '/bin/nodejs/node-*');
-    if (!empty($nodeDirs)) {
-        usort($nodeDirs, function($a, $b) {
-            return filemtime($b) - filemtime($a);
-        });
-        $npmPath = $nodeDirs[0] . '/npm.cmd';
-        if (file_exists($npmPath)) {
-            return escapeshellarg($npmPath);
-        }
-    }
-    
-    // Try global npm
-    return 'npm';
+    $path = trim((string)$output);
+    return $path !== '' ? $path : 'npm';
 }
 
-// Find Git executable
+// Find Git executable on PATH
 function findGit() {
-    $laragonRoot = defined('LARAGON_ROOT') ? LARAGON_ROOT : '';
-    if (empty($laragonRoot)) {
-        return 'git'; // Try global git
-    }
-    
-    // Check Laragon's Git location
-    $gitPath = $laragonRoot . '/bin/git/cmd/git.exe';
-    if (file_exists($gitPath)) {
-        return escapeshellarg($gitPath);
-    }
-    
-    // Try global git
-    return 'git';
+    $output = @shell_exec('command -v git 2>/dev/null');
+    $path = trim((string)$output);
+    return $path !== '' ? $path : 'git';
 }
 
 // Execute command in project directory
@@ -359,15 +326,7 @@ try {
         default:
             throw new Exception('Invalid action');
     }
-} catch (Exception $e) {
-    ob_clean();
-    http_response_code(500);
-    echo json_encode([
-        'success' => false,
-        'error' => $e->getMessage()
-    ]);
-    ob_end_flush();
-} catch (Error $e) {
+} catch (\Throwable $e) {
     ob_clean();
     http_response_code(500);
     echo json_encode([

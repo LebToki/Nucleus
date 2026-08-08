@@ -20,7 +20,7 @@ if ($action === 'snapshot') {
     $snapshot = [
         'os' => PHP_OS,
         'php_version' => PHP_VERSION,
-        'laragon_root' => defined('LARAGON_ROOT') ? LARAGON_ROOT : 'Unknown',
+        'nucleus_root' => defined('NUCLEUS_ROOT') ? NUCLEUS_ROOT : 'Unknown',
         'document_root' => $_SERVER['DOCUMENT_ROOT'] ?? 'Unknown',
         'memory_limit' => ini_get('memory_limit'),
         'extensions' => [

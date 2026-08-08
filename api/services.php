@@ -44,10 +44,10 @@ if (in_array($action, $destructiveActions)) {
     }
 }
 
-if (!defined('LARAGON_ROOT')) {
+if (!defined('NUCLEUS_ROOT')) {
     ob_clean();
     http_response_code(500);
-    echo json_encode(['success' => false, 'error' => 'Laragon root not defined']);
+    echo json_encode(['success' => false, 'error' => 'Install root not defined']);
     ob_end_flush();
     exit;
 }
@@ -218,8 +218,8 @@ try {
 
             // Get disk usage for Laragon Root
             // ⚡ Bolt: Cache disk space calls to avoid redundant filesystem operations
-            $totalSpace = disk_total_space(LARAGON_ROOT);
-            $freeSpace = disk_free_space(LARAGON_ROOT);
+            $totalSpace = disk_total_space(NUCLEUS_ROOT);
+            $freeSpace = disk_free_space(NUCLEUS_ROOT);
             $usedSpace = $totalSpace - $freeSpace;
 
             $disk = [
@@ -364,7 +364,7 @@ try {
         default:
             throw new Exception('Invalid action');
     }
-} catch (Exception $e) {
+} catch (\Throwable $e) {
     \Nucleus\Core\Logger::error("API services.php error: " . $e->getMessage());
     ob_clean();
     http_response_code(500);
@@ -372,16 +372,6 @@ try {
         'success' => false,
         'data' => null,
         'error' => $e->getMessage()
-    ]);
-    ob_end_flush();
-} catch (Error $e) {
-    \Nucleus\Core\Logger::error("API services.php fatal error: " . $e->getMessage());
-    ob_clean();
-    http_response_code(500);
-    echo json_encode([
-        'success' => false,
-        'data' => null,
-        'error' => 'A fatal error occurred: ' . $e->getMessage()
     ]);
     ob_end_flush();
 }

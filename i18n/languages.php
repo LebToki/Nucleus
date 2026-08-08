@@ -5,13 +5,6 @@
  */
 
 return [
-    'en' => [
-        'code' => 'en',
-        'name' => 'English',
-        'native' => 'English',
-        'flag' => 'US',
-        'font' => 'Nunito'
-    ],
     'ar' => [
         'code' => 'ar',
         'name' => 'Arabic',
@@ -19,11 +12,32 @@ return [
         'flag' => 'arabic',
         'font' => 'Tajawal'
     ],
+    'id' => [
+        'code' => 'id',
+        'name' => 'Indonesian',
+        'native' => 'Bahasa Indonesia',
+        'flag' => 'ID',
+        'font' => 'Nunito'
+    ],
+    'da' => [
+        'code' => 'da',
+        'name' => 'Danish',
+        'native' => 'Dansk',
+        'flag' => 'DK',
+        'font' => 'Nunito'
+    ],
     'de' => [
         'code' => 'de',
         'name' => 'German',
         'native' => 'Deutsch',
         'flag' => 'DE',
+        'font' => 'Nunito'
+    ],
+    'en' => [
+        'code' => 'en',
+        'name' => 'English',
+        'native' => 'English',
+        'flag' => 'US',
         'font' => 'Nunito'
     ],
     'es' => [
@@ -40,11 +54,11 @@ return [
         'flag' => 'FR',
         'font' => 'Nunito'
     ],
-    'id' => [
-        'code' => 'id',
-        'name' => 'Indonesian',
-        'native' => 'Bahasa Indonesia',
-        'flag' => 'ID',
+    'no' => [
+        'code' => 'no',
+        'name' => 'Norwegian',
+        'native' => 'Norsk',
+        'flag' => 'NO',
         'font' => 'Nunito'
     ],
     'pt' => [
@@ -62,4 +76,3 @@ return [
         'font' => 'Nunito'
     ]
 ];
-

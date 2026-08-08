@@ -13,15 +13,14 @@ class Logs {
      * Scan for available log files
      */
     public static function scan(): array {
-        $laragonRoot = \Nucleus\Core\System::getLaragonRoot();
+        $nucleusRoot = \Nucleus\Core\System::getNucleusRoot();
         $logFiles = [];
         
         // Apache (Linux + Legacy paths)
         $apacheErrorCandidates = [
             '/var/log/apache2/error.log',
             '/var/log/httpd/error_log',
-            $laragonRoot . '/bin/apache/httpd-*/logs/error.log',
-            $laragonRoot . '/logs/apache_error.log'
+            $nucleusRoot . '/logs/apache_error.log'
         ];
         
         foreach ($apacheErrorCandidates as $pattern) {
@@ -40,7 +39,6 @@ class Logs {
         $apacheAccessCandidates = [
             '/var/log/apache2/access.log',
             '/var/log/httpd/access_log',
-            $laragonRoot . '/bin/apache/httpd-*/logs/access.log'
         ];
         foreach ($apacheAccessCandidates as $pattern) {
             $matched = strpos($pattern, '*') !== false ? glob($pattern) : (file_exists($pattern) ? [$pattern] : []);
@@ -58,7 +56,6 @@ class Logs {
         // Nginx (Linux + Legacy paths)
         $nginxErrorCandidates = [
             '/var/log/nginx/error.log',
-            $laragonRoot . '/bin/nginx/logs/error.log'
         ];
         foreach ($nginxErrorCandidates as $pattern) {
             if (file_exists($pattern) && is_readable($pattern)) {
@@ -78,7 +75,7 @@ class Logs {
             '/var/log/php8.2-fpm.log',
             '/var/log/php-fpm.log',
             '/var/log/php_errors.log',
-            $laragonRoot . '/tmp/php_errors.log',
+            $nucleusRoot . '/tmp/php_errors.log',
             dirname(php_ini_loaded_file()) . '/php_errors.log'
         ];
 
@@ -99,7 +96,7 @@ class Logs {
             '/var/log/mysql/error.log',
             '/var/log/mariadb/mariadb.log',
             '/var/log/mysql/mariadb.log',
-            $laragonRoot . '/data/mysqld.log'
+            $nucleusRoot . '/data/mysqld.log'
         ];
         
         foreach ($mysqlCandidates as $pattern) {

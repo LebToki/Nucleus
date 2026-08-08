@@ -37,6 +37,10 @@ try {
     switch ($action) {
         case 'check':
             $updateInfo = $updateManager->checkForUpdates();
+            // Warm the cached repo-version probe used by the footer/changelog page.
+            if (function_exists('refreshLatestVersionCache') && !empty($updateInfo['latest_version'])) {
+                refreshLatestVersionCache($updateInfo);
+            }
             ob_clean();
             echo json_encode([
                 'success' => true,
@@ -178,6 +182,3 @@ try {
     ob_end_flush();
 }
 ?>
-</task_progress>
-<write_to_file>
-</write_to_file>

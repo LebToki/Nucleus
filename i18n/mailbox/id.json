@@ -26,7 +26,6 @@
     "send": "Kirim",
     "cancel": "Batal",
     "mailpit_not_running": "Mailpit tidak berjalan",
-    "mailpit_not_running_desc": "Silakan mulai Mailpit dari pengelola layanan Laragon atau buka langsung.",
+    "mailpit_not_running_desc": "Silakan mulai Mailpit dari halaman Layanan Nucleus atau buka langsung.",
     "open_mailpit": "Buka Mailpit"
 }
-

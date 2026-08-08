@@ -197,6 +197,7 @@ include __DIR__ . '/../partials/layouts/layoutTop.php'; ?>
         </div>
     </div>
 </div>
+</div>
 
 <script>
     const DATABASES_API = 'api/databases.php';

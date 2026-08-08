@@ -43,10 +43,10 @@ if (in_array($action, $destructiveActions)) {
     }
 }
 
-if (!defined('LARAGON_ROOT')) {
+if (!defined('NUCLEUS_ROOT')) {
     ob_clean();
     http_response_code(500);
-    echo json_encode(['success' => false, 'error' => 'Laragon root not defined']);
+    echo json_encode(['success' => false, 'error' => 'Install root not defined']);
     ob_end_flush();
     exit;
 }
@@ -56,31 +56,14 @@ $mysqlHost = defined('MYSQL_HOST') ? MYSQL_HOST : 'localhost';
 $mysqlUser = defined('MYSQL_USER') ? MYSQL_USER : 'root';
 $mysqlPassword = defined('MYSQL_PASSWORD') ? MYSQL_PASSWORD : '';
 
-// Find mysqldump.exe
+// Find mysqldump on PATH, with mariadb-dump fallback
 function findMySQLDump() {
-    $laragonRoot = defined('LARAGON_ROOT') ? LARAGON_ROOT : '';
-    if (empty($laragonRoot)) {
-        return null;
+    $output = @shell_exec('command -v mysqldump 2>/dev/null');
+    if (trim((string)$output) === '') {
+        $output = @shell_exec('command -v mariadb-dump 2>/dev/null');
     }
-    
-    $mysqlDirs = glob($laragonRoot . '/bin/mysql/mysql-*');
-    if (empty($mysqlDirs)) {
-        return null;
-    }
-    
-    // Sort by modification time (most recent first)
-    usort($mysqlDirs, function($a, $b) {
-        return filemtime($b) - filemtime($a);
-    });
-    
-    foreach ($mysqlDirs as $mysqlDir) {
-        $mysqldump = $mysqlDir . '/bin/mysqldump.exe';
-        if (file_exists($mysqldump)) {
-            return $mysqldump;
-        }
-    }
-    
-    return null;
+    $path = trim((string)$output);
+    return $path !== '' ? $path : null;
 }
 
 // Get list of databases
@@ -141,7 +124,7 @@ function createBackup($projectName, $databaseName = null) {
     if (class_exists('\Nucleus\Core\System') && method_exists('\Nucleus\Core\System', 'getWwwPath')) {
         $documentRoot = \Nucleus\Core\System::getWwwPath();
     } else {
-        $documentRoot = defined('DOCUMENT_ROOT') ? DOCUMENT_ROOT : (defined('LARAGON_ROOT') ? LARAGON_ROOT . '/html' : '/var/www/html');
+        $documentRoot = defined('DOCUMENT_ROOT') ? DOCUMENT_ROOT : (defined('NUCLEUS_ROOT') ? NUCLEUS_ROOT . '/html' : '/var/www/html');
     }
     
     $projectPath = rtrim($documentRoot, '/') . '/' . $projectName;
@@ -181,7 +164,7 @@ function createBackup($projectName, $databaseName = null) {
     if (!empty($databaseName)) {
         $mysqldump = findMySQLDump();
         if (!$mysqldump) {
-            return ['success' => false, 'error' => 'mysqldump.exe not found'];
+            return ['success' => false, 'error' => 'mysqldump not found; install mariadb-client / mysql-client'];
         }
         
         $sqlFile = $backupBasePath . '_database.sql';
@@ -447,15 +430,7 @@ try {
         default:
             throw new Exception('Invalid action');
     }
-} catch (Exception $e) {
-    ob_clean();
-    http_response_code(500);
-    echo json_encode([
-        'success' => false,
-        'error' => $e->getMessage()
-    ]);
-    ob_end_flush();
-} catch (Error $e) {
+} catch (\Throwable $e) {
     ob_clean();
     http_response_code(500);
     echo json_encode([

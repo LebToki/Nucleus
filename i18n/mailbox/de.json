@@ -26,7 +26,6 @@
     "send": "Senden",
     "cancel": "Abbrechen",
     "mailpit_not_running": "Mailpit läuft nicht",
-    "mailpit_not_running_desc": "Bitte starten Sie Mailpit über den Laragon-Dienstmanager oder öffnen Sie es direkt.",
+    "mailpit_not_running_desc": "Bitte starten Sie Mailpit über den Nucleus-Dienste-Seite oder öffnen Sie es direkt.",
     "open_mailpit": "Mailpit öffnen"
 }
-

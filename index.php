@@ -29,6 +29,68 @@ if (function_exists('check_auth')) {
 // i18n is now included via helpers.php - no need to include separately
 // This prevents double-inclusion issues
 
+// Per-module translation helpers (pattern from pages/404.php)
+$commonTranslations = function_exists('load_translations') ? load_translations('common') : [];
+$servicesTranslations = function_exists('load_translations') ? load_translations('services') : [];
+$projectsTranslations = function_exists('load_translations') ? load_translations('projects') : [];
+$vitalsTranslations = function_exists('load_translations') ? load_translations('vitals') : [];
+$sidebarTranslations = function_exists('load_translations') ? load_translations('sidebar') : [];
+
+function t_common($key, $fallback = '') {
+    global $commonTranslations;
+    if (function_exists('t')) {
+        $translated = t('common.' . $key);
+        if ($translated !== 'common.' . $key) {
+            return $translated;
+        }
+    }
+    return $commonTranslations[$key] ?? ($fallback ?: $key);
+}
+
+function t_services($key, $fallback = '') {
+    global $servicesTranslations;
+    if (function_exists('t')) {
+        $translated = t('services.' . $key);
+        if ($translated !== 'services.' . $key) {
+            return $translated;
+        }
+    }
+    return $servicesTranslations[$key] ?? ($fallback ?: $key);
+}
+
+function t_projects($key, $fallback = '') {
+    global $projectsTranslations;
+    if (function_exists('t')) {
+        $translated = t('projects.' . $key);
+        if ($translated !== 'projects.' . $key) {
+            return $translated;
+        }
+    }
+    return $projectsTranslations[$key] ?? ($fallback ?: $key);
+}
+
+function t_sidebar($key, $fallback = '') {
+    global $sidebarTranslations;
+    if (function_exists('t')) {
+        $translated = t('sidebar.' . $key);
+        if ($translated !== 'sidebar.' . $key) {
+            return $translated;
+        }
+    }
+    return $sidebarTranslations[$key] ?? ($fallback ?: $key);
+}
+
+function t_vitals($key, $fallback = '') {
+    global $vitalsTranslations;
+    if (function_exists('t')) {
+        $translated = t('vitals.' . $key);
+        if ($translated !== 'vitals.' . $key) {
+            return $translated;
+        }
+    }
+    return $vitalsTranslations[$key] ?? ($fallback ?: $key);
+}
+
 // Ensure required directories exist
 $requiredDirs = [
     __DIR__ . '/cache',
@@ -137,7 +199,7 @@ if (!empty($page)) {
                 if (defined('APP_DEBUG') && APP_DEBUG) {
                     \Nucleus\Core\Logger::error("Page load error ($page): " . $e->getMessage());
                     http_response_code(500);
-                    echo '<h1>Error Loading Page</h1>';
+                    echo '<h1>' . t_common('error_loading_page') . '</h1>';
                     echo '<p>' . htmlspecialchars($e->getMessage()) . '</p>';
                     echo '<pre>' . htmlspecialchars($e->getTraceAsString()) . '</pre>';
                 } else {
@@ -187,22 +249,22 @@ include './partials/layouts/layoutTop.php' ?>
     <div class="container-fluid">
     <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
         <div class="d-flex align-items-center gap-3">
-            <h6 class="fw-semibold mb-0">Dashboard</h6>
+            <h6 class="fw-semibold mb-0"><?php echo t_common('dashboard'); ?></h6>
 
             <button type="button" class="btn btn-primary-600 btn-sm radius-8 px-16 py-8 d-flex align-items-center gap-2" onclick="checkForUpdates(true);">
                 <iconify-icon icon="solar:refresh-bold" class="text-lg"></iconify-icon>
-                Check for Updates
+                <?php echo t_common('check_for_updates'); ?>
             </button>
         </div>
         <ul class="d-flex align-items-center gap-2">
             <li class="fw-medium">
                 <a href="index.php" class="d-flex align-items-center gap-1 hover-text-primary">
                     <iconify-icon icon="solar:home-smile-angle-outline" class="icon text-lg"></iconify-icon>
-                    Dashboard
+                    <?php echo t_common('dashboard'); ?>
                 </a>
             </li>
             <li>-</li>
-            <li class="fw-medium" id="time-greeting">Good Evening</li>
+            <li class="fw-medium" id="time-greeting"><?php echo t_common('good_evening'); ?></li>
         </ul>
     </div>
 
@@ -337,12 +399,12 @@ include './partials/layouts/layoutTop.php' ?>
             <div class="card shadow-none border radius-12 bg-gradient-start-7 h-100">
                 <div class="card-body p-16">
                     <div class="d-flex align-items-center justify-content-between gap-8 mb-8">
-                        <p class="fw-medium text-secondary-light mb-0 text-sm">Disk Usage</p>
+                        <p class="fw-medium text-secondary-light mb-0 text-sm"><?php echo t_vitals('disk_usage'); ?></p>
                         <div class="w-50-px h-50-px bg-neutral-600 rounded-circle d-flex justify-content-center align-items-center flex-shrink-0">
                             <iconify-icon icon="solar:diskette-bold" class="text-base text-2xl" id="disk-icon"></iconify-icon>
                         </div>
                     </div>
-                    <h6 class="mb-4 text-truncate" style="font-size: 16px;" id="disk-text">Loading...</h6>
+                    <h6 class="mb-4 text-truncate" style="font-size: 14px;" id="disk-text">Loading...</h6>
                     <div class="progress h-4-px" style="background: rgba(var(--white-rgb), 0.2);">
                         <div id="disk-progress" class="progress-bar bg-base" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
@@ -354,10 +416,10 @@ include './partials/layouts/layoutTop.php' ?>
         <!-- Projects Section -->
         <div class="mt-24">
             <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-16">
-                <h6 class="fw-semibold mb-0">Projects</h6>
+                <h6 class="fw-semibold mb-0"><?php echo t_sidebar('projects'); ?></h6>
                 <button type="button" class="btn btn-primary-600 radius-8 px-20 py-11 d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#projectWizardModal">
                     <iconify-icon icon="solar:add-circle-bold" class="text-xl"></iconify-icon>
-                    Create New Project
+                    <?php echo t_projects('create_new_project'); ?>
                 </button>
             </div>
             
@@ -403,20 +465,20 @@ include './partials/layouts/layoutTop.php' ?>
                             <div class="card-body p-16">
                                 <!-- 3-Dot Dropdown Menu (Top Left) -->
                                 <div class="dropdown position-absolute top-0 start-0 ms-16 mt-16">
-                                    <button type="button" data-bs-toggle="dropdown" aria-expanded="false" class="bg-base bg-opacity-20 w-32-px h-32-px radius-8 border border-white border-opacity-30 d-flex justify-content-center align-items-center text-base hover-opacity-80" style="backdrop-filter: blur(4px);" aria-label="Project Actions" title="Project Actions">
+                                    <button type="button" data-bs-toggle="dropdown" aria-expanded="false" class="bg-base bg-opacity-20 w-32-px h-32-px radius-8 border border-white border-opacity-30 d-flex justify-content-center align-items-center text-base hover-opacity-80" style="backdrop-filter: blur(4px);" aria-label="<?php echo t_projects('project_actions'); ?>" title="<?php echo t_projects('project_actions'); ?>">
                                         <iconify-icon icon="entypo:dots-three-vertical" class="icon text-lg"></iconify-icon>
                                     </button>
                                     <ul class="dropdown-menu p-12 border bg-base shadow">
                                         <li>
                                             <button type="button" class="ignore-project-btn dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-10" data-project-name="<?php echo htmlspecialchars($project['name']); ?>">
                                                 <iconify-icon icon="solar:eye-closed-bold" class="icon"></iconify-icon>
-                                                Ignore Project
+                                                <?php echo t_projects('ignore_project'); ?>
                                             </button>
                                         </li>
                                         <li>
                                             <button type="button" class="env-editor-btn dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-10" data-project-name="<?php echo htmlspecialchars($project['name']); ?>" data-bs-toggle="modal" data-bs-target="#envEditorModal">
                                                 <iconify-icon icon="solar:pen-new-square-bold" class="icon"></iconify-icon>
-                                                .env Editor
+                                                <?php echo t_projects('env_editor'); ?>
                                             </button>
                                         </li>
                                     </ul>
@@ -444,14 +506,14 @@ include './partials/layouts/layoutTop.php' ?>
                                     <div class="<?php echo ($project['is_wordpress'] ?? false) ? 'col-6' : 'col-12'; ?>">
                                         <a href="<?php echo htmlspecialchars($project['url']); ?>" target="_blank" class="btn btn-sm btn-info w-100 radius-8 px-12 py-8 d-flex align-items-center gap-2">
                                             <iconify-icon icon="solar:link-bold" class="text-lg"></iconify-icon>
-                                            Open
+                                            <?php echo t_projects('open_project'); ?>
                                         </a>
                                     </div>
                                     <?php if ($project['is_wordpress'] ?? false): ?>
                                     <div class="col-6">
                                         <a href="<?php echo htmlspecialchars($project['url']); ?>/wp-admin" target="_blank" class="btn btn-sm btn-primary-600 w-100 radius-8 px-12 py-8 d-flex align-items-center gap-2">
                                             <iconify-icon icon="solar:settings-bold" class="text-lg"></iconify-icon>
-                                            WP Admin
+                                            <?php echo t_projects('wp_admin'); ?>
                                         </a>
                                     </div>
                                     <?php endif; ?>
@@ -461,13 +523,13 @@ include './partials/layouts/layoutTop.php' ?>
                                         <div class="col-6">
                                             <a href="index.php?page=projects" class="btn btn-sm btn-success w-100 radius-8 px-12 py-8 d-flex align-items-center gap-2">
                                                 <iconify-icon icon="solar:share-bold" class="text-lg"></iconify-icon>
-                                                Share
+                                                <?php echo t_projects('share'); ?>
                                             </a>
                                         </div>
                                         <div class="col-6">
                                             <a href="index.php?page=projects" class="btn btn-sm btn-danger w-100 radius-8 px-12 py-8 d-flex align-items-center gap-2">
                                                 <iconify-icon icon="solar:trash-bin-trash-bold" class="text-lg"></iconify-icon>
-                                                Delete
+                                                <?php echo t_projects('delete_project'); ?>
                                             </a>
                                         </div>
                                     </div>
@@ -486,7 +548,7 @@ include './partials/layouts/layoutTop.php' ?>
         <div class="card shadow-none border radius-12 glass">
             <div class="card-body p-24">
                 <div class="d-flex align-items-center justify-content-between mb-16">
-                    <strong><p class="fw-semibold mb-0">Version History & Changelog</p></strong>
+                    <strong><p class="fw-semibold mb-0"><?php echo t_common('version_history_changelog'); ?></p></strong>
                     <span class="badge bg-primary-600">v<?php echo getAppVersion(); ?></span>
                 </div>
                 
@@ -524,7 +586,7 @@ include './partials/layouts/layoutTop.php' ?>
                     ?>
                 </div>
                 <div class="text-center mt-16">
-                    <a href="CHANGELOG.md" target="_blank" class="text-primary-600 fw-medium text-sm">View Full Changelog</a>
+                    <a href="CHANGELOG.md" target="_blank" class="text-primary-600 fw-medium text-sm"><?php echo t_common('view_full_changelog'); ?></a>
                 </div>
             </div>
         </div>
@@ -536,7 +598,7 @@ include './partials/layouts/layoutTop.php' ?>
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header border-bottom">
-                <h5 class="modal-title fw-semibold" id="projectWizardModalLabel">Create New Project</h5>
+                <h5 class="modal-title fw-semibold" id="projectWizardModalLabel"><?php echo t_projects('create_new_project'); ?></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -544,15 +606,15 @@ include './partials/layouts/layoutTop.php' ?>
                     <!-- Step 1: Project Details -->
                     <div class="wizard-step active" data-step="1">
                         <div class="mb-16">
-                            <label class="form-label fw-medium mb-8">Project Name</label>
+                            <label class="form-label fw-medium mb-8"><?php echo t_projects('project_name'); ?></label>
                             <input type="text" class="form-control" id="project-name" name="name" placeholder="my-project" required pattern="[a-zA-Z0-9_-]+" title="Only letters, numbers, underscores, and hyphens allowed">
                             <small class="text-secondary-light text-sm mt-4 d-block">Only letters, numbers, underscores, and hyphens allowed</small>
                         </div>
                         
                         <div class="mb-16">
-                            <label class="form-label fw-medium mb-8">Framework/Platform</label>
+                            <label class="form-label fw-medium mb-8"><?php echo t_projects('framework_platform'); ?></label>
                             <select class="form-select" id="project-framework" name="framework" required>
-                                <option value="custom">Custom/Empty Project</option>
+                                <option value="custom"><?php echo t_projects('custom_empty_project'); ?></option>
                                 <option value="wordpress">WordPress</option>
                                 <option value="laravel">Laravel</option>
                                 <option value="symfony">Symfony</option>
@@ -571,10 +633,10 @@ include './partials/layouts/layoutTop.php' ?>
                     <div class="wizard-step" data-step="2" style="display: none;">
                         <div class="d-flex align-items-center justify-content-between mb-16">
                             <div>
-                                <label class="form-label fw-medium mb-4">Download & Install a Platform</label>
-                                <small class="text-secondary-light text-sm d-block">Pick a pre-packaged library to download, install and map to a directory (like Laragon's Quick Add).</small>
+                                <label class="form-label fw-medium mb-4"><?php echo t_projects('download_install_platform'); ?></label>
+                                <small class="text-secondary-light text-sm d-block"><?php echo t_projects('quick_add_desc'); ?></small>
                             </div>
-                            <span class="badge bg-primary-600 text-sm">Optional</span>
+                            <span class="badge bg-primary-600 text-sm"><?php echo t_common('optional'); ?></span>
                         </div>
                         
                         <div class="form-check mb-16">
@@ -586,9 +648,9 @@ include './partials/layouts/layoutTop.php' ?>
                         
                         <div id="download-library-fields" style="display: none;">
                             <div class="mb-16">
-                                <label class="form-label fw-medium mb-8">Select Platform</label>
+                                <label class="form-label fw-medium mb-8"><?php echo t_projects('select_platform'); ?></label>
                                 <select class="form-select" id="download-library-select">
-                                    <option value="">-- Choose a platform --</option>
+                                    <option value=""><?php echo t_projects('choose_platform'); ?></option>
                                     <?php
                                     $libsByCategory = function_exists('getDownloadableLibrariesByCategory') ? getDownloadableLibrariesByCategory() : [];
                                     foreach ($libsByCategory as $category => $libs):
@@ -605,9 +667,9 @@ include './partials/layouts/layoutTop.php' ?>
                             </div>
                             
                             <div class="mb-16">
-                                <label class="form-label fw-medium mb-8">Target Directory Name</label>
-                                <input type="text" class="form-control" id="download-target-name" placeholder="Auto-filled from platform name">
-                                <small class="text-secondary-light text-sm mt-4 d-block">Leave empty to use the platform's default directory name.</small>
+                                <label class="form-label fw-medium mb-8"><?php echo t_projects('target_directory_name'); ?></label>
+                                <input type="text" class="form-control" id="download-target-name" placeholder="<?php echo t_projects('auto_filled_platform'); ?>">
+                                <small class="text-secondary-light text-sm mt-4 d-block"><?php echo t_projects('leave_empty_default_dir'); ?></small>
                             </div>
                             
                             <div id="download-library-preview" class="d-none">
@@ -617,10 +679,10 @@ include './partials/layouts/layoutTop.php' ?>
                                             <iconify-icon id="download-library-preview-icon" icon="solar:box-bold" class="text-white text-xl"></iconify-icon>
                                         </div>
                                         <div class="flex-grow-1 min-w-0">
-                                            <h6 class="mb-1 text-truncate" id="download-library-preview-name">Platform</h6>
-                                            <p class="text-secondary-light text-sm mb-0" id="download-library-preview-desc">Select a platform to see details.</p>
+                                            <h6 class="mb-1 text-truncate" id="download-library-preview-name"><?php echo t_projects('platform'); ?></h6>
+                                            <p class="text-secondary-light text-sm mb-0" id="download-library-preview-desc"><?php echo t_projects('select_platform_desc'); ?></p>
                                         </div>
-                                        <span class="badge bg-success-100 text-success-600" id="download-library-preview-db">No DB</span>
+                                        <span class="badge bg-success-100 text-success-600" id="download-library-preview-db"><?php echo t_projects('no_db'); ?></span>
                                     </div>
                                 </div>
                             </div>
@@ -631,15 +693,14 @@ include './partials/layouts/layoutTop.php' ?>
                     <div class="wizard-step" data-step="3" style="display: none;">
                         <div class="form-check mb-16">
                             <input class="form-check-input" type="checkbox" id="create-database" name="create_database" value="true">
-                            <label class="form-check-label" for="create-database">
-                                Create Database
+                            <label class="form-check-label" for="create-database"><?php echo t_projects('create_database'); ?>
                             </label>
                         </div>
                         
                         <div id="database-fields" style="display: none;">
                             <div class="mb-16">
-                                <label class="form-label fw-medium mb-8">Database Name</label>
-                                <input type="text" class="form-control" id="database-name" name="database_name" placeholder="Auto-generated from project name">
+                                <label class="form-label fw-medium mb-8"><?php echo t_projects('database_name'); ?></label>
+                                <input type="text" class="form-control" id="database-name" name="database_name" placeholder="<?php echo t_projects('auto_generated_db'); ?>">
                             </div>
                         </div>
                     </div>
@@ -648,15 +709,13 @@ include './partials/layouts/layoutTop.php' ?>
                     <div class="wizard-step" data-step="4" style="display: none;">
                         <div class="form-check mb-16">
                             <input class="form-check-input" type="checkbox" id="init-git" name="init_git" value="true">
-                            <label class="form-check-label" for="init-git">
-                                Initialize Git Repository
+                            <label class="form-check-label" for="init-git"><?php echo t_projects('init_git_repo'); ?>
                             </label>
                         </div>
                         
                         <div class="form-check mb-16">
                             <input class="form-check-input" type="checkbox" id="create-vhost" name="create_vhost" value="true" checked>
-                            <label class="form-check-label" for="create-vhost">
-                                Create Virtual Host
+                            <label class="form-check-label" for="create-vhost"><?php echo t_projects('create_virtual_host'); ?>
                             </label>
                         </div>
                     </div>
@@ -667,10 +726,10 @@ include './partials/layouts/layoutTop.php' ?>
                 </form>
             </div>
             <div class="modal-footer border-top">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-secondary" id="wizard-prev" style="display: none;">Previous</button>
-                <button type="button" class="btn btn-primary-600" id="wizard-next">Next</button>
-                <button type="button" class="btn btn-primary-600" id="wizard-create" style="display: none;">Create Project</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><?php echo t_common('cancel'); ?></button>
+                <button type="button" class="btn btn-secondary" id="wizard-prev" style="display: none;"><?php echo t_common('previous'); ?></button>
+                <button type="button" class="btn btn-primary-600" id="wizard-next"><?php echo t_common('next'); ?></button>
+                <button type="button" class="btn btn-primary-600" id="wizard-create" style="display: none;"><?php echo t_projects('create_project'); ?></button>
             </div>
         </div>
     </div>
@@ -775,7 +834,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     document.getElementById('download-library-preview-name').textContent = lib.name || libKey;
                     document.getElementById('download-library-preview-desc').textContent = lib.description || '';
                     const dbBadge = document.getElementById('download-library-preview-db');
-                    dbBadge.textContent = lib.requires_db ? 'Requires DB' : 'No DB';
+                    dbBadge.textContent = lib.requires_db ? '<?php echo t_projects('requires_db'); ?>' : '<?php echo t_projects('no_db'); ?>';
                     dbBadge.className = 'badge ' + (lib.requires_db ? 'bg-warning-100 text-warning-600' : 'bg-success-100 text-success-600');
                     downloadLibraryPreview.classList.remove('d-none');
                 }
@@ -836,10 +895,10 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Update modal title
         const titles = [
-            'Create New Project',
-            'Download & Install',
-            'Database Settings',
-            'Additional Options'
+            '<?php echo t_projects('create_new_project'); ?>',
+            '<?php echo t_projects('download_install_platform'); ?>',
+            '<?php echo t_projects('database_settings'); ?>',
+            '<?php echo t_projects('additional_options'); ?>'
         ];
         document.getElementById('projectWizardModalLabel').textContent = titles[currentStep - 1];
     }
@@ -850,7 +909,7 @@ document.addEventListener('DOMContentLoaded', function() {
             case 1:
                 const projectName = document.getElementById('project-name').value.trim();
                 if (!projectName) {
-                    showMessage('Please enter a project name', 'danger');
+                    showMessage('<?php echo t_projects('enter_project_name'); ?>', 'danger');
                     return false;
                 }
                 if (!/^[a-zA-Z0-9_-]+$/.test(projectName)) {
@@ -1029,13 +1088,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     toggleLoading(this, false);
                     if (data.success) {
                         // Remove the project card
-                        const projectCard = document.querySelector(`.project-card[data-project-name="${projectName}"]`);
+                        const projectCard = document.querySelector(`.project-card-container[data-project-name="${projectName}"]`);
                         if (projectCard) {
                             projectCard.classList.add('animate__animated', 'animate__fadeOut');
                             setTimeout(() => {
                                 projectCard.remove();
                                 // Refresh projects count if needed
-                                if (document.querySelectorAll('.project-card').length === 0) {
+                                if (document.querySelectorAll('.project-card-container').length === 0) {
                                     window.location.reload();
                                 }
                             }, 500);
@@ -1128,29 +1187,29 @@ document.addEventListener('DOMContentLoaded', function() {
     <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content glass border-0 text-white">
             <div class="modal-header border-bottom">
-                <h5 class="modal-title fw-semibold text-white" id="envEditorModalLabel">.env Editor: <span id="envProjectName" class="text-primary-600"></span></h5>
+                <h5 class="modal-title fw-semibold text-white" id="envEditorModalLabel"><?php echo t_projects('env_editor'); ?>: <span id="envProjectName" class="text-primary-600"></span></h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-0">
                 <div id="env-editor-loader" class="p-40 text-center">
                     <div class="spinner-border text-primary" role="status"></div>
-                    <p class="mt-16 text-secondary-light">Loading .env file...</p>
+                    <p class="mt-16 text-secondary-light"><?php echo t_projects('loading_env_file'); ?></p>
                 </div>
                 <div id="env-editor-container" style="display: none;">
                     <textarea id="env-editor-textarea" class="form-control border-0 radius-0 bg-dark text-white p-16" style="min-height: 500px; font-family: 'Fira Code', 'Courier New', monospace; font-size: 14px; line-height: 1.5;"></textarea>
                 </div>
                 <div id="env-editor-empty" class="p-40 text-center" style="display: none;">
                     <iconify-icon icon="solar:file-corrupted-bold" class="text-secondary-light text-5xl mb-16"></iconify-icon>
-                    <p class="text-secondary-light">This project does not have a .env file yet.</p>
-                    <button type="button" class="btn btn-primary-600 mt-16" id="create-env-btn">Create .env File</button>
+                    <p class="text-secondary-light"><?php echo t_projects('no_env_file_yet'); ?></p>
+                    <button type="button" class="btn btn-primary-600 mt-16" id="create-env-btn"><?php echo t_projects('create_env_file'); ?></button>
                 </div>
             </div>
             <div class="modal-footer border-top">
                 <div class="flex-grow-1">
-                    <small class="text-secondary-light">Backups are created automatically before saving.</small>
+                    <small class="text-secondary-light"><?php echo t_common('backups_auto_before_save'); ?></small>
                 </div>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary-600" id="save-env-btn">Save Changes</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><?php echo t_common('close'); ?></button>
+                <button type="button" class="btn btn-primary-600" id="save-env-btn"><?php echo t_common('save_changes'); ?></button>
             </div>
         </div>
     </div>

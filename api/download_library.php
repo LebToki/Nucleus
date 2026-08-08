@@ -121,7 +121,7 @@ if ($action === 'download') {
     $laraconfig = getLaragonConfig();
     $documentRoot = (class_exists('\Nucleus\Core\System') && method_exists('\Nucleus\Core\System', 'getWwwPath'))
         ? \Nucleus\Core\System::getWwwPath()
-        : (defined('LARAGON_ROOT') ? LARAGON_ROOT . '/html' : '/var/www/html');
+        : (defined('NUCLEUS_ROOT') ? NUCLEUS_ROOT . '/html' : '/var/www/html');
 
     // Fallback to platform-aware www path
     if (empty($documentRoot) || !is_dir($documentRoot)) {

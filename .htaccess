@@ -50,7 +50,16 @@
     Header set Referrer-Policy "strict-origin-when-cross-origin"
 </IfModule>
 
-# Block access to sensitive files
-<FilesMatch "^\.(env|log|json|yml|yaml|ini|conf|gitignore)">
+# Block access to sensitive runtime directories
+<IfModule mod_alias.c>
+    RedirectMatch 403 ^/(data|cache|logs|uploaded)(/|$)
+    RedirectMatch 403 ^/\.git(/|$)
+
+    # Block dotfiles and hidden files, but keep /.well-known for ACME challenges
+    RedirectMatch 403 ^/\.(?!well-known/).*$
+</IfModule>
+
+# Block access to sensitive file types
+<FilesMatch "\.(env|ini|conf|sql|bak|log|lock|md|yml|yaml|gitignore|gitattributes)$">
     Require all denied
 </FilesMatch>

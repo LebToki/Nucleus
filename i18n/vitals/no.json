@@ -1,0 +1,15 @@
+{
+    "server_vitals": "Servermålinger",
+    "dashboard": "Dashbord",
+    "cpu_usage": "CPU-bruk",
+    "memory_usage": "Minnebruk",
+    "disk_usage": "Diskbruk",
+    "network": "Nettverk",
+    "network_traffic": "Nettverkstrafikk",
+    "service_status": "Tjenestestatus",
+    "last_24_hours": "Siste 24 timer",
+    "active": "Aktiv",
+    "mbps": "Mbps",
+    "running": "Kjører",
+    "stopped": "Stoppet"
+}

@@ -75,5 +75,21 @@
     "unknown": "Unknown",
     "good_morning": "Good morning",
     "good_afternoon": "Good afternoon",
-    "good_evening": "Good evening"
+    "good_evening": "Good evening",
+    "check_for_updates": "Check for Updates",
+    "up_to_date": "Up to Date",
+    "update_available": "Update available",
+    "error_loading_page": "Error Loading Page",
+    "page_not_found_desc": "The requested page could not be found.",
+    "go_to_dashboard": "Go to Dashboard",
+    "version_history_changelog": "Version History & Changelog",
+    "view_full_changelog": "View Full Changelog",
+    "optional": "Optional",
+    "save_changes": "Save Changes",
+    "close": "Close",
+    "backups_auto_before_save": "Backups are created automatically before saving.",
+    "page_not_found_file": "The requested page file does not exist: ",
+    "is_not_valid": "is not valid.",
+    "search_projects": "Search projects...",
+    "search_projects_hint": "Start typing to search projects..."
 }

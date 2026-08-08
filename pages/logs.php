@@ -37,7 +37,7 @@ function t_logs($key, $fallback = '') {
 }
 
 // Get Laragon root
-$laragonRoot = defined('LARAGON_ROOT') ? LARAGON_ROOT : '';
+$laragonRoot = defined('NUCLEUS_ROOT') ? NUCLEUS_ROOT : '';
 $selectedLog = $_GET['log'] ?? '';
 
 // Scan for log files dynamically using the centralized service

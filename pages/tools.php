@@ -247,6 +247,30 @@ include __DIR__ . '/../partials/layouts/layoutTop.php';
                         
                         <div id="smtp-config-form" style="display: none;">
                             <div class="mb-16">
+                                <label class="form-label fw-medium mb-8"><?php echo t_tools('mta_mode', 'Mail Transport Agent'); ?></label>
+                                <div class="d-flex flex-wrap gap-8" id="mta-mode-group">
+                                    <input type="radio" class="btn-check" name="mta-mode" id="mta-mailpit" value="mailpit" checked>
+                                    <label class="btn btn-outline-primary-600 d-inline-flex align-items-center gap-2" for="mta-mailpit">
+                                        <iconify-icon icon="solar:mailbox-bold"></iconify-icon>
+                                        Mailpit
+                                    </label>
+                                    <input type="radio" class="btn-check" name="mta-mode" id="mta-postfix" value="postfix">
+                                    <label class="btn btn-outline-primary-600 d-inline-flex align-items-center gap-2" for="mta-postfix">
+                                        <iconify-icon icon="solar:letter-bold"></iconify-icon>
+                                        Postfix
+                                    </label>
+                                    <input type="radio" class="btn-check" name="mta-mode" id="mta-sendmail" value="sendmail">
+                                    <label class="btn btn-outline-primary-600 d-inline-flex align-items-center gap-2" for="mta-sendmail">
+                                        <iconify-icon icon="solar:plain-bold"></iconify-icon>
+                                        Sendmail
+                                    </label>
+                                </div>
+                                <small class="text-secondary-light text-sm mt-4 d-block">
+                                    Mailpit catches mail into its web UI (dev); Postfix relays via the system MTA.
+                                </small>
+                            </div>
+
+                            <div class="mb-16" id="smtp-port-wrap">
                                 <label class="form-label fw-medium mb-8"><?php echo t_tools('smtp_port', 'SMTP Port'); ?></label>
                                 <input type="number" class="form-control" id="smtp-port" value="1025" min="1" max="65535">
                                 <small class="text-secondary-light text-sm mt-4 d-block"><?php echo t_tools('smtp_port_desc', 'Mailpit SMTP port (default: 1025)'); ?></small>
@@ -260,7 +284,7 @@ include __DIR__ . '/../partials/layouts/layoutTop.php';
                             
                             <button type="button" class="btn btn-primary-600 w-100 radius-8 px-20 py-11 d-flex align-items-center gap-2" id="fix-smtp-btn">
                                 <iconify-icon icon="solar:settings-bold" class="text-xl"></iconify-icon>
-                                <?php echo t_tools('fix_smtp', 'Fix SMTP Configuration'); ?>
+                                <?php echo t_tools('fix_smtp', 'Apply SMTP Configuration'); ?>
                             </button>
                         </div>
                         

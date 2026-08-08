@@ -312,6 +312,7 @@ if (substr($assetsUrl, 0, 1) !== '/') {
     </script>
 
     <!-- Service Worker Registration for PWA -->
+    <?php if (file_exists(__DIR__ . '/../sw.js')): ?>
     <script>
     (function() {
         'use strict';
@@ -321,8 +322,12 @@ if (substr($assetsUrl, 0, 1) !== '/') {
                 // Get base path dynamically
                 const basePath = '<?php echo defined("BASE_URL") ? BASE_URL : ""; ?>';
                 const swPath = basePath ? basePath + '/sw.js' : '/sw.js';
-                
-                navigator.serviceWorker.register(swPath)
+
+                // Only register if the service worker file actually exists
+                fetch(swPath, { cache: 'no-store' })
+                    .then(function(res) {
+                        if (!res.ok) return;
+                        navigator.serviceWorker.register(swPath)
                     .then(function(registration) {
                         console.log('ServiceWorker registration successful with scope: ', registration.scope);
                         
@@ -361,11 +366,13 @@ if (substr($assetsUrl, 0, 1) !== '/') {
                     })
                     .catch(function(error) {
                         console.log('ServiceWorker registration failed: ', error);
-                    });
+                     });
             });
-        }
+        });
+    }
     })();
     </script>
+    <?php endif; ?>
 
     <!-- Project Search Script -->
     <script>
@@ -1496,8 +1503,10 @@ if (substr($assetsUrl, 0, 1) !== '/') {
         'use strict';
         
         const FILES_API = 'api/files.php';
+        const HOSTS_API = 'api/hosts.php';
         const selectedFile = '<?php echo $selectedFile; ?>';
         const sitesEnabledDir = '<?php echo $sitesEnabledDir; ?>';
+        let currentFile = selectedFile;
         let codeEditor = null;
         
         // Initialize CodeMirror
@@ -1538,7 +1547,27 @@ if (substr($assetsUrl, 0, 1) !== '/') {
             if (!codeEditor) return;
             
             codeEditor.setValue('Loading...');
-            
+
+            if (fileName === '__hosts__') {
+                fetch(HOSTS_API + '?action=read')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            codeEditor.setValue(data.data.content || '');
+                            if (titleEl) titleEl.textContent = '/etc/hosts';
+                            if (pathEl) pathEl.textContent = '/etc/hosts';
+                            if (saveBtn) saveBtn.style.display = 'block';
+                            if (refreshBtn) refreshBtn.style.display = 'block';
+                        } else {
+                            codeEditor.setValue('Error: ' + (data.error || 'Failed to load /etc/hosts'));
+                        }
+                    })
+                    .catch(error => {
+                        codeEditor.setValue('Error: Failed to load /etc/hosts. ' + error.message);
+                    });
+                return;
+            }
+
             const filePath = sitesEnabledDir + '/' + fileName;
             
             fetch(FILES_API + '?action=read&path=' + encodeURIComponent(filePath))
@@ -1583,10 +1612,30 @@ if (substr($assetsUrl, 0, 1) !== '/') {
         
         // Save file
         window.saveFile = function() {
-            if (!codeEditor || !selectedFile) return;
-            
+            if (!codeEditor || !currentFile) return;
+
             const content = codeEditor.getValue();
-            const filePath = sitesEnabledDir + '/' + selectedFile;
+
+            if (currentFile === '__hosts__') {
+                const formData = new FormData();
+                formData.append('content', content);
+                formData.append('csrf_token', window.csrfToken || '');
+                fetch(HOSTS_API + '?action=save', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        alert(data.success ? '/etc/hosts saved successfully' : 'Error: ' + (data.error || 'Failed to save /etc/hosts'));
+                    })
+                    .catch(error => {
+                        console.error('Error saving hosts file:', error);
+                        alert('Error: Failed to save /etc/hosts. ' + error.message);
+                    });
+                return;
+            }
+
+            const filePath = sitesEnabledDir + '/' + currentFile;
             
             fetch(FILES_API + '?action=write&path=' + encodeURIComponent(filePath), {
                 method: 'POST',
@@ -1630,9 +1679,15 @@ if (substr($assetsUrl, 0, 1) !== '/') {
         
         // Refresh file
         window.refreshFile = function() {
-            if (selectedFile) {
-                loadFileContent(selectedFile);
+            if (currentFile) {
+                loadFileContent(currentFile);
             }
+        };
+        
+        // Edit /etc/hosts in the code editor
+        window.editHostsRaw = function() {
+            currentFile = '__hosts__';
+            loadFileContent('__hosts__');
         };
         
         // Create new site
@@ -2844,34 +2899,40 @@ if (substr($assetsUrl, 0, 1) !== '/') {
                     // Show status
                     let statusHtml = '<div class="mb-8">';
                     statusHtml += '<p class="text-sm mb-4"><strong>PHP ini:</strong> <code class="text-xs">' + (data.php_ini_path || 'Not found') + '</code></p>';
-                    statusHtml += '<p class="text-sm mb-4"><strong>Writable:</strong> ' + (data.php_ini_writable ? '<span class="text-success-main">Yes</span>' : '<span class="text-danger-main">No</span>') + '</p>';
-                    
+                    statusHtml += '<p class="text-sm mb-4"><strong>Writable:</strong> ' + (data.php_ini_writable ? '<span class="text-success-main">Yes</span>' : '<span class="text-warning-main">No</span>') + '</p>';
+                    statusHtml += '<p class="text-sm mb-4"><strong>Detected MTA:</strong> ' + (data.detected_mta ? '<span class="text-primary-600 fw-medium">' + data.detected_mta + '</span>' : '<span class="text-secondary-light">none</span>') + '</p>';
+
                     if (data.mailpit) {
                         statusHtml += '<p class="text-sm mb-4"><strong>Mailpit:</strong> ';
-                        statusHtml += data.mailpit.enabled ? '<span class="text-success-main">Enabled</span>' : '<span class="text-warning-main">Disabled</span>';
-                        statusHtml += ' (Port: ' + (data.mailpit.port || 'N/A') + ')</p>';
+                        statusHtml += data.mailpit.running ? '<span class="text-success-main">Running</span>' : '<span class="text-danger-main">Not running</span>';
+                        statusHtml += ' (SMTP :' + (data.mailpit.port || '1025') + ', Web :' + (data.mailpit.web_port || '8025') + ')</p>';
                     }
-                    
+
+                    statusHtml += '<p class="text-sm mb-4"><strong>Postfix:</strong> ' + (data.postfix_active ? '<span class="text-success-main">Active</span>' : '<span class="text-secondary-light">Inactive</span>') + '</p>';
+
                     if (data.current_config) {
-                        statusHtml += '<p class="text-sm mb-4"><strong>Current SMTP:</strong> ' + (data.current_config.smtp || 'Not set') + '</p>';
-                        statusHtml += '<p class="text-sm mb-0"><strong>SMTP Port:</strong> ' + (data.current_config.smtp_port || 'Not set') + '</p>';
+                        statusHtml += '<p class="text-sm mb-0"><strong>sendmail_path:</strong> <code class="text-xs">' + (data.current_config.sendmail_path || 'Not set') + '</code></p>';
                     }
-                    
+
                     statusHtml += '</div>';
-                    
+
                     // Show recommendation
                     if (data.recommendation === 'ok') {
-                        statusHtml += '<div class="alert alert-success mb-0"><iconify-icon icon="solar:check-circle-bold" class="icon"></iconify-icon> SMTP is already configured for Mailpit!</div>';
+                        statusHtml += '<div class="alert alert-success mb-0"><iconify-icon icon="solar:check-circle-bold" class="icon"></iconify-icon> SMTP is already configured for the detected MTA.</div>';
                     } else if (data.recommendation === 'configure') {
-                        statusHtml += '<div class="alert alert-warning mb-0"><iconify-icon icon="solar:danger-triangle-bold" class="icon"></iconify-icon> SMTP needs to be configured for Mailpit.</div>';
+                        statusHtml += '<div class="alert alert-warning mb-0"><iconify-icon icon="solar:danger-triangle-bold" class="icon"></iconify-icon> SMTP needs to be configured for ' + (data.detected_mta || 'the active MTA') + '.</div>';
                         formEl.style.display = 'block';
+                        if (data.detected_mta && document.querySelector('input[name="mta-mode"][value="' + data.detected_mta + '"]')) {
+                            document.querySelector('input[name="mta-mode"][value="' + data.detected_mta + '"]').checked = true;
+                        }
                         if (data.mailpit && data.mailpit.port) {
                             document.getElementById('smtp-port').value = data.mailpit.port;
                         }
                     } else {
-                        statusHtml += '<div class="alert alert-info mb-0"><iconify-icon icon="solar:info-circle-bold" class="icon"></iconify-icon> Please enable Mailpit in Laragon first.</div>';
+                        statusHtml += '<div class="alert alert-info mb-0"><iconify-icon icon="solar:info-circle-bold" class="icon"></iconify-icon> No MTA detected. Install the Mailpit node from the Plugins page, or start Postfix first.</div>';
+                        formEl.style.display = 'block';
                     }
-                    
+
                     statusEl.innerHTML = statusHtml;
                 })
                 .catch(error => {
@@ -2898,6 +2959,7 @@ if (substr($assetsUrl, 0, 1) !== '/') {
                     
                     const smtpPort = document.getElementById('smtp-port').value;
                     const fromEmail = document.getElementById('from-email').value;
+                    const mtaMode = document.querySelector('input[name="mta-mode"]:checked');
                     const outputEl = document.getElementById('smtp-output');
                     const alertEl = document.getElementById('smtp-alert');
                     const messageEl = document.getElementById('smtp-message');
@@ -2905,6 +2967,7 @@ if (substr($assetsUrl, 0, 1) !== '/') {
                     const formData = new FormData();
                     formData.append('smtp_port', smtpPort);
                     formData.append('from_email', fromEmail);
+                    formData.append('mode', mtaMode ? mtaMode.value : 'mailpit');
                     
                     fetch(SMTP_API + '?action=configure', {
                         method: 'POST',
@@ -2922,7 +2985,7 @@ if (substr($assetsUrl, 0, 1) !== '/') {
                                     message += '<br><small>Backup created: ' + data.backup.split(/[\\/]/).pop() + '</small>';
                                 }
                                 if (data.config) {
-                                    message += '<br><small>SMTP: ' + data.config.smtp + ':' + data.config.smtp_port + '</small>';
+                                    message += '<br><small>sendmail_path: ' + data.config.sendmail_path + '</small>';
                                 }
                                 messageEl.innerHTML = message;
                                 
@@ -2930,6 +2993,16 @@ if (substr($assetsUrl, 0, 1) !== '/') {
                                 setTimeout(() => {
                                     checkSmtpStatus();
                                 }, 2000);
+                            } else if (data.needs_manual) {
+                                alertEl.className = 'alert alert-warning';
+                                let message = '<iconify-icon icon="solar:lock-keyhole-bold" class="icon"></iconify-icon> <strong>Root access required.</strong> ';
+                                message += (data.message || 'Run these commands with sudo:') + '<br>';
+                                if (data.commands) {
+                                    message += '<pre class="bg-neutral-100 p-12 radius-8 text-xs mt-8 mb-0" style="overflow-x:auto;">' +
+                                        data.commands.map(c => c.replace(/&/g, '&amp;').replace(/</g, '&lt;')).join('\n') +
+                                        '</pre>';
+                                }
+                                messageEl.innerHTML = message;
                             } else {
                                 alertEl.className = 'alert alert-danger';
                                 messageEl.innerHTML = '<iconify-icon icon="solar:danger-triangle-bold" class="icon"></iconify-icon> <strong>Error:</strong> ' + (data.error || 'Failed to configure SMTP');
@@ -2995,6 +3068,20 @@ if (substr($assetsUrl, 0, 1) !== '/') {
                     return;
                 }
             }
+
+            const updatesBtn = document.getElementById('check-updates-btn');
+            const updatesBtnHtml = updatesBtn ? updatesBtn.innerHTML : null;
+            if (updatesBtn) {
+                updatesBtn.disabled = true;
+                updatesBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Checking...';
+            }
+
+            const finishUpdateCheck = function() {
+                if (updatesBtn && updatesBtnHtml) {
+                    updatesBtn.disabled = false;
+                    updatesBtn.innerHTML = updatesBtnHtml;
+                }
+            };
             
             fetch(UPDATE_API + '?action=check')
                 .then(response => response.json())
@@ -3013,7 +3100,8 @@ if (substr($assetsUrl, 0, 1) !== '/') {
                 })
                 .catch(error => {
                     console.error('Update check failed:', error);
-                });
+                })
+                .finally(finishUpdateCheck);
         }
         
         // Show update notification
@@ -3052,7 +3140,7 @@ if (substr($assetsUrl, 0, 1) !== '/') {
                                     <iconify-icon icon="solar:download-bold" class="icon"></iconify-icon>
                                     Update Now
                                 </button>
-                                <a href="${updateInfo.release_url}" target="_blank" class="btn btn-secondary btn-sm">
+                                <a href="${updateInfo.release_url}" target="_blank" class="btn btn-neutral-100 text-secondary-light btn-sm">
                                     View Release
                                 </a>
                             </div>
@@ -3172,7 +3260,7 @@ if (substr($assetsUrl, 0, 1) !== '/') {
                     
                     // Add a close button
                     const closeBtn = document.createElement('button');
-                    closeBtn.className = 'btn btn-secondary mt-3';
+                    closeBtn.className = 'btn btn-neutral-100 text-secondary-light mt-3';
                     closeBtn.textContent = 'Close';
                     closeBtn.onclick = () => progressModal.remove();
                     progressModal.querySelector('.modal-body').appendChild(closeBtn);

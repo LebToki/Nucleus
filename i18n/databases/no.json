@@ -1,0 +1,21 @@
+{
+    "title": "Databaser",
+    "manage_databases": "Administrer databaser",
+    "create_database": "Opprett database",
+    "edit_database": "Rediger database",
+    "database_name": "Databasenavn",
+    "charset": "Tegnsett",
+    "collation": "Sortering",
+    "created_at": "Opprettet",
+    "actions": "Handlinger",
+    "no_databases": "Ingen databaser funnet",
+    "add_new_database": "Legg til ny database",
+    "database_details": "Database-detaljer",
+    "delete_database": "Slett database",
+    "import": "Importer",
+    "export": "Eksporter",
+    "backup": "Sikkerhetskopi",
+    "tables": "Tabeller",
+    "rows": "Rader",
+    "size": "Størrelse"
+}

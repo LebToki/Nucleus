@@ -241,6 +241,3 @@ try {
     ob_end_flush();
 }
 ?>
-</task_progress>
-<write_to_file>
-</write_to_file>
