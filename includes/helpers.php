@@ -24,6 +24,16 @@ if (!function_exists('getCSRFToken')) {
 }
 
 /**
+ * Standalone wrapper for Security::verifyCSRFToken()
+ * API endpoints guard destructive actions with this check before shelling out.
+ */
+if (!function_exists('verifyCSRFToken')) {
+    function verifyCSRFToken(string $token): bool {
+        return \Nucleus\Core\Security::verifyCSRFToken($token);
+    }
+}
+
+/**
  * Standalone wrapper for Security::check_auth()
  * Used by index.php entry point
  */
@@ -1124,14 +1134,11 @@ if (!function_exists('fixSMTP')) {
 }
 
 /**
- * Translation helper function
+ * Translation helper — registered by includes/i18n.php.
+ * NOTE: do not define a placeholder `t()` here; it would shadow the real
+ * implementation in includes/i18n.php (which is loaded later during layout
+ * rendering) and silently break every UI translation.
  */
-if (!function_exists('t')) {
-    function t($key, $fallback = '') {
-        // This is a placeholder - actual translation would be loaded from i18n files
-        return $fallback ?: $key;
-    }
-}
 
 
 /**

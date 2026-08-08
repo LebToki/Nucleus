@@ -1029,13 +1029,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     toggleLoading(this, false);
                     if (data.success) {
                         // Remove the project card
-                        const projectCard = document.querySelector(`.project-card-container[data-project-name="${projectName}"]`);
+                        const projectCard = document.querySelector(`.project-card[data-project-name="${projectName}"]`);
                         if (projectCard) {
                             projectCard.classList.add('animate__animated', 'animate__fadeOut');
                             setTimeout(() => {
                                 projectCard.remove();
                                 // Refresh projects count if needed
-                                if (document.querySelectorAll('.project-card-container').length === 0) {
+                                if (document.querySelectorAll('.project-card').length === 0) {
                                     window.location.reload();
                                 }
                             }, 500);

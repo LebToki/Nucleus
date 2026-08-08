@@ -1,6 +1,13 @@
 # Changelog
 
-All notable changes to Nucleus Sovereign Platform will be documented in this file.
+All notable changes to Nucleus will be documented in this file.
+
+## [1.0.2] - 2026-08-08
+
+### Critical Fixes
+- **Restored CSRF verification** — added the missing global `verifyCSRFToken()` helper (`includes/helpers.php`). Six API endpoints (`services`, `databases`, `plugins`, `env_editor`, `backup`, `config`) were calling an undefined global function, which made every destructive action (service start/stop/restart, database create/delete, plugin install, .env save, config save) fail with a fatal error. Now delegated to `Nucleus\Core\Security::verifyCSRFToken()`.
+- **Restored translations** — removed a placeholder `t()` in `includes/helpers.php` that shadowed the real i18n implementation in `includes/i18n.php`. All UI strings (en + 7 locales) now translate again instead of falling back to raw keys.
+- **Fixed dashboard "Ignore project"** — the ignore handler targeted `.project-card-container` while cards render as `.project-card`; the removal animation and empty-state reload on the dashboard now work (`index.php`).
 
 ## [1.0.1] - 2026-08-05
 

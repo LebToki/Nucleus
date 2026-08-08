@@ -13,7 +13,7 @@ if (!defined('APP_NAME')) {
     define('APP_NAME', 'Nucleus');
 }
 if (!defined('APP_VERSION')) {
-    define('APP_VERSION', '1.0.1');
+    define('APP_VERSION', '1.0.2');
 }
 if (!defined('APP_AUTHOR')) {
     define('APP_AUTHOR', 'Tarek Tarabichi');
