@@ -2,6 +2,25 @@
 
 All notable changes to Nucleus will be documented in this file.
 
+## [1.2.1] - 2026-08-09
+
+### New: Service Hub
+- **Centralized service registry** — new `Service Hub` page under Services. Lists every known service with icon, name, virtual host, port, process, and live Up/Down status.
+- **Live port detection** — reads `ss -tlnp` to detect running services by port and process (ComfyUI, Gitea, n8n, Ollama, Mailpit, MySQL, …), merged with the registry.
+- **CRUD management** — add / edit / delete registry entries via modal; persists to `data/services_registry.json` (auto-seeded on first run).
+- **Visit button** — one-click opens the service's `https://{vhost}/` (or HTTP fallback).
+
+### New: Dynamic vhost refresh
+- **`Refresh Vhosts` navbar button + API** (`api/refresh_vhosts.php`) — scans the web root, generates a `<name>.local` vhost file for each new project directory, ensures the `/etc/hosts` entry, then reloads Apache.
+
+### Fixes / Polish
+- **Sidebar routing** — fixed duplicate `t_projects/t_services/t_vitals` redeclarations that crashed `projects`, `services`, and `vitals` pages (500). Pages now guard their translation helpers with `!function_exists()`.
+- **Changelog routing** — `index.php?page=changelog` is now a registered route; dashboard shows only the latest release, with a link to the full page.
+- **Auth on a stack dashboard** — local requests (localhost/127.0.0.1) auto-authenticate even over HTTPS (https://localhost no longer forces a login); non-local traffic still requires a password.
+- **i18n persistence + completeness** — language now persists across the session (session-first), the index dashboard's `<html lang>`/RTL reflects the active language, and ALL languages (ar, da, no, de, es, fr, id, pt, tl) are now complete — zero missing keys across 12 modules (500+ translations added). Sidebar labels (`Service Hub`, `Plugins`, `Config Editor`) are localized.
+- **Sidebar icon fixes** — replaced invalid Iconify icons (`solar:plugin-bold`, `material-symbols:hub-outline-rounded`, `material-symbols:vitals`) with valid ones; verified against the Iconify API.
+- **Uniform Delete** — dashboard card action now says `Delete` (matches the Projects view) instead of `Delete Project`.
+
 ## [1.2.0] - 2026-08-08
 
 ### Nodes & Plugins
