@@ -29,10 +29,10 @@ nucleus-pro-*.md
 # --- Source assets (deployed copies live in assets/) ---
 nucleus-logo/
 
-# --- Runtime directories ---
-cache/
-data/
-logs/
+# --- Runtime directories (root-only) ---
+/cache/
+/data/
+/logs/
 
 # --- Build artifacts ---
 build/
