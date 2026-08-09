@@ -1,0 +1,17 @@
+{
+    "server_vitals": "Vitalitas Server",
+    "dashboard": "Dasbor",
+    "cpu_usage": "Penggunaan CPU",
+    "memory_usage": "Penggunaan Memori",
+    "disk_usage": "Penggunaan Disk",
+    "network": "Jaringan",
+    "network_traffic": "Lalu Lintas Jaringan",
+    "service_status": "Status Layanan",
+    "last_24_hours": "24 Jam Terakhir",
+    "active": "Aktif",
+    "mbps": "Mbps",
+    "running": "Berjalan",
+    "stopped": "Berhenti",
+    "hardware": "Vitalitas Perangkat Keras",
+    "sensor_unavailable": "Alat pemantauan perangkat keras tidak ditemukan di sistem ini."
+}

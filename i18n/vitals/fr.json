@@ -1,0 +1,17 @@
+{
+    "server_vitals": "Vitals du serveur",
+    "dashboard": "Tableau de bord",
+    "cpu_usage": "Utilisation du processeur",
+    "memory_usage": "Utilisation de la mémoire",
+    "disk_usage": "Utilisation du disque",
+    "network": "Réseau",
+    "network_traffic": "Trafic réseau",
+    "service_status": "État des services",
+    "last_24_hours": "Dernières 24 heures",
+    "active": "Actif",
+    "mbps": "Mbit/s",
+    "running": "En cours d'exécution",
+    "stopped": "Arrêté",
+    "hardware": "Vitals du matériel",
+    "sensor_unavailable": "Outils de surveillance du matériel introuvables sur ce système."
+}

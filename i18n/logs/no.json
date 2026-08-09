@@ -1,0 +1,14 @@
+{
+    "active": "Aktiv",
+    "clear": "Tøm",
+    "dashboard": "Dashbord",
+    "download": "Last ned",
+    "loading": "Laster...",
+    "log_files": "Loggfiler",
+    "logs": "Logger",
+    "refresh": "Oppdater",
+    "search": "Søk i logger etter navn eller innhold",
+    "select_log": "Velg en loggfil",
+    "select_log_message": "Velg en loggfil fra listen for å se innholdet",
+    "view": "Vis"
+}

@@ -75,5 +75,22 @@
     "unknown": "Tidak Diketahui",
     "good_morning": "Selamat pagi",
     "good_afternoon": "Selamat siang",
-    "good_evening": "Selamat malam"
+    "good_evening": "Selamat malam",
+    "check_for_updates": "Periksa Pembaruan",
+    "up_to_date": "Terbaru",
+    "update_available": "Pembaruan tersedia",
+    "error_loading_page": "Kesalahan Memuat Halaman",
+    "page_not_found_desc": "Halaman yang diminta tidak dapat ditemukan.",
+    "go_to_dashboard": "Pergi ke Dasbor",
+    "version_history_changelog": "Riwayat Versi & Log Perubahan",
+    "view_full_changelog": "Lihat Log Perubahan Lengkap",
+    "optional": "Opsional",
+    "save_changes": "Simpan Perubahan",
+    "close": "Tutup",
+    "backups_auto_before_save": "Cadangan dibuat secara otomatis sebelum menyimpan.",
+    "page_not_found_file": "File halaman yang diminta tidak ada: ",
+    "is_not_valid": "tidak valid.",
+    "search_projects": "Cari proyek...",
+    "search_projects_hint": "Mulai mengetik untuk mencari proyek...",
+    "page_not_found": "Halaman Tidak Ditemukan"
 }

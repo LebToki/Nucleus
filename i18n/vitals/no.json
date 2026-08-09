@@ -11,5 +11,7 @@
     "active": "Aktiv",
     "mbps": "Mbps",
     "running": "Kjører",
-    "stopped": "Stoppet"
+    "stopped": "Stoppet",
+    "hardware": "Maskinvare-målinger",
+    "sensor_unavailable": "Maskinvareovervåkingsverktøy ikke funnet på dette systemet."
 }

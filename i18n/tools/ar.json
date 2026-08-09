@@ -16,5 +16,19 @@
     "file_manager": "مدير الملفات",
     "phpmyadmin": "phpMyAdmin",
     "redis_commander": "Redis Commander",
-    "mongodb_compass": "MongoDB Compass"
+    "mongodb_compass": "MongoDB Compass",
+    "cache_clearing": "تنظيف ذاكرة التخزين المؤقت",
+    "checking_smtp": "جارٍ التحقق من إعدادات SMTP...",
+    "dashboard": "لوحة التحكم",
+    "fix_smtp": "تطبيق إعدادات SMTP",
+    "from_email": "البريد الإلكتروني للمرسل",
+    "from_email_desc": "عنوان البريد الإلكتروني الافتراضي للمرسل",
+    "mta_mode": "وكيل نقل البريد",
+    "select_project": "اختر المشروع",
+    "smtp_fix": "إعدادات SMTP",
+    "smtp_fix_desc": "تكوين مسار sendmail في PHP ومرحّل SMTP لـ Postfix على لينكس أو Mailpit للتطوير.",
+    "smtp_port": "منفذ SMTP",
+    "smtp_port_desc": "منفذ SMTP الخاص بـ Mailpit (الافتراضي: 1025)",
+    "tools": "الأدوات",
+    "view_php_info": "عرض معلومات PHP"
 }

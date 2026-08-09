@@ -1,0 +1,17 @@
+{
+    "server_vitals": "Server-Vitalwerte",
+    "dashboard": "Dashboard",
+    "cpu_usage": "CPU-Auslastung",
+    "memory_usage": "Speicherauslastung",
+    "disk_usage": "Datenträgerauslastung",
+    "network": "Netzwerk",
+    "network_traffic": "Netzwerkverkehr",
+    "service_status": "Dienststatus",
+    "last_24_hours": "Letzte 24 Stunden",
+    "active": "Aktiv",
+    "mbps": "Mbit/s",
+    "running": "Läuft",
+    "stopped": "Gestoppt",
+    "hardware": "Hardware-Vitalwerte",
+    "sensor_unavailable": "Hardware-Überwachungswerkzeuge auf diesem System nicht gefunden."
+}

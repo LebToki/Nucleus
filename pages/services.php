@@ -25,15 +25,17 @@ if (function_exists('load_translations')) {
     $servicesTranslations = load_translations('services');
 }
 
-function t_services($key, $fallback = '') {
-    global $servicesTranslations;
-    if (function_exists('t')) {
-        $translated = t('services.' . $key);
-        if ($translated !== 'services.' . $key) {
-            return $translated;
+if (!function_exists('t_services')) {
+    function t_services($key, $fallback = '') {
+        global $servicesTranslations;
+        if (function_exists('t')) {
+            $translated = t('services.' . $key);
+            if ($translated !== 'services.' . $key) {
+                return $translated;
+            }
         }
+        return $servicesTranslations[$key] ?? ($fallback ?: $key);
     }
-    return $servicesTranslations[$key] ?? ($fallback ?: $key);
 }
 
 $nucleusRoot = defined('NUCLEUS_ROOT') ? NUCLEUS_ROOT : __DIR__ . '/../..'; // Nucleus root directory fallback

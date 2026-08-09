@@ -1,0 +1,18 @@
+{
+    "active": "Aktiv",
+    "add_host": "Tilføj vært",
+    "dashboard": "Dashboard",
+    "edit_raw": "Rediger rå",
+    "hosts_file": "/etc/hosts — Smukke URL'er",
+    "loading": "Indlæser...",
+    "new": "Ny",
+    "no_files": "Ingen virtuelle værtfiler fundet",
+    "no_hosts": "Ingen værtsindgange fundet (eller /etc/hosts kan ikke læses)",
+    "refresh": "Opdater",
+    "save": "Gem",
+    "select_file": "Vælg en fil",
+    "select_file_message": "Vælg en virtuel værtfil fra listen for at redigere",
+    "sites_enabled": "Aktiverede websteder",
+    "view": "Vis",
+    "virtual_hosts": "Virtuelle værter"
+}

@@ -27,5 +27,6 @@
     "cancel": "إلغاء",
     "mailpit_not_running": "Mailpit غير قيد التشغيل",
     "mailpit_not_running_desc": "يرجى تشغيل Mailpit من مدير خدمات لاراجون أو فتحه مباشرة.",
-    "open_mailpit": "فتح Mailpit"
+    "open_mailpit": "فتح Mailpit",
+    "open_mailpit_web": "فتح واجهة Mailpit على الويب"
 }

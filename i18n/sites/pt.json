@@ -1,0 +1,18 @@
+{
+    "active": "Ativo",
+    "add_host": "Adicionar Host",
+    "dashboard": "Painel",
+    "edit_raw": "Editar Bruto",
+    "hosts_file": "/etc/hosts — URLs Bonitas",
+    "loading": "Carregando...",
+    "new": "Novo",
+    "no_files": "Nenhum arquivo de host virtual encontrado",
+    "no_hosts": "Nenhuma entrada de host encontrada (ou /etc/hosts ilegível)",
+    "refresh": "Atualizar",
+    "save": "Salvar",
+    "select_file": "Selecione um arquivo",
+    "select_file_message": "Selecione um arquivo de host virtual na lista para editar",
+    "sites_enabled": "Sites ativados",
+    "view": "Visualizar",
+    "virtual_hosts": "Hosts Virtuais"
+}

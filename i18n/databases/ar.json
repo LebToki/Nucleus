@@ -17,6 +17,26 @@
     "backup": "نسخ احتياطي",
     "tables": "الجداول",
     "rows": "الصفوف",
-    "size": "الحجم"
+    "size": "الحجم",
+    "adminer_desc": "أداة خفيفة لإدارة قواعد البيانات",
+    "cancel": "إلغاء",
+    "check_adminer": "التحقق من Adminer",
+    "create": "إنشاء قاعدة بيانات",
+    "create_new": "إنشاء جديد",
+    "create_new_db": "إنشاء قاعدة بيانات جديدة",
+    "dashboard": "لوحة التحكم",
+    "database_list": "قواعد بيانات المستخدم",
+    "databases": "قواعد البيانات",
+    "db_name_hint": "يُسمح فقط بالأحرف الأبجدية الرقمية وشرطة التسطير.",
+    "db_name_label": "اسم قاعدة البيانات",
+    "db_tools_available": "إدارة قواعد بيانات MySQL الخاصة بك باستخدام أدوات الإدارة المتاحة.",
+    "db_tools_not_installed": "أدوات إدارة قواعد البيانات غير مثبتة. سيتم تنزيل Adminer تلقائياً، أو يمكنك تثبيت phpMyAdmin يدوياً.",
+    "delete": "حذف",
+    "download_phpmyadmin": "تنزيل phpMyAdmin",
+    "loading": "جارٍ تحميل قواعد البيانات...",
+    "mysql_management": "إدارة MySQL",
+    "name": "اسم قاعدة البيانات",
+    "open_adminer": "فتح Adminer",
+    "open_phpmyadmin": "فتح PHPMyAdmin",
+    "phpmyadmin_desc": "أداة إدارة MySQL قائمة على الويب"
 }
-

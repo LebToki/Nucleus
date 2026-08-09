@@ -11,6 +11,12 @@
     "tools": "Herramientas",
     "quick_tools": "Herramientas rápidas",
     "backup": "Respaldo",
-    "preferences": "Preferencias"
+    "preferences": "Preferencias",
+    "changelog": "Registro de cambios",
+    "configuration": "Configuración",
+    "sites_enabled": "Sitios habilitados",
+    "server_configurations": "Configuraciones del servidor",
+    "service_hub": "Centro de servicios",
+    "plugins": "Complementos",
+    "config_editor": "Editor de configuración"
 }
-

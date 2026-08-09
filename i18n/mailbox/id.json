@@ -27,5 +27,6 @@
     "cancel": "Batal",
     "mailpit_not_running": "Mailpit tidak berjalan",
     "mailpit_not_running_desc": "Silakan mulai Mailpit dari halaman Layanan Nucleus atau buka langsung.",
-    "open_mailpit": "Buka Mailpit"
+    "open_mailpit": "Buka Mailpit",
+    "open_mailpit_web": "Buka Mailpit Web"
 }

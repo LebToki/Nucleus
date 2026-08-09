@@ -40,6 +40,19 @@ self.addEventListener('fetch', function(event) {
         return;
     }
 
+    // Leave sibling apps on this origin alone (their assets are not ours to cache).
+    // Without this guard the SW (scope "/") intercepts e.g. /sas/ and serves stale
+    // absolute-path HTML from the HTTP cache — breaking those apps.
+    var SIBLING_PREFIXES = [
+        '/sas/', '/2tinteractive/', '/2ti-orchestrator/', '/audiencepulse/',
+        '/BeitNoura/', '/laragon-dashboard/', '/backups/', '/cache/'
+    ];
+    for (var i = 0; i < SIBLING_PREFIXES.length; i++) {
+        if (url.pathname.indexOf(SIBLING_PREFIXES[i]) === 0) {
+            return;
+        }
+    }
+
     // Page navigations: network first, fall back to cached page when offline
     if (request.mode === 'navigate') {
         event.respondWith(

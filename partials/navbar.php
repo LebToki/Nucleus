@@ -11,8 +11,8 @@ if (file_exists($langConfigFile)) {
     $langConfig = require $langConfigFile;
 }
 
-// Get current language
-$currentLang = strtolower($_GET['lang'] ?? $_COOKIE['lang'] ?? 'en');
+// Get current language (session-first via canonical get_current_language())
+$currentLang = strtolower(function_exists('get_current_language') ? get_current_language() : ($_GET['lang'] ?? $_COOKIE['lang'] ?? 'en'));
 if (!isset($langConfig[$currentLang])) {
     $currentLang = 'en';
 }
@@ -89,6 +89,11 @@ $GLOBALS['navbarAssetsImageUrl'] = $assetsImageUrl;
                 <!-- Theme Switcher: Monochrome -->
                 <button type="button" data-theme-toggle="monochrome" class="w-40-px h-40-px bg-neutral-200 rounded-circle d-flex justify-content-center align-items-center" title="Toggle Monochrome Mode" aria-label="Toggle Monochrome Mode">
                     <iconify-icon icon="tabler:palette" class="text-primary-light text-xl"></iconify-icon>
+                </button>
+
+                <!-- Refresh Vhosts -->
+                <button type="button" id="refresh-vhosts-btn" class="w-40-px h-40-px bg-neutral-200 rounded-circle d-flex justify-content-center align-items-center" title="Refresh Vhosts (restart Apache to pick up new .local projects)" aria-label="Refresh Vhosts">
+                    <iconify-icon icon="iconoir:refresh" class="text-primary-light text-xl"></iconify-icon>
                 </button>
                 
                 <!-- Language Selector -->

@@ -1,0 +1,17 @@
+{
+    "server_vitals": "Vitalidades do Servidor",
+    "dashboard": "Painel",
+    "cpu_usage": "Uso de CPU",
+    "memory_usage": "Uso de Memória",
+    "disk_usage": "Uso de Disco",
+    "network": "Rede",
+    "network_traffic": "Tráfego de Rede",
+    "service_status": "Status dos Serviços",
+    "last_24_hours": "Últimas 24 Horas",
+    "active": "Ativo",
+    "mbps": "Mbps",
+    "running": "Em execução",
+    "stopped": "Parado",
+    "hardware": "Vitalidades de Hardware",
+    "sensor_unavailable": "Ferramentas de monitoramento de hardware não encontradas neste sistema."
+}

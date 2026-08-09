@@ -1,0 +1,14 @@
+{
+    "active": "Aktibo",
+    "clear": "I-clear",
+    "dashboard": "Dashboard",
+    "download": "I-download",
+    "loading": "Naglo-load...",
+    "log_files": "Mga Log File",
+    "logs": "Mga Log",
+    "refresh": "I-refresh",
+    "search": "Maghanap ng mga log ayon sa pangalan o nilalaman",
+    "select_log": "Pumili ng log file",
+    "select_log_message": "Pumili ng log file mula sa listahan para makita ang mga nilalaman nito",
+    "view": "Tingnan"
+}

@@ -11,6 +11,12 @@
     "tools": "Mga Tool",
     "quick_tools": "Mabilis na Mga Tool",
     "backup": "Backup",
-    "preferences": "Mga Kagustuhan"
+    "preferences": "Mga Kagustuhan",
+    "changelog": "Log ng mga Pagbabago",
+    "configuration": "Konpigurasyon",
+    "sites_enabled": "Mga Naka-enable na Site",
+    "server_configurations": "Mga Config ng Server",
+    "service_hub": "Service Hub",
+    "plugins": "Mga Plugin",
+    "config_editor": "Editor ng Config"
 }
-

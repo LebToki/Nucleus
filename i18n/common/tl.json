@@ -75,5 +75,22 @@
     "unknown": "Hindi Kilala",
     "good_morning": "Magandang umaga",
     "good_afternoon": "Magandang hapon",
-    "good_evening": "Magandang gabi"
+    "good_evening": "Magandang gabi",
+    "check_for_updates": "Suriin ang mga Update",
+    "up_to_date": "Napapanahon",
+    "update_available": "Available ang update",
+    "error_loading_page": "Error sa Pag-load ng Pahina",
+    "page_not_found_desc": "Hindi mahanap ang hiniling na pahina.",
+    "go_to_dashboard": "Pumunta sa Dashboard",
+    "version_history_changelog": "Kasaysayan ng Bersyon at Log ng mga Pagbabago",
+    "view_full_changelog": "Tingnan ang Buong Log ng mga Pagbabago",
+    "optional": "Opsyonal",
+    "save_changes": "I-save ang mga Pagbabago",
+    "close": "Isara",
+    "backups_auto_before_save": "Awtomatikong gumagawa ng mga backup bago mag-save.",
+    "page_not_found_file": "Ang file ng hiniling na pahina ay hindi umiiral: ",
+    "is_not_valid": "ay hindi wasto.",
+    "search_projects": "Maghanap ng mga proyekto...",
+    "search_projects_hint": "Simulan ang pag-type para maghanap ng mga proyekto...",
+    "page_not_found": "Hindi Nahanap ang Pahina"
 }

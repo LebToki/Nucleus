@@ -1,0 +1,18 @@
+{
+    "active": "Aktif",
+    "add_host": "Tambah Host",
+    "dashboard": "Dasbor",
+    "edit_raw": "Edit Mentah",
+    "hosts_file": "/etc/hosts — URL Cantik",
+    "loading": "Memuat...",
+    "new": "Baru",
+    "no_files": "Tidak ada file virtual host ditemukan",
+    "no_hosts": "Tidak ada entri host ditemukan (atau /etc/hosts tidak dapat dibaca)",
+    "refresh": "Perbarui",
+    "save": "Simpan",
+    "select_file": "Pilih file",
+    "select_file_message": "Pilih file virtual host dari daftar untuk diedit",
+    "sites_enabled": "Situs Diaktifkan",
+    "view": "Lihat",
+    "virtual_hosts": "Virtual Host"
+}

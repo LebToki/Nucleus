@@ -13,6 +13,23 @@
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
+    # Route Next.js assets & routes for 2tinteractive when requested from root domain
+    RewriteRule ^_next/(.*)$ 2tinteractive/out/_next/$1 [L]
+    RewriteRule ^assets/droids/(.*)$ 2tinteractive/out/assets/droids/$1 [L]
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^branding/(.*)$ 2tinteractive/out/branding/$1 [L]
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ai/(.*)$ 2tinteractive/out/ai/$1 [L]
+    # Next.js clean URLs for solutions routes
+    RewriteCond %{DOCUMENT_ROOT}/2tinteractive/out/solutions/$1.html -f
+    RewriteRule ^solutions/([^/]+)/?$ 2tinteractive/out/solutions/$1.html [L]
+
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^solutions/(.*)$ 2tinteractive/out/solutions/$1 [L]
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{DOCUMENT_ROOT}/2tinteractive/out/$1 -f
+    RewriteRule ^(.*\.txt)$ 2tinteractive/out/$1 [L]
+
     # Redirect /favicon.ico to actual location
     RewriteRule ^favicon\.ico$ /assets/images/favicon/favicon.ico [L,R=301]
 
@@ -20,9 +37,21 @@
     RewriteCond %{REQUEST_FILENAME} -f
     RewriteRule ^ - [L]
 
+    # Redirect /project/public/ to /project/out/ if out/index.html exists
+    RewriteCond %{REQUEST_URI} ^/([^/]+)/public/?$
+    RewriteCond %{DOCUMENT_ROOT}/%1/out/index.html -f
+    RewriteRule ^([^/]+)/public/?$ /$1/out/ [L,R=301]
+
+    # For Next.js static export project dirs with an out/ folder, redirect to out/
+    RewriteCond %{REQUEST_URI} ^/([^/]+)/?$
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteCond %{DOCUMENT_ROOT}/%1/out/index.html -f
+    RewriteRule ^([^/]+)/?$ /$1/out/ [L,R=301]
+
     # For project dirs with a public/ folder (Laravel, etc.), redirect to public/
     RewriteCond %{REQUEST_URI} ^/([^/]+)/?$
     RewriteCond %{REQUEST_FILENAME} -d
+    RewriteCond %{DOCUMENT_ROOT}/%1/out/index.html !-f
     RewriteCond %{DOCUMENT_ROOT}/%1/public -d
     RewriteCond %1 !^(assets|build|includes|partials|pages|api|i18n|cache|data|logs|laragon-dashboard|dashboard)$
     RewriteRule ^([^/]+)/?$ /$1/public/ [L,R=301]

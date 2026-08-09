@@ -1,0 +1,14 @@
+{
+    "active": "Actif",
+    "clear": "Effacer",
+    "dashboard": "Tableau de bord",
+    "download": "Télécharger",
+    "loading": "Chargement...",
+    "log_files": "Fichiers journaux",
+    "logs": "Journaux",
+    "refresh": "Actualiser",
+    "search": "Rechercher des journaux par nom ou contenu",
+    "select_log": "Sélectionnez un fichier journal",
+    "select_log_message": "Sélectionnez un fichier journal dans la liste pour afficher son contenu",
+    "view": "Voir"
+}

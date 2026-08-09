@@ -16,5 +16,19 @@
     "file_manager": "Filbehandler",
     "phpmyadmin": "phpMyAdmin",
     "redis_commander": "Redis Commander",
-    "mongodb_compass": "MongoDB Compass"
+    "mongodb_compass": "MongoDB Compass",
+    "cache_clearing": "Tømming av hurtigbuffer",
+    "checking_smtp": "Kontrollerer SMTP-konfigurasjon...",
+    "dashboard": "Dashbord",
+    "fix_smtp": "Bruk SMTP-konfigurasjon",
+    "from_email": "Avsender-e-post",
+    "from_email_desc": "Standard avsender-e-postadresse",
+    "mta_mode": "Mail Transport Agent",
+    "select_project": "Velg prosjekt",
+    "smtp_fix": "SMTP-konfigurasjon",
+    "smtp_fix_desc": "Konfigurer PHP sendmail-stien og SMTP-relé for Linux Postfix eller Mailpit dev-mailer.",
+    "smtp_port": "SMTP-port",
+    "smtp_port_desc": "Mailpits SMTP-port (standard: 1025)",
+    "tools": "Verktøy",
+    "view_php_info": "Vis PHP-info"
 }

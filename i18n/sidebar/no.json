@@ -14,5 +14,9 @@
     "changelog": "Endringslogg",
     "preferences": "Innstillinger",
     "configuration": "Konfigurasjon",
-    "sites_enabled": "Aktiverte nettsteder"
+    "sites_enabled": "Aktiverte nettsteder",
+    "server_configurations": "Serverkonfigurasjoner",
+    "service_hub": "Service Hub",
+    "plugins": "Plugins",
+    "config_editor": "Konfigurasjonsredigering"
 }

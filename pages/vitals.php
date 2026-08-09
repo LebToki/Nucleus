@@ -25,15 +25,17 @@ if (function_exists('load_translations')) {
     $vitalsTranslations = load_translations('vitals');
 }
 
-function t_vitals($key, $fallback = '') {
-    global $vitalsTranslations;
-    if (function_exists('t')) {
-        $translated = t('vitals.' . $key);
-        if ($translated !== 'vitals.' . $key) {
-            return $translated;
+if (!function_exists('t_vitals')) {
+    function t_vitals($key, $fallback = '') {
+        global $vitalsTranslations;
+        if (function_exists('t')) {
+            $translated = t('vitals.' . $key);
+            if ($translated !== 'vitals.' . $key) {
+                return $translated;
+            }
         }
+        return $vitalsTranslations[$key] ?? ($fallback ?: $key);
     }
-    return $vitalsTranslations[$key] ?? ($fallback ?: $key);
 }
 
 /* -----------------------------------------

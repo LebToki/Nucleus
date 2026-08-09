@@ -11,5 +11,7 @@
     "active": "Aktiv",
     "mbps": "Mbps",
     "running": "Kører",
-    "stopped": "Stoppet"
+    "stopped": "Stoppet",
+    "hardware": "Hardware-målinger",
+    "sensor_unavailable": "Hardwareovervågningsværktøjer ikke fundet på dette system."
 }

@@ -75,5 +75,22 @@
     "unknown": "Inconnu",
     "good_morning": "Bonjour",
     "good_afternoon": "Bon après-midi",
-    "good_evening": "Bonsoir"
+    "good_evening": "Bonsoir",
+    "check_for_updates": "Vérifier les mises à jour",
+    "up_to_date": "À jour",
+    "update_available": "Mise à jour disponible",
+    "error_loading_page": "Erreur lors du chargement de la page",
+    "page_not_found_desc": "La page demandée est introuvable.",
+    "go_to_dashboard": "Aller au tableau de bord",
+    "version_history_changelog": "Historique des versions et journal des modifications",
+    "view_full_changelog": "Voir le journal des modifications complet",
+    "optional": "Facultatif",
+    "save_changes": "Enregistrer les modifications",
+    "close": "Fermer",
+    "backups_auto_before_save": "Des sauvegardes sont créées automatiquement avant l'enregistrement.",
+    "page_not_found_file": "Le fichier de la page demandée n'existe pas : ",
+    "is_not_valid": "n'est pas valide.",
+    "search_projects": "Rechercher des projets...",
+    "search_projects_hint": "Commencez à taper pour rechercher des projets...",
+    "page_not_found": "Page introuvable"
 }

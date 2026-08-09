@@ -75,5 +75,22 @@
     "unknown": "Desconocido",
     "good_morning": "Buenos días",
     "good_afternoon": "Buenas tardes",
-    "good_evening": "Buenas noches"
+    "good_evening": "Buenas noches",
+    "check_for_updates": "Buscar actualizaciones",
+    "up_to_date": "Actualizado",
+    "update_available": "Actualización disponible",
+    "error_loading_page": "Error al cargar la página",
+    "page_not_found_desc": "No se pudo encontrar la página solicitada.",
+    "go_to_dashboard": "Ir al Panel",
+    "version_history_changelog": "Historial de versiones y cambios",
+    "view_full_changelog": "Ver el registro de cambios completo",
+    "optional": "Opcional",
+    "save_changes": "Guardar cambios",
+    "close": "Cerrar",
+    "backups_auto_before_save": "Se crean copias de seguridad automáticamente antes de guardar.",
+    "page_not_found_file": "El archivo de la página solicitada no existe: ",
+    "is_not_valid": "no es válido.",
+    "search_projects": "Buscar proyectos...",
+    "search_projects_hint": "Empiece a escribir para buscar proyectos...",
+    "page_not_found": "Página no encontrada"
 }

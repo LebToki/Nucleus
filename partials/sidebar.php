@@ -41,8 +41,8 @@ if (file_exists($langConfigFile)) {
     $langConfig = require $langConfigFile;
 }
 
-// Get current language
-$currentLang = strtolower($_GET['lang'] ?? $_COOKIE['lang'] ?? 'en');
+// Get current language (session-first via canonical get_current_language())
+$currentLang = strtolower(function_exists('get_current_language') ? get_current_language() : ($_GET['lang'] ?? $_COOKIE['lang'] ?? 'en'));
 if (!isset($langConfig[$currentLang])) {
     $currentLang = 'en';
 }
@@ -123,10 +123,17 @@ function getSidebarTranslation($key, $fallback = '') {
                     <span><?php echo getSidebarTranslation('services', 'Services'); ?></span>
                 </a>
             </li>
+
+            <li>
+                <a href="index.php?page=service_hub" class="<?php echo $currentPage === 'service_hub' ? 'active' : ''; ?>">
+                    <iconify-icon icon="material-symbols:hub-outline" class="menu-icon"></iconify-icon>
+                    <span><?php echo getSidebarTranslation('service_hub', 'Service Hub'); ?></span>
+                </a>
+            </li>
             
             <li>
                 <a href="index.php?page=vitals" class="<?php echo $currentPage === 'vitals' ? 'active' : ''; ?>">
-                    <iconify-icon icon="material-symbols:vitals" class="menu-icon"></iconify-icon>
+                    <iconify-icon icon="material-symbols:monitoring" class="menu-icon"></iconify-icon>
                     <span><?php echo getSidebarTranslation('server_vitals', 'Server Vitals'); ?></span>
                 </a>
             </li>
@@ -167,8 +174,8 @@ function getSidebarTranslation($key, $fallback = '') {
 
             <li>
                 <a href="index.php?page=plugins" class="<?php echo $currentPage === 'plugins' ? 'active' : ''; ?>">
-                    <iconify-icon icon="solar:plugin-bold" class="menu-icon"></iconify-icon>
-                    <span>Plugins</span>
+                    <iconify-icon icon="solar:widget-add-bold" class="menu-icon"></iconify-icon>
+                    <span><?php echo getSidebarTranslation('plugins', 'Plugins'); ?></span>
                 </a>
             </li>
 
@@ -199,7 +206,7 @@ function getSidebarTranslation($key, $fallback = '') {
             <li>
                 <a href="index.php?page=config_editor" class="<?php echo $currentPage === 'config_editor' ? 'active' : ''; ?>">
                     <iconify-icon icon="solar:pen-new-square-bold" class="menu-icon"></iconify-icon>
-                    <span>Config Editor</span>
+                    <span><?php echo getSidebarTranslation('config_editor', 'Config Editor'); ?></span>
                 </a>
             </li>
             

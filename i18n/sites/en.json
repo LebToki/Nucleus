@@ -1,0 +1,18 @@
+{
+  "active": "Active",
+  "add_host": "Add Host",
+  "dashboard": "Dashboard",
+  "edit_raw": "Edit Raw",
+  "hosts_file": "/etc/hosts — Pretty URLs",
+  "loading": "Loading...",
+  "new": "New",
+  "no_files": "No virtual host files found",
+  "no_hosts": "No host entries found (or /etc/hosts unreadable)",
+  "refresh": "Refresh",
+  "save": "Save",
+  "select_file": "Select a file",
+  "select_file_message": "Select a virtual host file from the list to edit",
+  "sites_enabled": "Sites Enabled",
+  "view": "View",
+  "virtual_hosts": "Virtual Hosts"
+}

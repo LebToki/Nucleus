@@ -17,6 +17,26 @@
     "backup": "Backup",
     "tables": "Tabellen",
     "rows": "Zeilen",
-    "size": "Größe"
+    "size": "Größe",
+    "adminer_desc": "Leichtgewichtiges Datenbank-Verwaltungstool",
+    "cancel": "Abbrechen",
+    "check_adminer": "Adminer prüfen",
+    "create": "Datenbank erstellen",
+    "create_new": "Neu erstellen",
+    "create_new_db": "Neue Datenbank erstellen",
+    "dashboard": "Dashboard",
+    "database_list": "Benutzerdatenbanken",
+    "databases": "Datenbanken",
+    "db_name_hint": "Nur alphanumerische Zeichen und Unterstriche sind zulässig.",
+    "db_name_label": "Datenbankname",
+    "db_tools_available": "Verwalten Sie Ihre MySQL-Datenbanken mit den verfügbaren Verwaltungswerkzeugen.",
+    "db_tools_not_installed": "Datenbank-Verwaltungswerkzeuge sind nicht installiert. Adminer wird automatisch heruntergeladen, oder Sie können phpMyAdmin manuell installieren.",
+    "delete": "Löschen",
+    "download_phpmyadmin": "phpMyAdmin herunterladen",
+    "loading": "Datenbanken werden geladen...",
+    "mysql_management": "MySQL-Verwaltung",
+    "name": "Datenbankname",
+    "open_adminer": "Adminer öffnen",
+    "open_phpmyadmin": "PHPMyAdmin öffnen",
+    "phpmyadmin_desc": "Webbasiertes MySQL-Verwaltungstool"
 }
-

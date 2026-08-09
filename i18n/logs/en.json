@@ -1,0 +1,14 @@
+{
+  "active": "Active",
+  "clear": "Clear",
+  "dashboard": "Dashboard",
+  "download": "Download",
+  "loading": "Loading...",
+  "log_files": "Log Files",
+  "logs": "Logs",
+  "refresh": "Refresh",
+  "search": "Search logs by name or content",
+  "select_log": "Select a log file",
+  "select_log_message": "Select a log file from the list to view its contents",
+  "view": "View"
+}

@@ -1,0 +1,14 @@
+{
+    "active": "Aktiv",
+    "clear": "Ryd",
+    "dashboard": "Dashboard",
+    "download": "Download",
+    "loading": "Indlæser...",
+    "log_files": "Logfiler",
+    "logs": "Logfiler",
+    "refresh": "Opdater",
+    "search": "Søg i logfiler efter navn eller indhold",
+    "select_log": "Vælg en logfil",
+    "select_log_message": "Vælg en logfil fra listen for at se indholdet",
+    "view": "Vis"
+}

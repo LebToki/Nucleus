@@ -1,0 +1,18 @@
+{
+    "active": "Aktiv",
+    "add_host": "Legg til vert",
+    "dashboard": "Dashbord",
+    "edit_raw": "Rediger rå",
+    "hosts_file": "/etc/hosts — Pene URL-er",
+    "loading": "Laster...",
+    "new": "Ny",
+    "no_files": "Ingen virtuelle vertfiler funnet",
+    "no_hosts": "Ingen vertoppføringer funnet (eller /etc/hosts kan ikke leses)",
+    "refresh": "Oppdater",
+    "save": "Lagre",
+    "select_file": "Velg en fil",
+    "select_file_message": "Velg en virtuell vertfil fra listen for å redigere",
+    "sites_enabled": "Aktiverte nettsteder",
+    "view": "Vis",
+    "virtual_hosts": "Virtuelle verter"
+}

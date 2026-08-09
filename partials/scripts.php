@@ -1386,6 +1386,41 @@ if (substr($assetsUrl, 0, 1) !== '/') {
                     showNotification('Error: Failed to restart service', 'error');
                 });
         };
+
+        // Refresh Vhosts (restart Apache to pick up new .local projects)
+        const refreshVhostsBtn = document.getElementById('refresh-vhosts-btn');
+        if (refreshVhostsBtn) {
+            refreshVhostsBtn.addEventListener('click', function() {
+                if (!confirm('Refresh vhosts? This will scan project directories and reload Apache so new .local subfolders get a pretty URL.')) {
+                    return;
+                }
+                const btn = this;
+                const original = btn.innerHTML;
+                btn.disabled = true;
+                btn.innerHTML = '<span class="spinner-border spinner-border-sm text-primary-light" role="status" aria-hidden="true"></span>';
+
+                fetch('api/refresh_vhosts.php', {
+                    method: 'POST',
+                    headers: { 'X-CSRF-Token': window.csrfToken || '' }
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            showNotification(data.message || 'Vhosts refreshed', 'success');
+                        } else {
+                            showNotification('Error: ' + (data.error || data.message || 'Failed to refresh vhosts'), 'error');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error refreshing vhosts:', error);
+                        showNotification('Error: Failed to refresh vhosts', 'error');
+                    })
+                    .finally(() => {
+                        btn.disabled = false;
+                        btn.innerHTML = original;
+                    });
+            });
+        }
         
         // Sync enabled checkboxes
         document.querySelectorAll('.service-enabled-checkbox').forEach(checkbox => {

@@ -16,6 +16,19 @@
     "file_manager": "Pengelola File",
     "phpmyadmin": "phpMyAdmin",
     "redis_commander": "Redis Commander",
-    "mongodb_compass": "MongoDB Compass"
+    "mongodb_compass": "MongoDB Compass",
+    "cache_clearing": "Pembersihan Cache",
+    "checking_smtp": "Memeriksa konfigurasi SMTP...",
+    "dashboard": "Dasbor",
+    "fix_smtp": "Terapkan Konfigurasi SMTP",
+    "from_email": "Email Pengirim",
+    "from_email_desc": "Alamat email pengirim default",
+    "mta_mode": "Mail Transport Agent",
+    "select_project": "Pilih Proyek",
+    "smtp_fix": "Konfigurasi SMTP",
+    "smtp_fix_desc": "Konfigurasikan jalur sendmail PHP dan relay SMTP untuk Postfix Linux atau mailer dev Mailpit.",
+    "smtp_port": "Port SMTP",
+    "smtp_port_desc": "Port SMTP Mailpit (default: 1025)",
+    "tools": "Alat",
+    "view_php_info": "Lihat Info PHP"
 }
-

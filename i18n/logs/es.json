@@ -1,0 +1,14 @@
+{
+    "active": "Activo",
+    "clear": "Limpiar",
+    "dashboard": "Panel",
+    "download": "Descargar",
+    "loading": "Cargando...",
+    "log_files": "Archivos de registro",
+    "logs": "Registros",
+    "refresh": "Actualizar",
+    "search": "Buscar registros por nombre o contenido",
+    "select_log": "Seleccione un archivo de registro",
+    "select_log_message": "Seleccione un archivo de registro de la lista para ver su contenido",
+    "view": "Ver"
+}

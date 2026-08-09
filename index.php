@@ -15,6 +15,12 @@ if (file_exists(__DIR__ . '/includes/helpers.php')) {
     require_once __DIR__ . '/includes/helpers.php';
 }
 
+// Load i18n helper early so get_current_language()/t() exist before the
+// dashboard layout renders (otherwise the <html lang> attribute falls back to en).
+if (file_exists(__DIR__ . '/includes/i18n.php')) {
+    require_once __DIR__ . '/includes/i18n.php';
+}
+
 // Load downloadable libraries catalog for the wizard's "Download & Install" feature
 if (file_exists(__DIR__ . '/includes/libraries.php')) {
     require_once __DIR__ . '/includes/libraries.php';
@@ -174,9 +180,9 @@ if (!empty($page)) {
     
     // List of valid pages
     $validPages = [
-        'dashboard', 'projects', 'databases', 'services', 'vitals',
+        'dashboard', 'projects', 'databases', 'services', 'service_hub', 'vitals',
         'mailbox', 'logs', 'tools', 'backup', 'sites', 'httpd', 'preferences',
-        'config_editor', 'plugins'
+        'config_editor', 'plugins', 'changelog'
     ];
     
     // Validate page exists
@@ -243,7 +249,7 @@ if (!empty($page)) {
 
 // Default: show dashboard (no page parameter)
 
-include './partials/layouts/layoutTop.php' ?>
+include __DIR__ . '/partials/layouts/layoutTop.php' ?>
 
 <div class="dashboard-main-body">
     <div class="container-fluid">
@@ -529,7 +535,7 @@ include './partials/layouts/layoutTop.php' ?>
                                         <div class="col-6">
                                             <a href="index.php?page=projects" class="btn btn-sm btn-danger w-100 radius-8 px-12 py-8 d-flex align-items-center gap-2">
                                                 <iconify-icon icon="solar:trash-bin-trash-bold" class="text-lg"></iconify-icon>
-                                                <?php echo t_projects('delete_project'); ?>
+                                                <?php echo t_projects('delete', 'Delete'); ?>
                                             </a>
                                         </div>
                                     </div>
@@ -556,8 +562,11 @@ include './partials/layouts/layoutTop.php' ?>
                     <?php 
                     $changelog = getChangelog();
                     $first = true;
+                    $count = 0;
                     foreach ($changelog as $version => $data): 
                         $collapseId = 'collapse' . str_replace('.', '', $version);
+                        $count++;
+                        if ($count > 1) break; // Dashboard shows only the latest release
                     ?>
                     <div class="accordion-item bg-transparent border-bottom border-white border-opacity-10">
                         <h2 class="accordion-header" id="heading<?php echo $collapseId; ?>">
@@ -581,12 +590,11 @@ include './partials/layouts/layoutTop.php' ?>
                     </div>
                     <?php 
                         $first = false;
-                        if (count($changelog) > 5 && !$first) break; // Limit to last 5 for dashboard
                     endforeach; 
                     ?>
                 </div>
                 <div class="text-center mt-16">
-                    <a href="CHANGELOG.md" target="_blank" class="text-primary-600 fw-medium text-sm"><?php echo t_common('view_full_changelog'); ?></a>
+                    <a href="index.php?page=changelog" class="text-primary-600 fw-medium text-sm"><?php echo t_common('view_full_changelog'); ?></a>
                 </div>
             </div>
         </div>

@@ -91,5 +91,6 @@
     "page_not_found_file": "Sidefilen finnes ikke: ",
     "is_not_valid": "er ikke gyldig.",
     "search_projects": "Søk i prosjekter...",
-    "search_projects_hint": "Begynn å skrive for å søke i prosjekter..."
+    "search_projects_hint": "Begynn å skrive for å søke i prosjekter...",
+    "page_not_found": "Siden ble ikke funnet"
 }

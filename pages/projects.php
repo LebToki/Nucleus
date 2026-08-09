@@ -25,15 +25,17 @@ if (function_exists('load_translations')) {
     $projectsTranslations = load_translations('projects');
 }
 
-function t_projects($key, $fallback = '') {
-    global $projectsTranslations;
-    if (function_exists('t')) {
-        $translated = t('projects.' . $key);
-        if ($translated !== 'projects.' . $key) {
-            return $translated;
+if (!function_exists('t_projects')) {
+    function t_projects($key, $fallback = '') {
+        global $projectsTranslations;
+        if (function_exists('t')) {
+            $translated = t('projects.' . $key);
+            if ($translated !== 'projects.' . $key) {
+                return $translated;
+            }
         }
+        return $projectsTranslations[$key] ?? ($fallback ?: $key);
     }
-    return $projectsTranslations[$key] ?? ($fallback ?: $key);
 }
 
 // Load projects

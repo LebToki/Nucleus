@@ -16,6 +16,19 @@
     "file_manager": "File Manager",
     "phpmyadmin": "phpMyAdmin",
     "redis_commander": "Redis Commander",
-    "mongodb_compass": "MongoDB Compass"
+    "mongodb_compass": "MongoDB Compass",
+    "cache_clearing": "Paglilinis ng Cache",
+    "checking_smtp": "Sinusuri ang configuration ng SMTP...",
+    "dashboard": "Dashboard",
+    "fix_smtp": "Ilapat ang SMTP Configuration",
+    "from_email": "From Email",
+    "from_email_desc": "Default na email address ng nagpadala",
+    "mta_mode": "Mail Transport Agent",
+    "select_project": "Pumili ng Proyekto",
+    "smtp_fix": "SMTP Configuration",
+    "smtp_fix_desc": "I-configure ang PHP sendmail path at SMTP relay para sa Linux Postfix o Mailpit dev mailer.",
+    "smtp_port": "SMTP Port",
+    "smtp_port_desc": "SMTP port ng Mailpit (default: 1025)",
+    "tools": "Mga Tool",
+    "view_php_info": "Tingnan ang PHP Info"
 }
-

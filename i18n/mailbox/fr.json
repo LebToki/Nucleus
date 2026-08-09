@@ -27,5 +27,6 @@
     "cancel": "Annuler",
     "mailpit_not_running": "Mailpit n'est pas en cours d'exécution",
     "mailpit_not_running_desc": "Veuillez démarrer Mailpit depuis la page Services de Nucleus ou l'ouvrir directement.",
-    "open_mailpit": "Ouvrir Mailpit"
+    "open_mailpit": "Ouvrir Mailpit",
+    "open_mailpit_web": "Ouvrir Mailpit sur le web"
 }

@@ -1,0 +1,17 @@
+{
+    "server_vitals": "Vitales del servidor",
+    "dashboard": "Panel",
+    "cpu_usage": "Uso de CPU",
+    "memory_usage": "Uso de memoria",
+    "disk_usage": "Uso de disco",
+    "network": "Red",
+    "network_traffic": "Tráfico de red",
+    "service_status": "Estado de los servicios",
+    "last_24_hours": "Últimas 24 horas",
+    "active": "Activo",
+    "mbps": "Mbps",
+    "running": "En ejecución",
+    "stopped": "Detenido",
+    "hardware": "Vitales de hardware",
+    "sensor_unavailable": "No se encontraron herramientas de monitoreo de hardware en este sistema."
+}

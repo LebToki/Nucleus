@@ -1,0 +1,18 @@
+{
+    "active": "Actif",
+    "add_host": "Ajouter un hôte",
+    "dashboard": "Tableau de bord",
+    "edit_raw": "Modifier brut",
+    "hosts_file": "/etc/hosts — Belles URL",
+    "loading": "Chargement...",
+    "new": "Nouveau",
+    "no_files": "Aucun fichier d'hôte virtuel trouvé",
+    "no_hosts": "Aucune entrée d'hôte trouvée (ou /etc/hosts illisible)",
+    "refresh": "Actualiser",
+    "save": "Enregistrer",
+    "select_file": "Sélectionnez un fichier",
+    "select_file_message": "Sélectionnez un fichier d'hôte virtuel dans la liste pour le modifier",
+    "sites_enabled": "Sites activés",
+    "view": "Voir",
+    "virtual_hosts": "Hôtes virtuels"
+}

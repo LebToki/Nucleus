@@ -1,0 +1,14 @@
+{
+    "active": "Aktiv",
+    "clear": "Leeren",
+    "dashboard": "Dashboard",
+    "download": "Herunterladen",
+    "loading": "Lädt...",
+    "log_files": "Logdateien",
+    "logs": "Protokolle",
+    "refresh": "Aktualisieren",
+    "search": "Protokolle nach Name oder Inhalt durchsuchen",
+    "select_log": "Logdatei auswählen",
+    "select_log_message": "Wählen Sie eine Logdatei aus der Liste, um ihren Inhalt anzuzeigen",
+    "view": "Ansehen"
+}

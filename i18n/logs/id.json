@@ -1,0 +1,14 @@
+{
+    "active": "Aktif",
+    "clear": "Bersihkan",
+    "dashboard": "Dasbor",
+    "download": "Unduh",
+    "loading": "Memuat...",
+    "log_files": "File Log",
+    "logs": "Log",
+    "refresh": "Perbarui",
+    "search": "Cari log berdasarkan nama atau konten",
+    "select_log": "Pilih file log",
+    "select_log_message": "Pilih file log dari daftar untuk melihat isinya",
+    "view": "Lihat"
+}

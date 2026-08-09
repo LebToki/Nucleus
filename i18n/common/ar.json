@@ -75,5 +75,22 @@
     "unknown": "غير معروف",
     "good_morning": "صباح الخير",
     "good_afternoon": "مساء الخير",
-    "good_evening": "مساء الخير"
+    "good_evening": "مساء الخير",
+    "check_for_updates": "التحقق من التحديثات",
+    "up_to_date": "أحدث إصدار",
+    "update_available": "تحديث متاح",
+    "error_loading_page": "خطأ في تحميل الصفحة",
+    "page_not_found_desc": "تعذر العثور على الصفحة المطلوبة.",
+    "go_to_dashboard": "الانتقال إلى لوحة التحكم",
+    "version_history_changelog": "سجل الإصدارات والتغييرات",
+    "view_full_changelog": "عرض سجل التغييرات الكامل",
+    "optional": "اختياري",
+    "save_changes": "حفظ التغييرات",
+    "close": "إغلاق",
+    "backups_auto_before_save": "يتم إنشاء النسخ الاحتياطية تلقائياً قبل الحفظ.",
+    "page_not_found_file": "ملف الصفحة المطلوب غير موجود: ",
+    "is_not_valid": "غير صالح.",
+    "search_projects": "ابحث في المشاريع...",
+    "search_projects_hint": "ابدأ الكتابة للبحث في المشاريع...",
+    "page_not_found": "الصفحة غير موجودة"
 }

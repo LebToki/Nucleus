@@ -93,18 +93,20 @@ class Security {
             return isset($_SESSION['authenticated']) && $_SESSION['authenticated'] === true;
         }
 
-        // HTTPS: always require password (no auto-auth)
-        if (self::isSecureConnection()) {
-            return isset($_SESSION['authenticated']) && $_SESSION['authenticated'] === true;
-        }
-
-        // HTTP localhost: auto-authenticate for local dev convenience
+        // Local request (localhost/127.0.0.1): auto-authenticate.
+        // A stack dashboard operating locally should never demand a login,
+        // even over HTTPS. This takes precedence over the SSL-only gate below.
         if (self::isLocalhost()) {
             if (empty($_SESSION['authenticated'])) {
                 $_SESSION['authenticated'] = true;
                 $_SESSION['auth_source'] = 'local_auto';
             }
             return true;
+        }
+
+        // Non-local traffic: HTTPS always requires a password.
+        if (self::isSecureConnection()) {
+            return isset($_SESSION['authenticated']) && $_SESSION['authenticated'] === true;
         }
 
         // HTTP non-localhost: require password

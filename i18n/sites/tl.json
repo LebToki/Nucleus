@@ -1,0 +1,18 @@
+{
+    "active": "Aktibo",
+    "add_host": "Magdagdag ng Host",
+    "dashboard": "Dashboard",
+    "edit_raw": "I-edit ang Raw",
+    "hosts_file": "/etc/hosts — Magandang mga URL",
+    "loading": "Naglo-load...",
+    "new": "Bago",
+    "no_files": "Walang nahanap na virtual host file",
+    "no_hosts": "Walang nahanap na host entries (o hindi mabasa ang /etc/hosts)",
+    "refresh": "I-refresh",
+    "save": "I-save",
+    "select_file": "Pumili ng file",
+    "select_file_message": "Pumili ng virtual host file mula sa listahan para i-edit",
+    "sites_enabled": "Mga Naka-enable na Site",
+    "view": "Tingnan",
+    "virtual_hosts": "Mga Virtual Host"
+}

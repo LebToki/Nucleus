@@ -11,6 +11,12 @@
     "tools": "Alat",
     "quick_tools": "Alat Cepat",
     "backup": "Cadangan",
-    "preferences": "Preferensi"
+    "preferences": "Preferensi",
+    "changelog": "Log Perubahan",
+    "configuration": "Konfigurasi",
+    "sites_enabled": "Situs Diaktifkan",
+    "server_configurations": "Konfigurasi Server",
+    "service_hub": "Pusat Layanan",
+    "plugins": "Plugin",
+    "config_editor": "Editor Konfigurasi"
 }
-

@@ -1,0 +1,17 @@
+{
+    "server_vitals": "Mga Vital ng Server",
+    "dashboard": "Dashboard",
+    "cpu_usage": "Paggamit ng CPU",
+    "memory_usage": "Paggamit ng Memorya",
+    "disk_usage": "Paggamit ng Disk",
+    "network": "Network",
+    "network_traffic": "Trapiko ng Network",
+    "service_status": "Status ng mga Serbisyo",
+    "last_24_hours": "Huling 24 Oras",
+    "active": "Aktibo",
+    "mbps": "Mbps",
+    "running": "Tumatakbo",
+    "stopped": "Nahinto",
+    "hardware": "Mga Vital ng Hardware",
+    "sensor_unavailable": "Hindi nahanap ang mga tool sa pag-monitor ng hardware sa system na ito."
+}

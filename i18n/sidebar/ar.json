@@ -11,6 +11,12 @@
     "tools": "الأدوات",
     "quick_tools": "أدوات سريعة",
     "backup": "النسخ الاحتياطي",
-    "preferences": "التفضيلات"
+    "preferences": "التفضيلات",
+    "changelog": "سجل التغييرات",
+    "configuration": "الإعدادات",
+    "sites_enabled": "المواقع الممكّنة",
+    "server_configurations": "إعدادات الخادم",
+    "service_hub": "مركز الخدمات",
+    "plugins": "الإضافات",
+    "config_editor": "محرر الإعدادات"
 }
-

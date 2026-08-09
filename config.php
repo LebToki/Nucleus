@@ -73,8 +73,10 @@ if (!defined('SESSION_LIFETIME')) {
 }
 
 // Authentication settings
-// Auth model: HTTPS enforces password; HTTP localhost auto-authenticates (local dev stack).
-// Set AUTH_SHARED_WORKSPACE=true to force password auth even on HTTP (multi-user environments).
+// Auth model: local requests (localhost) auto-authenticate — a stack dashboard
+// operating locally never demands a login, even over HTTPS. Non-local traffic
+// requires a password (HTTPS always; HTTP unless AUTH_SHARED_WORKSPACE).
+// Set AUTH_SHARED_WORKSPACE=true to force password auth even on HTTP (multi-user).
 if (!defined('AUTH_ENABLED')) {
     define('AUTH_ENABLED', true);
 }

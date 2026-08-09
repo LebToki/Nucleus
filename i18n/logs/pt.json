@@ -1,0 +1,14 @@
+{
+    "active": "Ativo",
+    "clear": "Limpar",
+    "dashboard": "Painel",
+    "download": "Baixar",
+    "loading": "Carregando...",
+    "log_files": "Arquivos de log",
+    "logs": "Registros",
+    "refresh": "Atualizar",
+    "search": "Pesquisar registros por nome ou conteúdo",
+    "select_log": "Selecione um arquivo de log",
+    "select_log_message": "Selecione um arquivo de log na lista para ver seu conteúdo",
+    "view": "Visualizar"
+}
