@@ -1,0 +1,36 @@
+# Laragon Dashboard .htaccess
+# Works with Laragon auto-vhost (DocumentRoot = Laragon-Dashboard folder)
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Redirect /favicon.ico to actual location
+    RewriteRule ^favicon\.ico$ /assets/images/favicon/favicon.ico [L,R=301]
+
+    # Redirect root to index.php
+    RewriteRule ^$ index.php [L]
+
+    # Serve existing files and directories directly (CSS, JS, images, etc.)
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+
+    # Everything else goes to index.php for routing
+    RewriteRule ^(.*)$ index.php?page=$1 [QSA,L]
+</IfModule>
+
+# Security headers
+<IfModule mod_headers.c>
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-XSS-Protection "1; mode=block"
+    Header set X-Content-Type-Options "nosniff"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# Disable directory listing
+Options -Indexes
+
+# Block access to sensitive files
+<FilesMatch "^\.(env|log|json|md|yml|yaml|ini|conf)$">
+    Require all denied
+</FilesMatch>

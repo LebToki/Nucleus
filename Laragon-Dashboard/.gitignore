@@ -1,0 +1,47 @@
+# Backup directories
+backup/
+backup_old_files/
+__backup/
+backups/
+
+# Development files (kept in devfiles/)
+*.log
+*.cache
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.cursor/
+
+# GitHub
+.github/
+
+# Responses directory (for GitHub issue responses)
+responses/
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+
+# Uploaded files
+uploaded/
+
+# Cache directory
+cache/
+
+# Logs directory
+logs/
+
+# User preferences (contains sensitive data like passwords)
+data/preferences.json
+
+vendor/

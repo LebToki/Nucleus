@@ -1,0 +1,789 @@
+<?php
+/**
+ * Laragon Dashboard Configuration
+ * Version: 4.0.4
+ * Author: Tarek Tarabichi
+ * Company: 2TInteractive (2tinteractive.com)
+ * Project Start: Early 2024
+ * GitHub: https://github.com/LebToki/Laragon-Dashboard
+ */
+
+// Application Information (only define if not already defined)
+if (!defined('APP_NAME')) {
+    define('APP_NAME', 'Laragon Dashboard');
+}
+if (!defined('APP_VERSION')) {
+    define('APP_VERSION', '4.0.0');
+}
+if (!defined('APP_AUTHOR')) {
+    define('APP_AUTHOR', 'Tarek Tarabichi');
+}
+if (!defined('APP_COMPANY')) {
+    define('APP_COMPANY', '2TInteractive');
+}
+if (!defined('APP_COMPANY_URL')) {
+    define('APP_COMPANY_URL', 'https://2tinteractive.com');
+}
+if (!defined('APP_GITHUB')) {
+    define('APP_GITHUB', 'https://github.com/LebToki/Laragon-Dashboard');
+}
+if (!defined('APP_START_YEAR')) {
+    define('APP_START_YEAR', '2024');
+}
+
+// Application Settings (only define if not already defined)
+if (!defined('APP_DEBUG')) {
+    // Default to false for production
+    define('APP_DEBUG', false);
+}
+if (!defined('APP_ENV')) {
+    define('APP_ENV', 'production'); // development, staging, production
+}
+
+// Enable error reporting if debug mode is on
+if (APP_DEBUG) {
+    error_reporting(E_ALL);
+    @ini_set('display_errors', 1);
+    @ini_set('display_startup_errors', 1);
+} else {
+    error_reporting(0);
+    @ini_set('display_errors', 0);
+    @ini_set('display_startup_errors', 0);
+}
+
+// Security settings
+if (!defined('SECURITY_HEADERS_ENABLED')) {
+    define('SECURITY_HEADERS_ENABLED', true);
+}
+
+// Rate limiting settings
+if (!defined('RATE_LIMIT_REQUESTS_PER_MINUTE')) {
+    define('RATE_LIMIT_REQUESTS_PER_MINUTE', 60);
+}
+
+// Session settings
+if (!defined('SESSION_LIFETIME')) {
+    define('SESSION_LIFETIME', 3600); // 1 hour
+}
+
+// Authentication settings - IMPORTANT: For production, enable authentication and use a strong password
+if (!defined('AUTH_ENABLED')) {
+    define('AUTH_ENABLED', true); // Set to true for production security
+}
+if (!defined('ADMIN_PASSWORD')) {
+    // For production, use environment variable or set a strong password
+    // Recommended: Set LARAGON_DASHBOARD_PASSWORD environment variable
+    // Or change this to a strong password (minimum 12 characters with mixed case, numbers, symbols)
+    define('ADMIN_PASSWORD', getenv('LARAGON_DASHBOARD_PASSWORD') ?: 'ChangeThisPassword123!');
+}
+
+// Fix session path issue (common on some Laragon/PHP configurations)
+$sessionPath = 'd:/laragon/tmp';
+if (!is_dir($sessionPath)) {
+    $sessionPath = sys_get_temp_dir();
+}
+if (is_dir($sessionPath) && is_writable($sessionPath)) {
+    @session_save_path($sessionPath);
+}
+
+// Suppress errors for API endpoints (they handle their own error reporting)
+if (basename($_SERVER['PHP_SELF'] ?? '') === 'files.php' || 
+    basename($_SERVER['PHP_SELF'] ?? '') === 'logs.php' ||
+    basename($_SERVER['PHP_SELF'] ?? '') === 'vitals.php' ||
+    basename($_SERVER['PHP_SELF'] ?? '') === 'services.php' ||
+    basename($_SERVER['PHP_SELF'] ?? '') === 'preferences.php' ||
+    basename($_SERVER['PHP_SELF'] ?? '') === 'mailpit.php') {
+    @ini_set('display_errors', 0);
+    @error_reporting(0);
+}
+
+// Path Definitions (only define if not already defined)
+if (!defined('APP_ROOT')) {
+    define('APP_ROOT', dirname(__FILE__));
+}
+if (!defined('TEMPLATE_ROOT')) {
+    define('TEMPLATE_ROOT', APP_ROOT . '/template');
+}
+if (!defined('ASSETS_ROOT')) {
+    define('ASSETS_ROOT', APP_ROOT . '/assets');
+}
+if (!defined('PARTIALS_ROOT')) {
+    define('PARTIALS_ROOT', APP_ROOT . '/partials');
+}
+if (!defined('INCLUDES_ROOT')) {
+    define('INCLUDES_ROOT', APP_ROOT . '/includes');
+}
+if (!defined('LOGS_ROOT')) {
+    define('LOGS_ROOT', APP_ROOT . '/logs');
+}
+if (!defined('CACHE_ROOT')) {
+    define('CACHE_ROOT', APP_ROOT . '/cache');
+}
+
+// URL Path Definitions (relative to web root)
+if (!defined('BASE_URL')) {
+    // Determine base URL - this must work correctly for routing scenarios
+    $basePath = '';
+    
+    // Method 1: Use SCRIPT_NAME (most reliable - always reflects the actual script being executed)
+    // When accessing via index.php?page=projects, SCRIPT_NAME is /Laragon-Dashboard/index.php
+    // When accessing pages/projects.php directly, SCRIPT_NAME is /Laragon-Dashboard/pages/projects.php
+    // When accessing via custom domain (laragon-dashboard.local), SCRIPT_NAME is /index.php
+    // When using PHP built-in server with -t ., SCRIPT_NAME is /index.php and DOCUMENT_ROOT is the dashboard dir
+    $scriptName = $_SERVER['SCRIPT_NAME'] ?? $_SERVER['PHP_SELF'] ?? '';
+    $docRoot = $_SERVER['DOCUMENT_ROOT'] ?? '';
+    $scriptFile = $_SERVER['SCRIPT_FILENAME'] ?? __FILE__;
+    
+    // Check if we're using PHP built-in server with dashboard as document root
+    // In this case, DOCUMENT_ROOT will be the dashboard directory itself
+    $appRootNormalized = str_replace('\\', '/', rtrim(APP_ROOT, '/\\'));
+    $docRootNormalized = str_replace('\\', '/', rtrim($docRoot, '/\\'));
+    
+    if ($docRootNormalized === $appRootNormalized) {
+        // PHP built-in server with -t . (dashboard is document root)
+        // BASE_URL should be empty since we're at root
+        $basePath = '';
+    } else if (!empty($scriptName)) {
+        $basePath = dirname($scriptName);
+        // Normalize: dirname('/Laragon-Dashboard/index.php') = '/Laragon-Dashboard'
+        // dirname('/index.php') = '/' or '.'
+        // For custom domains, if script is in subdirectory, preserve it
+        if ($basePath === '.' || $basePath === '/' || $basePath === '\\') {
+            $basePath = '';
+        }
+    }
+    
+    // Method 2: Fallback - use REQUEST_URI to detect subdirectory
+    if (empty($basePath) || $basePath === '') {
+        $requestUri = $_SERVER['REQUEST_URI'] ?? '';
+        if (!empty($requestUri)) {
+            // Remove query string
+            $requestPath = parse_url($requestUri, PHP_URL_PATH);
+            // Get directory part
+            $basePath = dirname($requestPath);
+            if ($basePath === '.' || $basePath === '/' || $basePath === '\\') {
+                $basePath = '';
+            }
+        }
+    }
+    
+    // Method 3: Detect from document root if dashboard is in a known subdirectory
+    if (empty($basePath) || $basePath === '') {
+        $docRoot = $_SERVER['DOCUMENT_ROOT'] ?? '';
+        $scriptFile = $_SERVER['SCRIPT_FILENAME'] ?? __FILE__;
+        
+        // If script is in a subdirectory of document root, calculate the path
+        if (!empty($docRoot) && !empty($scriptFile)) {
+            $docRoot = str_replace('\\', '/', rtrim($docRoot, '/\\'));
+            $scriptFile = str_replace('\\', '/', $scriptFile);
+            
+            // Check if script is inside document root
+            if (strpos($scriptFile, $docRoot) === 0) {
+                $relativePath = substr($scriptFile, strlen($docRoot));
+                $relativeDir = dirname($relativePath);
+                
+                // For D:\Dev_Sites\Laragon-Dashboard, relativeDir should be /Laragon-Dashboard
+                if ($relativeDir !== '.' && $relativeDir !== '/' && $relativeDir !== '\\') {
+                    $basePath = $relativeDir;
+                } else {
+                    // If we're at root level but in a subdirectory, check if Laragon-Dashboard exists
+                    // This handles cases where document root is D:\Dev_Sites and script is in Laragon-Dashboard subfolder
+                    if (strpos(strtolower($docRoot), 'dev_sites') !== false) {
+                        // Check if we're in Laragon-Dashboard folder
+                        $scriptDir = dirname($scriptFile);
+                        if (strpos(strtolower($scriptDir), 'laragon-dashboard') !== false) {
+                            // Extract Laragon-Dashboard from path
+                            $parts = explode('Laragon-Dashboard', $scriptDir);
+                            if (!empty($parts)) {
+                                $before = str_replace('\\', '/', $parts[0]);
+                                $before = str_replace($docRoot, '', $before);
+                                $basePath = $before . '/Laragon-Dashboard';
+                                $basePath = str_replace('//', '/', $basePath);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    // Normalize path separators
+    $basePath = str_replace('\\', '/', $basePath);
+    
+    // Final normalization - ensure proper format
+    if ($basePath === '/' || $basePath === '\\' || $basePath === '.' || $basePath === '') {
+        $basePath = '';
+    } else {
+        // Remove trailing slash and ensure it starts with /
+        $basePath = rtrim($basePath, '/');
+        if (substr($basePath, 0, 1) !== '/') {
+            $basePath = '/' . $basePath;
+        }
+    }
+    
+    define('BASE_URL', $basePath);
+}
+if (!defined('ASSETS_URL')) {
+    // Always use absolute path from web root for assets
+    // This ensures CSS/JS files load correctly regardless of routing or direct access
+
+    // Check if we're using PHP built-in server with dashboard as document root
+    $docRoot = $_SERVER['DOCUMENT_ROOT'] ?? '';
+    $appRootNormalized = str_replace('\\', '/', rtrim(APP_ROOT, '/\\'));
+    $docRootNormalized = str_replace('\\', '/', rtrim($docRoot, '/\\'));
+
+    if ($docRootNormalized === $appRootNormalized) {
+        // PHP built-in server or Laragon auto-vhost: dashboard IS the document root, so assets are at /assets
+        $assetsPath = '/assets';
+    } else {
+        // Check if assets directory exists at document root level
+        // This handles cases where Laragon auto-vhost points directly to Laragon-Dashboard
+        $assetsAtDocRoot = $docRootNormalized . '/assets';
+        if (is_dir($assetsAtDocRoot)) {
+            // Assets are directly under document root (auto-vhost scenario)
+            $assetsPath = '/assets';
+        } else if (BASE_URL === '') {
+            // Fallback: dashboard is in subdirectory but BASE_URL is empty
+            $assetsPath = '/assets';
+        } else {
+            // Normal Apache: dashboard is in subdirectory, use BASE_URL
+            $assetsPath = BASE_URL . '/assets';
+        }
+    }
+
+    // Ensure it starts with / (absolute path)
+    if (substr($assetsPath, 0, 1) !== '/') {
+        $assetsPath = '/' . $assetsPath;
+    }
+    define('ASSETS_URL', $assetsPath);
+}
+if (!defined('TEMPLATE_URL')) {
+    define('TEMPLATE_URL', BASE_URL . '/template');
+}
+
+/**
+ * Get Dashboard preferences (stored in JSON file)
+ * Allows overriding Laragon detection
+ */
+if (!function_exists('getDashboardPreferences')) {
+    function getDashboardPreferences() {
+        $dataDir = APP_ROOT . '/data';
+        if (!is_dir($dataDir)) {
+            @mkdir($dataDir, 0755, true);
+        }
+        
+        $prefsFile = $dataDir . '/preferences.json';
+        $defaults = [
+            'laragon_root' => null, // null means auto-detect
+            'mysql_host' => null,
+            'mysql_user' => null,
+            'mysql_password' => null,
+            'document_root' => null,
+            'domain_suffix' => null,
+            'auto_update_check' => true,
+            'auto_update_install' => false,
+            'last_update_check' => null,
+            'debug_banner' => false,
+            'time_format' => null,
+            'date_format' => null,
+        ];
+        
+        if (file_exists($prefsFile)) {
+            $content = @file_get_contents($prefsFile);
+            if ($content) {
+                $prefs = @json_decode($content, true);
+                if (is_array($prefs)) {
+                    return array_merge($defaults, $prefs);
+                }
+            }
+        }
+        
+        return $defaults;
+    }
+}
+
+/**
+ * Save Dashboard preferences
+ */
+if (!function_exists('saveDashboardPreferences')) {
+    function saveDashboardPreferences(array $preferences) {
+        $dataDir = APP_ROOT . '/data';
+        if (!is_dir($dataDir)) {
+            @mkdir($dataDir, 0755, true);
+        }
+        
+        $prefsFile = $dataDir . '/preferences.json';
+        $existing = getDashboardPreferences();
+        
+        // Normalize paths before saving
+        if (isset($preferences['laragon_root'])) {
+            $preferences['laragon_root'] = rtrim(str_replace('\\', '/', $preferences['laragon_root']), '/');
+        }
+        if (isset($preferences['document_root'])) {
+            $preferences['document_root'] = rtrim(str_replace('\\', '/', $preferences['document_root']), '/');
+        }
+        
+        $merged = array_merge($existing, $preferences);
+        
+        // Remove null and empty string values to allow auto-detection
+        $merged = array_filter($merged, function($value) {
+            return $value !== null && $value !== '';
+        });
+        
+        return @file_put_contents($prefsFile, json_encode($merged, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)) !== false;
+    }
+}
+
+/**
+ * Auto-detect Laragon installation path with dynamic drive scanning
+ * Priority: Dashboard Preferences > Environment Variable > Dynamic Detection > Document Root > Default
+ */
+function getLaragonRoot() {
+    static $laragonRoot = null;
+    if ($laragonRoot !== null) {
+        return $laragonRoot;
+    }
+
+    // 0. Check if constant already defined (rare in this function's logic flow but safe)
+    if (defined('LARAGON_ROOT')) {
+        return $laragonRoot = LARAGON_ROOT;
+    }
+
+    // 1. Check Dashboard Preferences override first
+    $prefs = getDashboardPreferences();
+    if (!empty($prefs['laragon_root'])) {
+        $prefPath = rtrim(str_replace('\\', '/', $prefs['laragon_root']), '/');
+        if (is_dir($prefPath)) {
+            // Check for laragon.exe but don't strictly require it if directory exists
+            // This allows for more flexibility if the user points to a valid but slightly different path
+            return $laragonRoot = $prefPath;
+        }
+    }
+    
+    // 2. Check environment variable
+    $envPath = getenv('LARAGON_ROOT');
+    if (!empty($envPath) && is_dir($envPath) && file_exists($envPath . '/laragon.exe')) {
+        return $laragonRoot = rtrim(str_replace('\\', '/', $envPath), '/');
+    }
+    
+    // 3. Dynamic drive scanning (C: through Z:)
+    $drivesToCheck = [];
+    // Check common drives first
+    $commonDrives = ['C', 'D', 'E', 'F'];
+    foreach ($commonDrives as $drive) {
+        $drivesToCheck[] = $drive . ':/laragon';
+        // Also check uppercase Laragon (case-insensitive handling)
+        $drivesToCheck[] = $drive . ':/Laragon';
+    }
+    
+    // 4. Check specific known paths (for users with custom setups)
+    $specificPaths = [
+        'D:/Laragon',
+        'D:/laragon',
+        'C:/Laragon',
+        'C:/laragon',
+    ];
+    foreach ($specificPaths as $path) {
+        if (!in_array($path, $drivesToCheck)) {
+            $drivesToCheck[] = $path;
+        }
+    }
+    
+    // Scan all available drives dynamically
+    if (function_exists('shell_exec') && strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+        // Get all available drives on Windows
+        $output = @shell_exec('wmic logicaldisk get name 2>nul');
+        if ($output) {
+            preg_match_all('/([A-Z]):/', $output, $matches);
+            if (!empty($matches[1])) {
+                foreach ($matches[1] as $drive) {
+                    $path = $drive . ':/laragon';
+                    if (!in_array($path, $drivesToCheck)) {
+                        $drivesToCheck[] = $path;
+                    }
+                }
+            }
+        }
+    }
+    
+    // Check each drive for Laragon installation (case-insensitive)
+    foreach ($drivesToCheck as $path) {
+        // Normalize path
+        $normalizedPath = rtrim(str_replace('\\', '/', $path), '/');
+        
+        // Check if directory exists (case-insensitive on Windows)
+        if (is_dir($normalizedPath)) {
+            // Check for laragon.exe (case-insensitive)
+            $exeFound = false;
+            $exeVariants = ['/laragon.exe', '/Laragon.exe', '/LARAGON.EXE'];
+            foreach ($exeVariants as $exe) {
+                if (file_exists($normalizedPath . $exe)) {
+                    $exeFound = true;
+                    break;
+                }
+            }
+            
+            if ($exeFound) {
+                // Verify it's a valid Laragon installation by checking for usr/laragon.ini
+                $iniVariants = ['/usr/laragon.ini', '/usr/Laragon.ini', '/usr/LARAGON.INI'];
+                foreach ($iniVariants as $ini) {
+                    if (file_exists($normalizedPath . $ini)) {
+                        return $laragonRoot = $normalizedPath;
+                    }
+                }
+            }
+        }
+    }
+    
+    // 5. Try to detect from document root or script path
+    $docRoot = $_SERVER['DOCUMENT_ROOT'] ?? '';
+    $scriptPath = $_SERVER['SCRIPT_FILENAME'] ?? __FILE__;
+    
+    // Check if document root contains 'laragon'
+    if (strpos($docRoot, 'laragon') !== false) {
+        $parts = explode('laragon', $docRoot);
+        if (!empty($parts[0])) {
+            $detectedPath = $parts[0] . 'laragon';
+            if (is_dir($detectedPath) && file_exists($detectedPath . '/laragon.exe') && file_exists($detectedPath . '/usr/laragon.ini')) {
+                return $laragonRoot = str_replace('\\', '/', $detectedPath);
+            }
+        }
+    }
+    
+    // Default fallback
+    return $laragonRoot = 'C:/laragon';
+}
+
+/**
+ * Get Laragon configuration from laragon.ini
+ * Reads directly from the ini file (not affected by dashboard preferences)
+ */
+function getLaragonConfig() {
+    if (!defined('LARAGON_ROOT')) {
+        return [];
+    }
+    
+    $laragonIniPath = LARAGON_ROOT . '/usr/laragon.ini';
+    
+    if (!file_exists($laragonIniPath)) {
+        return [];
+    }
+    
+    try {
+        $oldErrorReporting = error_reporting(0);
+        $config = parse_ini_file($laragonIniPath, false, INI_SCANNER_RAW);
+        error_reporting($oldErrorReporting);
+        
+        if ($config === false || !is_array($config)) {
+            return [];
+        }
+        
+        return $config;
+    } catch (Exception | Error $e) {
+        return [];
+    }
+}
+
+/**
+ * Get Laragon general preferences from laragon.ini
+ * Dashboard preferences can override these values
+ */
+function getLaragonPreferences() {
+    $laragonRoot = getLaragonRoot();
+    $iniFile = $laragonRoot . '/usr/laragon.ini';
+    
+    // Get dashboard preferences for overrides
+    $dashboardPrefs = getDashboardPreferences();
+    
+    // Default preferences
+    $defaults = [
+        'StartAllAutomatically' => false,
+        'DocumentRoot' => $laragonRoot . '/www',
+        'DataDirectory' => $laragonRoot . '/data',
+        'HostnameFormat' => '{name}.local',
+        'AutoBackup' => false,
+        'BackupInterval' => 8,
+        'AutoUpdate' => false,
+        'RunOnWindowsStart' => false,
+        'RunMinimized' => false,
+        'AutoCreateVirtualHosts' => true
+    ];
+    
+    // Read from laragon.ini if it exists
+    if (file_exists($iniFile)) {
+        $config = @parse_ini_file($iniFile, false, INI_SCANNER_RAW);
+        if ($config && is_array($config)) {
+            // Map Laragon ini keys to our preference keys
+            $keyMap = [
+                'StartAll' => 'StartAllAutomatically',
+                'StartAllAutomatically' => 'StartAllAutomatically',
+                'DocumentRoot' => 'DocumentRoot',
+                'DataDirectory' => 'DataDirectory',
+                'HostnameFormat' => 'HostnameFormat',
+                'AutoBackup' => 'AutoBackup',
+                'BackupInterval' => 'BackupInterval',
+                'AutoUpdate' => 'AutoUpdate',
+                'RunOnWindowsStart' => 'RunOnWindowsStart',
+                'RunMinimized' => 'RunMinimized',
+                'AutoCreateVirtualHosts' => 'AutoCreateVirtualHosts'
+            ];
+            
+            foreach ($keyMap as $iniKey => $prefKey) {
+                if (isset($config[$iniKey])) {
+                    $value = $config[$iniKey];
+                    // Convert string booleans to actual booleans
+                    if (is_string($value)) {
+                        $value = trim($value);
+                        if (strtolower($value) === 'true' || $value === '1') {
+                            $value = true;
+                        } elseif (strtolower($value) === 'false' || $value === '0' || $value === '') {
+                            $value = false;
+                        }
+                    }
+                    $defaults[$prefKey] = $value;
+                }
+            }
+            
+            // Also check for numeric values
+            if (isset($config['BackupInterval']) && is_numeric($config['BackupInterval'])) {
+                $defaults['BackupInterval'] = (int)$config['BackupInterval'];
+            }
+        }
+    }
+    
+    // Apply Dashboard Preferences overrides (highest priority)
+    if (!empty($dashboardPrefs['document_root'])) {
+        $defaults['DocumentRoot'] = $dashboardPrefs['document_root'];
+    }
+    if (!empty($dashboardPrefs['domain_suffix'])) {
+        // Convert domain suffix to hostname format if needed
+        $suffix = ltrim($dashboardPrefs['domain_suffix'], '.');
+        $defaults['HostnameFormat'] = '{name}.' . $suffix;
+    }
+    
+    // Normalize paths
+    if (isset($defaults['DocumentRoot'])) {
+        $defaults['DocumentRoot'] = str_replace('\\', '/', $defaults['DocumentRoot']);
+    }
+    if (isset($defaults['DataDirectory'])) {
+        $defaults['DataDirectory'] = str_replace('\\', '/', $defaults['DataDirectory']);
+    }
+    
+    return $defaults;
+}
+
+/**
+ * Auto-detect domain suffix from Laragon configuration
+ */
+function getLaragonDomainSuffix() {
+    $preferences = getLaragonPreferences();
+    $hostnameFormat = $preferences['HostnameFormat'] ?? '{name}.local';
+    
+    // Extract suffix from format like "{name}.local"
+    if (preg_match('/\.([a-z0-9\-]+)$/i', $hostnameFormat, $matches)) {
+        return '.' . $matches[1];
+    }
+    
+    // Fallback: check laragon.ini directly
+    $laragonRoot = getLaragonRoot();
+    $iniFile = $laragonRoot . '/usr/laragon.ini';
+    if (file_exists($iniFile)) {
+        $config = @parse_ini_file($iniFile);
+        if ($config && isset($config['DomainSuffix'])) {
+            $suffix = trim($config['DomainSuffix']);
+            if (!empty($suffix) && $suffix[0] !== '.') {
+                $suffix = '.' . $suffix;
+            }
+            return $suffix;
+        }
+    }
+    
+    // Default fallback
+    return '.local';
+}
+
+/**
+ * Auto-detect sendmail output directory
+ */
+function getLaragonSendmailDir() {
+    $laragonRoot = getLaragonRoot();
+    $sendmailDir = $laragonRoot . '/bin/sendmail/output';
+    
+    // Create directory if it doesn't exist
+    if (!is_dir($sendmailDir)) {
+        $parentDir = dirname($sendmailDir);
+        if (!is_dir($parentDir)) {
+            @mkdir($parentDir, 0755, true);
+        }
+        @mkdir($sendmailDir, 0755, true);
+    }
+    
+    if (is_dir($sendmailDir) || @mkdir($sendmailDir, 0755, true)) {
+        return rtrim(str_replace('\\', '/', $sendmailDir), '/') . '/';
+    }
+    
+    // Fallback to default (still try to create it)
+    $fallbackDir = rtrim($laragonRoot, '/') . '/bin/sendmail/output';
+    if (!is_dir($fallbackDir)) {
+        $parentDir = dirname($fallbackDir);
+        if (!is_dir($parentDir)) {
+            @mkdir($parentDir, 0755, true);
+        }
+        @mkdir($fallbackDir, 0755, true);
+    }
+    
+    return $fallbackDir . '/';
+}
+
+/**
+ * Get application version from Git or VERSION file
+ */
+function getAppVersion() {
+    static $appVersion = null;
+    if ($appVersion !== null) {
+        return $appVersion;
+    }
+
+    $versionFile = __DIR__ . '/VERSION';
+    
+    // Check for VERSION file first
+    if (file_exists($versionFile)) {
+        $version = trim(@file_get_contents($versionFile));
+        if (!empty($version)) {
+            return $appVersion = $version;
+        }
+    }
+    
+    // Try to get version from Git
+    $gitDir = __DIR__ . '/.git';
+    if (is_dir($gitDir)) {
+        // Try git describe
+        $command = 'cd ' . escapeshellarg(__DIR__) . ' && git describe --tags --always 2>nul';
+        $version = @shell_exec($command);
+        if ($version) {
+            $version = trim($version);
+            // Remove 'v' prefix if present
+            $version = preg_replace('/^v/', '', $version);
+            return $appVersion = $version;
+        }
+        
+        // Fallback to short commit hash
+        $command = 'cd ' . escapeshellarg(__DIR__) . ' && git rev-parse --short HEAD 2>nul';
+        $hash = @shell_exec($command);
+        if ($hash) {
+            return $appVersion = 'dev-' . trim($hash);
+        }
+    }
+    
+    // Default fallback
+    return $appVersion = defined('APP_VERSION') ? APP_VERSION : '4.0.0';
+}
+
+// Get Laragon root path (only define if not already defined)
+if (!defined('LARAGON_ROOT')) {
+    $LARAGON_ROOT = getLaragonRoot();
+    define('LARAGON_ROOT', $LARAGON_ROOT);
+}
+
+// Auto-detect configuration values (only define if not already defined)
+if (!defined('SENDMAIL_OUTPUT_DIR')) {
+    define('SENDMAIL_OUTPUT_DIR', getenv('SENDMAIL_OUTPUT_DIR') ?: getLaragonSendmailDir());
+}
+if (!defined('DOMAIN_SUFFIX')) {
+    define('DOMAIN_SUFFIX', getenv('DOMAIN_SUFFIX') ?: getLaragonDomainSuffix());
+}
+
+// Force HTTPS for project URLs (if your Laragon uses HTTPS)
+// Set to true if all your projects should use HTTPS instead of HTTP
+// Auto-enabled if SSL certificates are detected (via setup-ssl.ps1)
+if (!defined('FORCE_HTTPS')) {
+    // Check if SSL certificates exist (indicates SSL is set up)
+    // $sslCertExists = file_exists('C:/laragon/etc/ssl/localhost+2.pem');
+    // $envForceHttps = getenv('FORCE_HTTPS') === 'true' || getenv('FORCE_HTTPS') === '1';
+    // define('FORCE_HTTPS', $envForceHttps || $sslCertExists);
+    define('FORCE_HTTPS', false); // Manually disabled to fix connection issues
+}
+if (!defined('APP_VERSION_DETECTED')) {
+    define('APP_VERSION_DETECTED', getenv('APP_VERSION') ?: getAppVersion());
+}
+
+// URL to access PhpMyAdmin (only define if not already defined)
+if (!defined('PHPMYADMIN_URL')) {
+    define('PHPMYADMIN_URL', getenv('PHPMYADMIN_URL') ?: 'http://localhost/phpmyadmin');
+}
+
+// MySQL connection settings - Priority: Dashboard Preferences > Environment Variable > Laragon Config > Defaults
+if (!defined('MYSQL_HOST')) {
+    $prefs = getDashboardPreferences();
+    $mysqlHost = $prefs['mysql_host'] ?? getenv('MYSQL_HOST');
+    if (empty($mysqlHost)) {
+        // Try to get from Laragon config
+        $laragonConfig = getLaragonConfig();
+        $mysqlHost = $laragonConfig['MySQLHost'] ?? 'localhost';
+    }
+    define('MYSQL_HOST', $mysqlHost ?: 'localhost');
+}
+if (!defined('MYSQL_USER')) {
+    $prefs = getDashboardPreferences();
+    $mysqlUser = $prefs['mysql_user'] ?? getenv('MYSQL_USER');
+    if (empty($mysqlUser)) {
+        // Try to get from Laragon config
+        $laragonConfig = getLaragonConfig();
+        $mysqlUser = $laragonConfig['MySQLUser'] ?? 'root';
+    }
+    define('MYSQL_USER', $mysqlUser ?: 'root');
+}
+if (!defined('MYSQL_PASSWORD')) {
+    $prefs = getDashboardPreferences();
+    $mysqlPassword = $prefs['mysql_password'] ?? getenv('MYSQL_PASSWORD');
+    if ($mysqlPassword === null || $mysqlPassword === '') {
+        // Try to get from Laragon config
+        $laragonConfig = getLaragonConfig();
+        $mysqlPassword = $laragonConfig['MySQLRootPassword'] ?? '';
+    }
+    define('MYSQL_PASSWORD', $mysqlPassword ?: '');
+}
+
+// Security settings (only define if not already defined)
+if (!defined('SESSION_TIMEOUT')) {
+    define('SESSION_TIMEOUT', SESSION_LIFETIME); // Use the defined session lifetime
+}
+if (!defined('MAX_LOGIN_ATTEMPTS')) {
+    define('MAX_LOGIN_ATTEMPTS', 5);
+}
+
+// Additional security headers
+if (defined('SECURITY_HEADERS_ENABLED') && SECURITY_HEADERS_ENABLED) {
+    // Prevent iframe embedding (clickjacking protection)
+    header('X-Frame-Options: DENY');
+    
+    // Prevent MIME type sniffing
+    header('X-Content-Type-Options: nosniff');
+    
+    // Enable XSS protection
+    header('X-XSS-Protection: 1; mode=block');
+    
+    // Strict transport security (disabled to fix connection issues)
+    /*
+    if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
+        header('Strict-Transport-Security: max-age=31536000; includeSubDomains; preload');
+    }
+    */
+    
+    // Prevent caching of security headers
+    header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+    header('Pragma: no-cache');
+    
+    // Content security policy - Force refresh and explicit elem directive
+    // Only remove if CSP header exists to avoid warnings
+    if (headers_sent() === false) {
+        @header_remove('Content-Security-Policy');
+    }
+    header("Content-Security-Policy: default-src 'self' blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: https://code.iconify.design; script-src-elem 'self' 'unsafe-inline' blob: https://code.iconify.design; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https://*; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://api.iconify.design https://api.unisvg.com https://api.simplesvg.com; frame-src 'self'; object-src 'none'; report-uri /csp-report");
+    
+    // Referrer policy
+    header('Referrer-Policy: strict-origin-when-cross-origin');
+    
+    // Feature policy
+    header("Feature-Policy: geolocation 'none'; microphone 'none'; camera 'none'");
+}
