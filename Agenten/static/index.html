@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Agenten</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <style>
+    iconify-icon, .iconify-icon { vertical-align: -0.125em; line-height: 1; display: inline-block; }
+        :root {
+            --bg: #0f172a;
+            --panel-bg: #1e293b;
+            --border: #334155;
+            --text: #e2e8f0;
+            --text-muted: #64748b;
+            --accent: #3b82f6;
+            --accent-hover: #2563eb;
+            --panel-header: #334155;
+            --btn-secondary: #475569;
+            --btn-secondary-hover: #64748b;
+            --input-bg: #0f172a;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --gradient-start: #f59e0b;
+            --gradient-end: #fbbf24;
+            --scrollbar-track: #1e293b;
+            --scrollbar-thumb: #475569;
+            --scrollbar-thumb-hover: #64748b;
+            --shadow: rgba(0,0,0,0.3);
+            --shadow-drag: rgba(0,0,0,0.5);
+            --log-info-border: #60a5fa;
+            --log-info-text: #93c5fd;
+            --log-debug-border: #64748b;
+            --log-debug-text: #94a3b8;
+            --log-error-text: #fca5a5;
+            --log-llm-border: #a78bfa;
+            --log-llm-text: #c4b5fd;
+            --history-border: #60a5fa;
+            --resize-color: #60a5fa;
+            --resize-hover: #a78bfa;
+            --purple-accent: #8b5cf6;
+        }
+
+        [data-theme="light"] {
+            --bg: #f8fafc;
+            --panel-bg: #ffffff;
+            --border: #e2e8f0;
+            --text: #1e293b;
+            --text-muted: #94a3b8;
+            --accent: #3b82f6;
+            --accent-hover: #2563eb;
+            --panel-header: #f1f5f9;
+            --btn-secondary: #e2e8f0;
+            --btn-secondary-hover: #cbd5e1;
+            --input-bg: #ffffff;
+            --success: #059669;
+            --warning: #d97706;
+            --danger: #dc2626;
+            --gradient-start: #d97706;
+            --gradient-end: #f59e0b;
+            --scrollbar-track: #f1f5f9;
+            --scrollbar-thumb: #cbd5e1;
+            --scrollbar-thumb-hover: #94a3b8;
+            --shadow: rgba(0,0,0,0.1);
+            --shadow-drag: rgba(0,0,0,0.2);
+            --log-info-border: #3b82f6;
+            --log-info-text: #1d4ed8;
+            --log-debug-border: #94a3b8;
+            --log-debug-text: #64748b;
+            --log-error-text: #b91c1c;
+            --log-llm-border: #7c3aed;
+            --log-llm-text: #6d28d9;
+            --history-border: #3b82f6;
+            --resize-color: #3b82f6;
+            --resize-hover: #6366f1;
+            --purple-accent: #7c3aed;
+        }
+
+        /* Rendered Markdown in preview */
+        .rendered-markdown h1 { font-size: 24px; border-bottom: 2px solid var(--border); padding-bottom: 8px; margin-top: 0; }
+        .rendered-markdown h2 { font-size: 18px; border-bottom: 1px solid var(--border); padding-bottom: 6px; margin-top: 24px; }
+        .rendered-markdown h3 { font-size: 15px; margin-top: 18px; }
+        .rendered-markdown code { background: var(--input-bg); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown ul, .rendered-markdown ol { padding-left: 24px; }
+        .rendered-markdown li { margin: 4px 0; }
+        .rendered-markdown table { border-collapse: collapse; width: 100%; margin: 12px 0; }
+        .rendered-markdown th, .rendered-markdown td { border: 1px solid var(--border); padding: 8px 12px; text-align: left; }
+        .rendered-markdown th { background: var(--panel-header); }
+    </style>
+</head>
+<body>
+    <div class="header" id="header">
+        <button class="btn" id="headerCollapseBtn">▶</button>
+        <h1>Agenten</h1>
+        <div class="btn-group">
+            <button class="btn" id="newIssueBtn">Opret issue</button>
+            <button class="btn" id="newTaskBtn">Opret task</button>
+            <button class="btn" id="newTemplateBtn">Opret mal</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newSessionBtn">Ny session</button>
+            <button class="btn" id="loadSessionBtn">Last session</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newFolderBtn">Ny map</button>
+            <button class="btn" id="loadFolderBtn">Last map</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newWorkdirBtn">Ny arbejdsmappe</button>
+            <button class="btn" id="loadWorkdirBtn">Last arbejdsmappe</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newLangBtn">Ny sprog</button>
+            <button class="btn" id="loadLangBtn">Last sprog</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newTemplateBtn">Opret mal</button>
+            <button class="btn" id="loadTemplateBtn">Last mal</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newTaskBtn">Opret task</button>
+            <button class="btn" id="loadTaskBtn">Last task</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newIssueBtn">Opret issue</button>
+            <button class="btn" id="loadIssueBtn">Last issue</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newFileBtn">Ny fil</button>
+            <button class="btn" id="loadFileBtn">Last fil</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newFolderBtn">Ny map</button>
+            <button class="btn" id="loadFolderBtn">Last map</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newWorkdirBtn">Ny arbejdsmappe</button>
+            <button class="btn" id="loadWorkdirBtn">Last arbejdsmappe</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newLangBtn">Ny sprog</button>
+            <button class="btn" id="loadLangBtn">Last sprog</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newTemplateBtn">Opret mal</button>
+            <button class="btn" id="loadTemplateBtn">Last mal</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newTaskBtn">Opret task</button>
+            <button class="btn" id="loadTaskBtn">Last task</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newIssueBtn">Opret issue</button>
+            <button class="btn" id="loadIssueBtn">Last issue</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newFileBtn">Ny fil</button>
+            <button class="btn" id="loadFileBtn">Last fil</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newFolderBtn">Ny map</button>
+            <button class="btn" id="loadFolderBtn">Last map</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newWorkdirBtn">Ny arbejdsmappe</button>
+            <button class="btn" id="loadWorkdirBtn">Last arbejdsmappe</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newLangBtn">Ny sprog</button>
+            <button class="btn" id="loadLangBtn">Last sprog</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newTemplateBtn">Opret mal</button>
+            <button class="btn" id="loadTemplateBtn">Last mal</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newTaskBtn">Opret task</button>
+            <button class="btn" id="loadTaskBtn">Last task</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newIssueBtn">Opret issue</button>
+            <button class="btn" id="loadIssueBtn">Last issue</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newFileBtn">Ny fil</button>
+            <button class="btn" id="loadFileBtn">Last fil</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newFolderBtn">Ny map</button>
+            <button class="btn" id="loadFolderBtn">Last map</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newWorkdirBtn">Ny arbejdsmappe</button>
+            <button class="btn" id="loadWorkdirBtn">Last arbejdsmappe</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newLangBtn">Ny sprog</button>
+            <button class="btn" id="loadLangBtn">Last sprog</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newTemplateBtn">Opret mal</button>
+            <button class="btn" id="loadTemplateBtn">Last mal</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newTaskBtn">Opret task</button>
+            <button class="btn" id="loadTaskBtn">Last task</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newIssueBtn">Opret issue</button>
+            <button class="btn" id="loadIssueBtn">Last issue</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newFileBtn">Ny fil</button>
+            <button class="btn" id="loadFileBtn">Last fil</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newFolderBtn">Ny map</button>
+            <button class="btn" id="loadFolderBtn">Last map</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newWorkdirBtn">Ny arbejdsmappe</button>
+            <button class="btn" id="loadWorkdirBtn">Last arbejdsmappe</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newLangBtn">Ny sprog</button>
+            <button class="btn" id="loadLangBtn">Last sprog</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newTemplateBtn">Opret mal</button>
+            <button class="btn" id="loadTemplateBtn">Last mal</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newTaskBtn">Opret task</button>
+            <button class="btn" id="loadTaskBtn">Last task</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newIssueBtn">Opret issue</button>
+            <button class="btn" id="loadIssueBtn">Last issue</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newFileBtn">Ny fil</button>
+            <button class="btn" id="loadFileBtn">Last fil</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newFolderBtn">Ny map</button>
+            <button class="btn" id="loadFolderBtn">Last map</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newWorkdirBtn">Ny arbejdsmappe</button>
+            <button class="btn" id="loadWorkdirBtn">Last arbejdsmappe</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newLangBtn">Ny sprog</button>
+            <button class="btn" id="loadLangBtn">Last sprog</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newTemplateBtn">Opret mal</button>
+            <button class="btn" id="loadTemplateBtn">Last mal</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newTaskBtn">Opret task</button>
+            <button class="btn" id="loadTaskBtn">Last task</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newIssueBtn">Opret issue</button>
+            <button class="btn" id="loadIssueBtn">Last issue</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newFileBtn">Ny fil</button>
+            <button class="btn" id="loadFileBtn">Last fil</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newFolderBtn">Ny map</button>
+            <button class="btn" id="loadFolderBtn">Last map</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newWorkdirBtn">Ny arbejdsmappe</button>
+            <button class="btn" id="loadWorkdirBtn">Last arbejdsmappe</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newLangBtn">Ny sprog</button>
+            <button class="btn" id="loadLangBtn">Last sprog</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newTemplateBtn">Opret mal</button>
+            <button class="btn" id="loadTemplateBtn">Last mal</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newTaskBtn">Opret task</button>
+            <button class="btn" id="loadTaskBtn">Last task</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newIssueBtn">Opret issue</button>
+            <button class="btn" id="loadIssueBtn">Last issue</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newFileBtn">Ny fil</button>
+            <button class="btn" id="loadFileBtn">Last fil</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newFolderBtn">Ny map</button>
+            <button class="btn" id="loadFolderBtn">Last map</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newWorkdirBtn">Ny arbejdsmappe</button>
+            <button class="btn" id="loadWorkdirBtn">Last arbejdsmappe</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newLangBtn">Ny sprog</button>
+            <button class="btn" id="loadLangBtn">Last sprog</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newTemplateBtn">Opret mal</button>
+            <button class="btn" id="loadTemplateBtn">Last mal</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newTaskBtn">Opret task</button>
+            <button class="btn" id="loadTaskBtn">Last task</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newIssueBtn">Opret issue</button>
+            <button class="btn" id="loadIssueBtn">Last issue</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newFileBtn">Ny fil</button>
+            <button class="btn" id="loadFileBtn">Last fil</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newFolderBtn">Ny map</button>
+            <button class="btn" id="loadFolderBtn">Last map</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newWorkdirBtn">Ny arbejdsmappe</button>
+            <button class="btn" id="loadWorkdirBtn">Last arbejdsmappe</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newLangBtn">Ny sprog</button>
+            <button class="btn" id="loadLangBtn">Last sprog</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newTemplateBtn">Opret mal</button>
+            <button class="btn" id="loadTemplateBtn">Last mal</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newTaskBtn">Opret task</button>
+            <button class="btn" id="loadTaskBtn">Last task</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newIssueBtn">Opret issue</button>
+            <button class="btn" id="loadIssueBtn">Last issue</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newFileBtn">Ny fil</button>
+            <button class="btn" id="loadFileBtn">Last fil</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newFolderBtn">Ny map</button>
+            <button class="btn" id="loadFolderBtn">Last map</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newWorkdirBtn">Ny arbejdsmappe</button>
+            <button class="btn" id="loadWorkdirBtn">Last arbejdsmappe</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newLangBtn">Ny sprog</button>
+            <button class="btn" id="loadLangBtn">Last sprog</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newTemplateBtn">Opret mal</button>
+            <button class="btn" id="loadTemplateBtn">Last mal</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newTaskBtn">Opret task</button>
+            <button class="btn" id="loadTaskBtn">Last task</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newIssueBtn">Opret issue</button>
+            <button class="btn" id="loadIssueBtn">Last issue</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newFileBtn">Ny fil</button>
+            <button class="btn" id="loadFileBtn">Last fil</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newFolderBtn">Ny map</button>
+            <button class="btn" id="loadFolderBtn">Last map</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newWorkdirBtn">Ny arbejdsmappe</button>
+            <button class="btn" id="loadWorkdirBtn">Last arbejdsmappe</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newLangBtn">Ny sprog</button>
+            <button class="btn" id="loadLangBtn">Last sprog</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newTemplateBtn">Opret mal</button>
+            <button class="btn" id="loadTemplateBtn">Last mal</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newTaskBtn">Opret task</button>
+            <button class="btn" id="loadTaskBtn">Last task</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newIssueBtn">Opret issue</button>
+            <button class="btn" id="loadIssueBtn">Last issue</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newFileBtn">Ny fil</button>
+            <button class="btn" id="loadFileBtn">Last fil</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newFolderBtn">Ny map</button>
+            <button class="btn" id="loadFolderBtn">Last map</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newWorkdirBtn">Ny arbejdsmappe</button>
+            <button class="btn" id="loadWorkdirBtn">Last arbejdsmappe</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newLangBtn">Ny sprog</button>
+            <button class="btn" id="loadLangBtn">Last sprog</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newTemplateBtn">Opret mal</button>
+            <button class="btn" id="loadTemplateBtn">Last mal</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newTaskBtn">Opret task</button>
+            <button class="btn" id="loadTaskBtn">Last task</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newIssueBtn">Opret issue</button>
+            <button class="btn" id="loadIssueBtn">Last issue</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newFileBtn">Ny fil</button>
+            <button class="btn" id="loadFileBtn">Last fil</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newFolderBtn">Ny map</button>
+            <button class="btn" id="loadFolderBtn">Last map</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newWorkdirBtn">Ny arbejdsmappe</button>
+            <button class="btn" id="loadWorkdirBtn">Last arbejdsmappe</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newLangBtn">Ny sprog</button>
+            <button class="btn" id="loadLangBtn">Last sprog</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newTemplateBtn">Opret mal</button>
+            <button class="btn" id="loadTemplateBtn">Last mal</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newTaskBtn">Opret task</button>
+            <button class="btn" id="loadTaskBtn">Last task</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newIssueBtn">Opret issue</button>
+            <button class="btn" id="loadIssueBtn">Last issue</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newFileBtn">Ny fil</button>
+            <button class="btn" id="loadFileBtn">Last fil</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newFolderBtn">Ny map</button>
+            <button class="btn" id="loadFolderBtn">Last map</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newWorkdirBtn">Ny arbejdsmappe</button>
+            <button class="btn" id="loadWorkdirBtn">Last arbejdsmappe</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newLangBtn">Ny sprog</button>
+            <button class="btn" id="loadLangBtn">Last sprog</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newTemplateBtn">Opret mal</button>
+            <button class="btn" id="loadTemplateBtn">Last mal</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newTaskBtn">Opret task</button>
+            <button class="btn" id="loadTaskBtn">Last task</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newIssueBtn">Opret issue</button>
+            <button class="btn" id="loadIssueBtn">Last issue</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newFileBtn">Ny fil</button>
+            <button class="btn" id="loadFileBtn">Last fil</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newFolderBtn">Ny map</button>
+            <button class="btn" id="loadFolderBtn">Last map</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newWorkdirBtn">Ny arbejdsmappe</button>
+            <button class="btn" id="loadWorkdirBtn">Last arbejdsmappe</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newLangBtn">Ny sprog</button>
+            <button class="btn" id="loadLangBtn">Last sprog</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newTemplateBtn">Opret mal</button>
+            <button class="btn" id="loadTemplateBtn">Last mal</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newTaskBtn">Opret task</button>
+            <button class="btn" id="loadTaskBtn">Last task</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newIssueBtn">Opret issue</button>
+            <button class="btn" id="loadIssueBtn">Last issue</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newFileBtn">Ny fil</button>
+            <button class="btn" id="loadFileBtn">Last fil</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newFolderBtn">Ny map</button>
+            <button class="btn" id="loadFolderBtn">Last map</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newWorkdirBtn">Ny arbejdsmappe</button>
+            <button class="btn" id="loadWorkdirBtn">Last arbejdsmappe</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newLangBtn">Ny sprog</button>
+            <button class="btn" id="loadLangBtn">Last sprog</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newTemplateBtn">Opret mal</button>
+            <button class="btn" id="loadTemplateBtn">Last mal</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newTaskBtn">Opret task</button>
+            <button class="btn" id="loadTaskBtn">Last task</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newIssueBtn">Opret issue</button>
+            <button class="btn" id="loadIssueBtn">Last issue</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newFileBtn">Ny fil</button>
+            <button class="btn" id="loadFileBtn">Last fil</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newFolderBtn">Ny map</button>
+            <button class="btn" id="loadFolderBtn">Last map</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newWorkdirBtn">Ny arbejdsmappe</button>
+            <button class="btn" id="loadWorkdirBtn">Last arbejdsmappe</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newLangBtn">Ny sprog</button>
+            <button class="btn" id="loadLangBtn">Last sprog</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newTemplateBtn">Opret mal</button>
+            <button class="btn" id="loadTemplateBtn">Last mal</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newTaskBtn">Opret task</button>
+            <button class="btn" id="loadTaskBtn">Last task</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newIssueBtn">Opret issue</button>
+            <button class="btn" id="loadIssueBtn">Last issue</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newFileBtn">Ny fil</button>
+            <button class="btn" id="loadFileBtn">Last fil</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newFolderBtn">Ny map</button>
+            <button class="btn" id="loadFolderBtn">Last map</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newWorkdirBtn">Ny arbejdsmappe</button>
+            <button class="btn" id="loadWorkdirBtn">Last arbejdsmappe</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newLangBtn">Ny sprog</button>
+            <button class="btn" id="loadLangBtn">Last sprog</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newTemplateBtn">Opret mal</button>
+            <button class="btn" id="loadTemplateBtn">Last mal</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newTaskBtn">Opret task</button>
+            <button class="btn" id="loadTaskBtn">Last task</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newIssueBtn">Opret issue</button>
+            <button class="btn" id="loadIssueBtn">Last issue</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newFileBtn">Ny fil</button>
+            <button class="btn" id="loadFileBtn">Last fil</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newFolderBtn">Ny map</button>
+            <button class="btn" id="loadFolderBtn">Last map</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newWorkdirBtn">Ny arbejdsmappe</button>
+            <button class="btn" id="loadWorkdirBtn">Last arbejdsmappe</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newLangBtn">Ny sprog</button>
+            <button class="btn" id="loadLangBtn">Last sprog</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newTemplateBtn">Opret mal</button>
+            <button class="btn" id="loadTemplateBtn">Last mal</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newTaskBtn">Opret task</button>
+            <button class="btn" id="loadTaskBtn">Last task</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="newIssueBtn">O
