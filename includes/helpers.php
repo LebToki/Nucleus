@@ -477,6 +477,17 @@ if (!function_exists('analyzeProject')) {
         // '--untracked-files=no' makes it significantly faster for large repositories.
         $status = @shell_exec('cd ' . escapeshellarg($path) . ' && git status --porcelain --untracked-files=no 2>&1');
         $project['git_status'] = !empty(trim((string)$status)) ? 'modified' : 'clean';
+
+        // Read the origin remote URL from .git/config (pure file read, no shell)
+        $remote = null;
+        $configFile = $path . '/.git/config';
+        if (is_file($configFile)) {
+            $config = @file_get_contents($configFile);
+            if ($config && preg_match('/\[remote "origin"\][^\[]*url\s*=\s*([^\n]+)/s', $config, $m)) {
+                $remote = trim($m[1]);
+            }
+        }
+        $project['git_remote'] = $remote ?: null;
     }
     
     return $project;
