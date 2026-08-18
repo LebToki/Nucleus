@@ -2,6 +2,16 @@
 
 All notable changes to Nucleus will be documented in this file.
 
+## [1.3.0] - 2026-08-18
+
+### New: Gitea Bridge
+- **Project ↔ Gitea linking** — projects whose git remote points at the configured Gitea host get a `View on Gitea` button and live branch / ahead / behind status in the Projects grid and a new **Git Status & Gitea** card on the Tools page.
+- **Gitea API integration** — with an application token, `api/gitea.php` unlocks repo listing, create repo, and clone into the web root (writes are CSRF-protected). Link-only mode works with no token at all.
+- **Preferences integration** — set the Gitea URL and save the Application Token from **Settings → Preferences** (stored in `data/preferences.json`); `GITEA_URL` / `GITEA_TOKEN` environment variables still work as a fallback.
+
+### New: Cron Viewer
+- **Read-only scheduled jobs** — the Tools page lists entries from the user crontab, `/etc/crontab`, and `/etc/cron.d` with schedule, run-as user, command, and source.
+
 ## [1.2.1] - 2026-08-09
 
 ### New: Service Hub

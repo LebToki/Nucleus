@@ -6,7 +6,7 @@ A lightweight, central control panel for Linux development environments. Nucleus
 
 Born from [Laragon Dashboard](https://github.com/LebToki/Laragon-Dashboard) (v4.0.5 for Windows), Nucleus is the Linux-native evolution — purpose-built for ZorinOS, Ubuntu, and Linux Mint.
 
-[![Version](https://img.shields.io/badge/version-1.2.1-blue.svg)](https://github.com/LebToki/Nucleus)
+[![Version](https://img.shields.io/badge/version-1.3.0-blue.svg)](https://github.com/LebToki/Nucleus)
 [![PHP](https://img.shields.io/badge/PHP-8.1%2B-green.svg)](https://php.net)
 [![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3.2-purple.svg)](https://getbootstrap.com)
 [![Platform](https://img.shields.io/badge/platform-linux%20%7C%20ZorinOS%20%7C%20Ubuntu%20%7C%20Mint-orange.svg)]()
@@ -83,6 +83,8 @@ Linux developers deserve a first-class local dev experience. Until now, managing
 - **Cache Management** — Clear Laravel, WordPress, Composer, and NPM caches
 - **Database Optimization** — Optimize all tables in a database
 - **Git Integration** — Check status across all projects
+- **Gitea Bridge** — Link project remotes to a self-hosted Gitea instance; per-project branch and ahead/behind status, "View on Gitea" links, and token-backed API features (repo list, create/clone) configurable right from the Preferences page
+- **Cron Viewer** — Read-only list of scheduled jobs (user crontab, `/etc/crontab`, `/etc/cron.d`) on the Tools page
 - **Composer Commands** — Install, update, dump-autoload
 - **NPM Commands** — Install, update, build
 - **PHP Info** — Quick access to full PHP configuration
@@ -101,6 +103,22 @@ Linux developers deserve a first-class local dev experience. Until now, managing
 ### 🤖 AI Agent (Beta)
 - **BYOK Chat Widget** — Bring-your-own-key AI assistant for project scaffolding and troubleshooting
 - **System Context Bridge** — Real-time environment data fed to the agent
+
+---
+
+## 📝 Changelog
+
+Only the latest release is listed here. The full history lives in [`CHANGELOG.md`](CHANGELOG.md) and is rendered in the dashboard's **Changelog** page (sidebar → Changelog).
+
+### [1.3.0] - 2026-08-18
+
+#### New: Gitea Bridge
+- **Project ↔ Gitea linking** — projects whose git remote points at the configured Gitea host get a `View on Gitea` button and live branch / ahead / behind status in the Projects grid and a new **Git Status & Gitea** card on the Tools page.
+- **Gitea API integration** — with an application token, `api/gitea.php` unlocks repo listing, create repo, and clone into the web root (writes are CSRF-protected). Link-only mode works with no token at all.
+- **Preferences integration** — set the Gitea URL and save the Application Token from **Settings → Preferences** (stored in `data/preferences.json`); `GITEA_URL` / `GITEA_TOKEN` environment variables still work as a fallback.
+
+#### New: Cron Viewer
+- **Read-only scheduled jobs** — the Tools page lists entries from the user crontab, `/etc/crontab`, and `/etc/cron.d` with schedule, run-as user, command, and source.
 
 ---
 
@@ -140,8 +158,8 @@ Or download the [latest release](https://github.com/LebToki/Nucleus/releases):
 
 ```bash
 cd /var/www/html
-sudo wget https://github.com/LebToki/Nucleus/releases/download/v1.2.1/nucleus-v1.2.1.zip
-sudo unzip nucleus-v1.2.1.zip -d .
+sudo wget https://github.com/LebToki/Nucleus/releases/download/v1.3.0/nucleus-v1.3.0.zip
+sudo unzip nucleus-v1.3.0.zip -d .
 ```
 
 #### 2. Set Permissions
@@ -204,7 +222,7 @@ Nucleus auto-detects your Linux environment. Edit `config.php` to customize:
 ```php
 // Auto-detected (no manual configuration needed)
 APP_NAME = 'Nucleus'
-APP_VERSION = '1.2.1'
+APP_VERSION = '1.3.0'
 
 // Project root detection order:
 // 1. PROJECTS_ROOT environment variable
@@ -231,6 +249,8 @@ SESSION_LIFETIME = 3600    // 1 hour
 | `NUCLEUS_PASSWORD` | Admin password | (must be set) |
 | `PROJECTS_ROOT` | Override project root path | Auto-detected |
 | `APP_DEBUG` | Enable debug mode | `false` |
+| `GITEA_URL` | Gitea base URL (web links) | `http://localhost:3000` |
+| `GITEA_TOKEN` | Gitea API token (enables API features) | *(empty — link-only)* |
 
 ---
 
