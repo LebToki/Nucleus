@@ -188,6 +188,25 @@ include __DIR__ . '/../partials/layouts/layoutTop.php';
                                 </div>
                                 <?php endif; ?>
                             </div>
+                            <?php if ($project['has_git'] ?? false):
+                                $gitBadge = ($project['git_status'] ?? '') === 'modified' ? 'warning' : 'success';
+                                $giteaLink = class_exists('\Nucleus\Core\Services\GiteaBridge') && !empty($project['git_remote'])
+                                    ? \Nucleus\Core\Services\GiteaBridge::repoFromRemote($project['git_remote'])
+                                    : null;
+                            ?>
+                            <div class="mt-8 pt-8 border-top border-white border-opacity-20 d-flex align-items-center justify-content-between gap-2">
+                                <span class="bg-<?php echo $gitBadge; ?>-focus text-<?php echo $gitBadge; ?>-main px-12 py-4 rounded-pill fw-medium text-sm d-inline-flex align-items-center gap-2">
+                                    <iconify-icon icon="devicon-plain:git" class="text-base"></iconify-icon>
+                                    <span class="text-truncate" title="<?php echo htmlspecialchars($project['git_branch'] ?? 'unknown'); ?>"><?php echo htmlspecialchars($project['git_branch'] ?? 'unknown'); ?></span>
+                                </span>
+                                <?php if ($giteaLink): ?>
+                                    <a href="<?php echo htmlspecialchars($giteaLink['web_url']); ?>" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary-600 radius-8 px-12 py-6 d-flex align-items-center gap-2" title="View on Gitea">
+                                        <iconify-icon icon="devicon:gitea" class="text-lg"></iconify-icon>
+                                        Gitea
+                                    </a>
+                                <?php endif; ?>
+                            </div>
+                            <?php endif; ?>
                             <div class="mt-8 pt-8 border-top border-white border-opacity-20">
                                 <div class="row g-2">
                                     <div class="col-6">

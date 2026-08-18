@@ -15,6 +15,25 @@ chrome/
 nul
 audiencepulse/
 BeitNoura/
+admin/
+careloop/
+cheapito/
+demo/
+divorce/
+filemanager/
+NexaCore/
+NexusAI/
+Praxisdash/
+RestoFlow/
+SalonCRM/
+saloncrm/
+ShiftSync/
+veritas/
+
+# --- Loose working files (not part of Nucleus) ---
+BeE.DE
+ShadowDownloader.png
+mysql-root-password.md
 
 # --- Downloaded at runtime (install via Plugins page) ---
 phpmyadmin/

@@ -2828,7 +2828,122 @@ if (substr($assetsUrl, 0, 1) !== '/') {
                 });
         };
         
-        // Clear cache
+        // Load per-project git status + Gitea links
+        window.loadGitStatus = function() {
+            const container = document.getElementById('gitea-status-container');
+            if (!container) return;
+            
+            container.innerHTML = '<div class="text-center p-24"><div class="spinner-border spinner-border-sm text-primary-600" role="status"><span class="visually-hidden">Loading...</span></div></div>';
+            
+            fetch('api/gitea.php?action=status')
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.success) {
+                        container.innerHTML = '<div class="alert alert-warning mb-0">' + escapeHtml(data.error || 'Failed to load git status') + '</div>';
+                        return;
+                    }
+                    
+                    let html = '<div class="table-responsive scroll-sm"><table class="table bordered-table mb-0">';
+                    html += '<thead><tr><th scope="col" class="bg-transparent rounded-0">Project</th><th scope="col" class="bg-transparent rounded-0">Branch</th><th scope="col" class="bg-transparent rounded-0">Status</th><th scope="col" class="bg-transparent rounded-0">Remote</th></tr></thead><tbody>';
+                    
+                    if (!data.projects || data.projects.length === 0) {
+                        html += '<tr><td colspan="4" class="text-center text-secondary-light py-24">No Git repositories found</td></tr>';
+                    } else {
+                        data.projects.forEach(project => {
+                            const branch = project.branch || 'unknown';
+                            const dirty = project.ahead > 0 || project.behind > 0;
+                            const statusClass = dirty ? 'warning' : 'success';
+                            const statusText = dirty
+                                ? (project.ahead > 0 ? project.ahead + ' ahead' : '') + (project.ahead > 0 && project.behind > 0 ? ' / ' : '') + (project.behind > 0 ? project.behind + ' behind' : '')
+                                : 'synced';
+                            
+                            const remoteHtml = project.gitea_url
+                                ? '<a href="' + escapeHtml(project.gitea_url) + '" target="_blank" rel="noopener" class="text-primary-600 hover-text-primary text-sm"><iconify-icon icon="devicon:gitea" class="icon"></iconify-icon> View on Gitea</a>'
+                                : (project.remote ? '<span class="text-secondary-light text-sm">' + escapeHtml(project.remote) + '</span>' : '<span class="text-secondary-light text-sm">No remote</span>');
+                            
+                            html += '<tr>';
+                            html += '<td class="fw-medium">' + escapeHtml(project.name) + '</td>';
+                            html += '<td class="font-monospace text-sm">' + escapeHtml(branch) + '</td>';
+                            html += '<td><span class="bg-' + statusClass + '-focus text-' + statusClass + '-main px-12 py-4 rounded-pill fw-medium text-sm">' + escapeHtml(statusText) + '</span></td>';
+                            html += '<td>' + remoteHtml + '</td>';
+                            html += '</tr>';
+                        });
+                    }
+                    
+                    html += '</tbody></table></div>';
+                    if (data.enabled) {
+                        html += '<div class="mt-16 text-sm text-success-600"><iconify-icon icon="solar:check-circle-bold" class="icon"></iconify-icon> Gitea API connected (' + escapeHtml(data.base_url) + ')</div>';
+                    } else {
+                        html += '<div class="mt-16 text-sm text-secondary-light"><iconify-icon icon="solar:info-circle-bold" class="icon"></iconify-icon> Set GITEA_TOKEN to enable API features (repo list, create/clone, PRs). Links still work without it.</div>';
+                    }
+                    
+                    container.innerHTML = html;
+                })
+                .catch(error => {
+                    container.innerHTML = '<div class="alert alert-danger mb-0">' + escapeHtml('Error: ' + error.message) + '</div>';
+                });
+        };
+        
+        window.loadCronJobs = function() {
+            const container = document.getElementById('cron-jobs-container');
+            if (!container) return;
+
+            container.innerHTML = '<div class="text-center p-24"><div class="spinner-border spinner-border-sm text-primary-600" role="status"><span class="visually-hidden">Loading...</span></div></div>';
+
+            fetch('api/cron.php?action=list')
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.success) {
+                        container.innerHTML = '<div class="alert alert-warning mb-0">' + escapeHtml(data.error || 'Failed to load cron jobs') + '</div>';
+                        return;
+                    }
+
+                    let html = '<div class="table-responsive scroll-sm"><table class="table bordered-table mb-0">';
+                    html += '<thead><tr><th scope="col" class="bg-transparent rounded-0">Schedule</th><th scope="col" class="bg-transparent rounded-0">Run As</th><th scope="col" class="bg-transparent rounded-0">Command</th><th scope="col" class="bg-transparent rounded-0">Source</th></tr></thead><tbody>';
+
+                    if (!data.entries || data.entries.length === 0) {
+                        html += '<tr><td colspan="4" class="text-center text-secondary-light py-24">No cron jobs found</td></tr>';
+                    } else {
+                        data.entries.forEach(entry => {
+                            html += '<tr>';
+                            html += '<td class="font-monospace text-sm text-primary-600">' + escapeHtml(entry.schedule) + '</td>';
+                            html += '<td>' + (entry.run_as ? '<span class="bg-info-focus text-info-main px-12 py-4 rounded-pill fw-medium text-sm">' + escapeHtml(entry.run_as) + '</span>' : '<span class="text-secondary-light text-sm">-</span>') + '</td>';
+                            html += '<td class="font-monospace text-sm">' + escapeHtml(entry.command) + '</td>';
+                            html += '<td class="text-secondary-light text-sm">' + escapeHtml(entry.source) + '</td>';
+                            html += '</tr>';
+                        });
+                    }
+
+                    html += '</tbody></table></div>';
+                    if (data.total > 0 && data.sources) {
+                        html += '<div class="mt-16 text-sm text-secondary-light"><iconify-icon icon="solar:info-circle-bold" class="icon"></iconify-icon> ' + data.total + ' scheduled job' + (data.total === 1 ? '' : 's') + ' from: ' + escapeHtml(data.sources.join(', ')) + '</div>';
+                    }
+
+                    container.innerHTML = html;
+                })
+                .catch(error => {
+                    container.innerHTML = '<div class="alert alert-danger mb-0">' + escapeHtml('Error: ' + error.message) + '</div>';
+                });
+        };
+
+        // Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            if (text === null || text === undefined) return '';
+            const div = document.createElement('div');
+            div.textContent = String(text);
+            return div.innerHTML;
+        }
+        
+        // Load git status on page load
+        if (document.getElementById('gitea-status-container')) {
+            loadGitStatus();
+        }
+
+        // Load cron jobs on page load
+        if (document.getElementById('cron-jobs-container')) {
+            loadCronJobs();
+        }
+        
         window.clearCache = function(type) {
             const project = document.getElementById('project-select').value;
             if (!project) {

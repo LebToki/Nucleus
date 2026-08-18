@@ -159,6 +159,23 @@ include __DIR__ . '/../partials/layouts/layoutTop.php';
                                 </div>
                             </div>
                             
+                            <div class="mb-24">
+                                <strong><p class="fw-semibold mb-16"><?php echo t_preferences('gitea_settings', 'Gitea Bridge'); ?></p></strong>
+                                
+                                <div class="row mb-16">
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-medium mb-8"><?php echo t_preferences('gitea_url', 'Gitea URL'); ?></label>
+                                        <input type="text" class="form-control" id="gitea-url" name="gitea_url" value="<?php echo htmlspecialchars($prefs['gitea_url'] ?? ''); ?>" placeholder="http://localhost:3000">
+                                        <small class="text-secondary-light text-sm mt-4 d-block"><?php echo t_preferences('gitea_url_desc', 'Base URL used to link project remotes to the Gitea web UI'); ?></small>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-medium mb-8"><?php echo t_preferences('gitea_token', 'Application Token'); ?></label>
+                                        <input type="password" class="form-control" id="gitea-token" name="gitea_token" value="<?php echo htmlspecialchars($prefs['gitea_token'] ?? ''); ?>" placeholder="Gitea API token">
+                                        <small class="text-secondary-light text-sm mt-4 d-block"><?php echo t_preferences('gitea_token_desc', 'Enables API features: repo list, create/clone, PR counts. Leave empty for link-only mode'); ?></small>
+                                    </div>
+                                </div>
+                            </div>
+                            
                             <div class="d-flex align-items-center justify-content-end gap-2">
                                 <button type="button" class="btn btn-secondary" onclick="resetPreferences()"><?php echo t_preferences('reset', 'Reset'); ?></button>
                                 <button type="submit" class="btn btn-primary-600">

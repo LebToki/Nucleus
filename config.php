@@ -13,7 +13,7 @@ if (!defined('APP_NAME')) {
     define('APP_NAME', 'Nucleus');
 }
 if (!defined('APP_VERSION')) {
-    define('APP_VERSION', '1.2.0');
+    define('APP_VERSION', '1.3.0');
 }
 if (!defined('APP_AUTHOR')) {
     define('APP_AUTHOR', 'Tarek Tarabichi');
@@ -286,6 +286,8 @@ if (!function_exists('getDashboardPreferences')) {
             'debug_banner' => false,
             'time_format' => null,
             'date_format' => null,
+            'gitea_url' => null,
+            'gitea_token' => null,
         ];
         
         if (file_exists($prefsFile)) {
@@ -592,6 +594,30 @@ if (!defined('MYSQL_PASSWORD')) {
         $mysqlPassword = $laragonConfig['MySQLRootPassword'] ?? '';
     }
     define('MYSQL_PASSWORD', $mysqlPassword ?: '');
+}
+
+// Gitea bridge (optional). GITEA_URL is the base web URL of your Gitea install
+// (used to link project remotes to the Gitea web UI). GITEA_TOKEN enables
+// API-backed features (repo list, create/clone, PR counts). Both may be set in
+// the Preferences UI (data/preferences.json) or via environment variables.
+if (!defined('GITEA_URL')) {
+    $giteaPrefs = function_exists('getDashboardPreferences') ? getDashboardPreferences() : [];
+    $giteaUrl = trim((string)($giteaPrefs['gitea_url'] ?? ''));
+    if ($giteaUrl === '') {
+        $giteaUrl = getenv('GITEA_URL') ?: '';
+    }
+    define('GITEA_URL', $giteaUrl !== '' ? $giteaUrl : 'http://localhost:3000');
+}
+if (!defined('GITEA_TOKEN')) {
+    $giteaPrefs = function_exists('getDashboardPreferences') ? getDashboardPreferences() : [];
+    $giteaToken = trim((string)($giteaPrefs['gitea_token'] ?? ''));
+    if ($giteaToken === '') {
+        $giteaToken = getenv('GITEA_TOKEN') ?: '';
+    }
+    define('GITEA_TOKEN', $giteaToken); // empty = link-only mode
+}
+if (!defined('GITEA_USER')) {
+    define('GITEA_USER', getenv('GITEA_USER') ?: '');
 }
 
 // Security settings (only define if not already defined)

@@ -191,6 +191,66 @@ include __DIR__ . '/../partials/layouts/layoutTop.php';
                 </div>
             </div>
 
+            <!-- Gitea / Git Status Overview -->
+            <div class="col-12">
+                <div class="card shadow-none border radius-12">
+                    <div class="card-header border-bottom bg-base py-16 px-24">
+                        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+                            <div class="d-flex align-items-center gap-2">
+                                <iconify-icon icon="devicon:gitea" class="text-xl text-primary-600"></iconify-icon>
+                                <strong><p class="fw-semibold mb-0"><?php echo t_tools('gitea', 'Git Status & Gitea'); ?></p></strong>
+                            </div>
+                            <button type="button" class="btn btn-sm btn-primary-100 text-primary-600" onclick="loadGitStatus()">
+                                <iconify-icon icon="solar:refresh-bold" class="icon"></iconify-icon>
+                                Refresh
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body p-24">
+                        <p class="text-secondary-light text-sm mb-16">
+                            Per-project branch, ahead/behind vs origin, and Gitea links (remote must point at the configured Gitea host).
+                        </p>
+                        <div id="gitea-status-container">
+                            <div class="text-center p-24">
+                                <div class="spinner-border spinner-border-sm text-primary-600" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cron Jobs -->
+            <div class="col-12">
+                <div class="card shadow-none border radius-12">
+                    <div class="card-header border-bottom bg-base py-16 px-24">
+                        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+                            <div class="d-flex align-items-center gap-2">
+                                <iconify-icon icon="solar:calendar-clock-bold" class="text-xl text-primary-600"></iconify-icon>
+                                <strong><p class="fw-semibold mb-0"><?php echo t_tools('cron_jobs', 'Scheduled Jobs (Cron)'); ?></p></strong>
+                            </div>
+                            <button type="button" class="btn btn-sm btn-primary-100 text-primary-600" onclick="loadCronJobs()">
+                                <iconify-icon icon="solar:refresh-bold" class="icon"></iconify-icon>
+                                Refresh
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body p-24">
+                        <p class="text-secondary-light text-sm mb-16">
+                            Read-only view of the user crontab, /etc/crontab and /etc/cron.d entries.
+                        </p>
+                        <div id="cron-jobs-container">
+                            <div class="text-center p-24">
+                                <div class="spinner-border spinner-border-sm text-primary-600" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Cache Clearing -->
             <div class="col-lg-6">
                 <div class="card shadow-none border radius-12 h-100">

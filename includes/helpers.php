@@ -297,9 +297,9 @@ if (!function_exists('getAllProjects')) {
                     'laragon', 'laragon-dashboard', 'dashboard', 'assets', 'build',
                     'includes', 'partials', 'pages', 'api', 'i18n', 'cache', 'data', 'logs',
                     // System / admin tools
-                    'phpmyadmin', 'adminer', 'phppgadmin', 'html',
+                    'phpmyadmin', 'adminer', 'phppgadmin', 'html','temp','backups',
                     // Non-project directories
-                    'nucleus-logo',
+                    'nucleus-logo','promo'
                 ];
                 // Skip hidden dirs and excluded dirs
                 if (empty($name) || $name[0] === '.' || in_array($name, $excludedDirs, true)) {

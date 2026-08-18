@@ -67,6 +67,12 @@ try {
             if (isset($input['date_format'])) {
                 $prefs['date_format'] = $input['date_format'] === '' ? null : $input['date_format'];
             }
+            if (isset($input['gitea_url'])) {
+                $prefs['gitea_url'] = $input['gitea_url'] === '' ? null : trim($input['gitea_url']);
+            }
+            if (isset($input['gitea_token'])) {
+                $prefs['gitea_token'] = $input['gitea_token'] === '' ? null : trim($input['gitea_token']);
+            }
             
             $result = saveDashboardPreferences($prefs);
             echo json_encode([
