@@ -89,545 +89,260 @@
         .rendered-markdown li { margin: 4px 0; }
         .rendered-markdown table { border-collapse: collapse; width: 100%; margin: 12px 0; }
         .rendered-markdown th, .rendered-markdown td { border: 1px solid var(--border); padding: 8px 12px; text-align: left; }
-        .rendered-markdown th { background: var(--panel-header); }
-    </style>
-</head>
-<body>
-    <div class="header" id="header">
-        <button class="btn" id="headerCollapseBtn">▶</button>
-        <h1>Agenten</h1>
-        <div class="btn-group">
-            <button class="btn" id="newIssueBtn">Opret issue</button>
-            <button class="btn" id="newTaskBtn">Opret task</button>
-            <button class="btn" id="newTemplateBtn">Opret mal</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newSessionBtn">Ny session</button>
-            <button class="btn" id="loadSessionBtn">Last session</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newFolderBtn">Ny map</button>
-            <button class="btn" id="loadFolderBtn">Last map</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newWorkdirBtn">Ny arbejdsmappe</button>
-            <button class="btn" id="loadWorkdirBtn">Last arbejdsmappe</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newLangBtn">Ny sprog</button>
-            <button class="btn" id="loadLangBtn">Last sprog</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newTemplateBtn">Opret mal</button>
-            <button class="btn" id="loadTemplateBtn">Last mal</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newTaskBtn">Opret task</button>
-            <button class="btn" id="loadTaskBtn">Last task</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newIssueBtn">Opret issue</button>
-            <button class="btn" id="loadIssueBtn">Last issue</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newFileBtn">Ny fil</button>
-            <button class="btn" id="loadFileBtn">Last fil</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newFolderBtn">Ny map</button>
-            <button class="btn" id="loadFolderBtn">Last map</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newWorkdirBtn">Ny arbejdsmappe</button>
-            <button class="btn" id="loadWorkdirBtn">Last arbejdsmappe</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newLangBtn">Ny sprog</button>
-            <button class="btn" id="loadLangBtn">Last sprog</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newTemplateBtn">Opret mal</button>
-            <button class="btn" id="loadTemplateBtn">Last mal</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newTaskBtn">Opret task</button>
-            <button class="btn" id="loadTaskBtn">Last task</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newIssueBtn">Opret issue</button>
-            <button class="btn" id="loadIssueBtn">Last issue</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newFileBtn">Ny fil</button>
-            <button class="btn" id="loadFileBtn">Last fil</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newFolderBtn">Ny map</button>
-            <button class="btn" id="loadFolderBtn">Last map</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newWorkdirBtn">Ny arbejdsmappe</button>
-            <button class="btn" id="loadWorkdirBtn">Last arbejdsmappe</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newLangBtn">Ny sprog</button>
-            <button class="btn" id="loadLangBtn">Last sprog</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newTemplateBtn">Opret mal</button>
-            <button class="btn" id="loadTemplateBtn">Last mal</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newTaskBtn">Opret task</button>
-            <button class="btn" id="loadTaskBtn">Last task</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newIssueBtn">Opret issue</button>
-            <button class="btn" id="loadIssueBtn">Last issue</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newFileBtn">Ny fil</button>
-            <button class="btn" id="loadFileBtn">Last fil</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newFolderBtn">Ny map</button>
-            <button class="btn" id="loadFolderBtn">Last map</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newWorkdirBtn">Ny arbejdsmappe</button>
-            <button class="btn" id="loadWorkdirBtn">Last arbejdsmappe</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newLangBtn">Ny sprog</button>
-            <button class="btn" id="loadLangBtn">Last sprog</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newTemplateBtn">Opret mal</button>
-            <button class="btn" id="loadTemplateBtn">Last mal</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newTaskBtn">Opret task</button>
-            <button class="btn" id="loadTaskBtn">Last task</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newIssueBtn">Opret issue</button>
-            <button class="btn" id="loadIssueBtn">Last issue</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newFileBtn">Ny fil</button>
-            <button class="btn" id="loadFileBtn">Last fil</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newFolderBtn">Ny map</button>
-            <button class="btn" id="loadFolderBtn">Last map</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newWorkdirBtn">Ny arbejdsmappe</button>
-            <button class="btn" id="loadWorkdirBtn">Last arbejdsmappe</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newLangBtn">Ny sprog</button>
-            <button class="btn" id="loadLangBtn">Last sprog</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newTemplateBtn">Opret mal</button>
-            <button class="btn" id="loadTemplateBtn">Last mal</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newTaskBtn">Opret task</button>
-            <button class="btn" id="loadTaskBtn">Last task</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newIssueBtn">Opret issue</button>
-            <button class="btn" id="loadIssueBtn">Last issue</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newFileBtn">Ny fil</button>
-            <button class="btn" id="loadFileBtn">Last fil</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newFolderBtn">Ny map</button>
-            <button class="btn" id="loadFolderBtn">Last map</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newWorkdirBtn">Ny arbejdsmappe</button>
-            <button class="btn" id="loadWorkdirBtn">Last arbejdsmappe</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newLangBtn">Ny sprog</button>
-            <button class="btn" id="loadLangBtn">Last sprog</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newTemplateBtn">Opret mal</button>
-            <button class="btn" id="loadTemplateBtn">Last mal</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newTaskBtn">Opret task</button>
-            <button class="btn" id="loadTaskBtn">Last task</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newIssueBtn">Opret issue</button>
-            <button class="btn" id="loadIssueBtn">Last issue</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newFileBtn">Ny fil</button>
-            <button class="btn" id="loadFileBtn">Last fil</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newFolderBtn">Ny map</button>
-            <button class="btn" id="loadFolderBtn">Last map</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newWorkdirBtn">Ny arbejdsmappe</button>
-            <button class="btn" id="loadWorkdirBtn">Last arbejdsmappe</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newLangBtn">Ny sprog</button>
-            <button class="btn" id="loadLangBtn">Last sprog</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newTemplateBtn">Opret mal</button>
-            <button class="btn" id="loadTemplateBtn">Last mal</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newTaskBtn">Opret task</button>
-            <button class="btn" id="loadTaskBtn">Last task</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newIssueBtn">Opret issue</button>
-            <button class="btn" id="loadIssueBtn">Last issue</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newFileBtn">Ny fil</button>
-            <button class="btn" id="loadFileBtn">Last fil</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newFolderBtn">Ny map</button>
-            <button class="btn" id="loadFolderBtn">Last map</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newWorkdirBtn">Ny arbejdsmappe</button>
-            <button class="btn" id="loadWorkdirBtn">Last arbejdsmappe</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newLangBtn">Ny sprog</button>
-            <button class="btn" id="loadLangBtn">Last sprog</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newTemplateBtn">Opret mal</button>
-            <button class="btn" id="loadTemplateBtn">Last mal</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newTaskBtn">Opret task</button>
-            <button class="btn" id="loadTaskBtn">Last task</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newIssueBtn">Opret issue</button>
-            <button class="btn" id="loadIssueBtn">Last issue</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newFileBtn">Ny fil</button>
-            <button class="btn" id="loadFileBtn">Last fil</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newFolderBtn">Ny map</button>
-            <button class="btn" id="loadFolderBtn">Last map</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newWorkdirBtn">Ny arbejdsmappe</button>
-            <button class="btn" id="loadWorkdirBtn">Last arbejdsmappe</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newLangBtn">Ny sprog</button>
-            <button class="btn" id="loadLangBtn">Last sprog</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newTemplateBtn">Opret mal</button>
-            <button class="btn" id="loadTemplateBtn">Last mal</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newTaskBtn">Opret task</button>
-            <button class="btn" id="loadTaskBtn">Last task</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newIssueBtn">Opret issue</button>
-            <button class="btn" id="loadIssueBtn">Last issue</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newFileBtn">Ny fil</button>
-            <button class="btn" id="loadFileBtn">Last fil</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newFolderBtn">Ny map</button>
-            <button class="btn" id="loadFolderBtn">Last map</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newWorkdirBtn">Ny arbejdsmappe</button>
-            <button class="btn" id="loadWorkdirBtn">Last arbejdsmappe</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newLangBtn">Ny sprog</button>
-            <button class="btn" id="loadLangBtn">Last sprog</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newTemplateBtn">Opret mal</button>
-            <button class="btn" id="loadTemplateBtn">Last mal</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newTaskBtn">Opret task</button>
-            <button class="btn" id="loadTaskBtn">Last task</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newIssueBtn">Opret issue</button>
-            <button class="btn" id="loadIssueBtn">Last issue</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newFileBtn">Ny fil</button>
-            <button class="btn" id="loadFileBtn">Last fil</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newFolderBtn">Ny map</button>
-            <button class="btn" id="loadFolderBtn">Last map</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newWorkdirBtn">Ny arbejdsmappe</button>
-            <button class="btn" id="loadWorkdirBtn">Last arbejdsmappe</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newLangBtn">Ny sprog</button>
-            <button class="btn" id="loadLangBtn">Last sprog</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newTemplateBtn">Opret mal</button>
-            <button class="btn" id="loadTemplateBtn">Last mal</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newTaskBtn">Opret task</button>
-            <button class="btn" id="loadTaskBtn">Last task</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newIssueBtn">Opret issue</button>
-            <button class="btn" id="loadIssueBtn">Last issue</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newFileBtn">Ny fil</button>
-            <button class="btn" id="loadFileBtn">Last fil</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newFolderBtn">Ny map</button>
-            <button class="btn" id="loadFolderBtn">Last map</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newWorkdirBtn">Ny arbejdsmappe</button>
-            <button class="btn" id="loadWorkdirBtn">Last arbejdsmappe</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newLangBtn">Ny sprog</button>
-            <button class="btn" id="loadLangBtn">Last sprog</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newTemplateBtn">Opret mal</button>
-            <button class="btn" id="loadTemplateBtn">Last mal</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newTaskBtn">Opret task</button>
-            <button class="btn" id="loadTaskBtn">Last task</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newIssueBtn">Opret issue</button>
-            <button class="btn" id="loadIssueBtn">Last issue</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newFileBtn">Ny fil</button>
-            <button class="btn" id="loadFileBtn">Last fil</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newFolderBtn">Ny map</button>
-            <button class="btn" id="loadFolderBtn">Last map</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newWorkdirBtn">Ny arbejdsmappe</button>
-            <button class="btn" id="loadWorkdirBtn">Last arbejdsmappe</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newLangBtn">Ny sprog</button>
-            <button class="btn" id="loadLangBtn">Last sprog</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newTemplateBtn">Opret mal</button>
-            <button class="btn" id="loadTemplateBtn">Last mal</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newTaskBtn">Opret task</button>
-            <button class="btn" id="loadTaskBtn">Last task</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newIssueBtn">Opret issue</button>
-            <button class="btn" id="loadIssueBtn">Last issue</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newFileBtn">Ny fil</button>
-            <button class="btn" id="loadFileBtn">Last fil</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newFolderBtn">Ny map</button>
-            <button class="btn" id="loadFolderBtn">Last map</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newWorkdirBtn">Ny arbejdsmappe</button>
-            <button class="btn" id="loadWorkdirBtn">Last arbejdsmappe</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newLangBtn">Ny sprog</button>
-            <button class="btn" id="loadLangBtn">Last sprog</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newTemplateBtn">Opret mal</button>
-            <button class="btn" id="loadTemplateBtn">Last mal</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newTaskBtn">Opret task</button>
-            <button class="btn" id="loadTaskBtn">Last task</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newIssueBtn">Opret issue</button>
-            <button class="btn" id="loadIssueBtn">Last issue</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newFileBtn">Ny fil</button>
-            <button class="btn" id="loadFileBtn">Last fil</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newFolderBtn">Ny map</button>
-            <button class="btn" id="loadFolderBtn">Last map</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newWorkdirBtn">Ny arbejdsmappe</button>
-            <button class="btn" id="loadWorkdirBtn">Last arbejdsmappe</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newLangBtn">Ny sprog</button>
-            <button class="btn" id="loadLangBtn">Last sprog</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newTemplateBtn">Opret mal</button>
-            <button class="btn" id="loadTemplateBtn">Last mal</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newTaskBtn">Opret task</button>
-            <button class="btn" id="loadTaskBtn">Last task</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newIssueBtn">Opret issue</button>
-            <button class="btn" id="loadIssueBtn">Last issue</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newFileBtn">Ny fil</button>
-            <button class="btn" id="loadFileBtn">Last fil</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newFolderBtn">Ny map</button>
-            <button class="btn" id="loadFolderBtn">Last map</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newWorkdirBtn">Ny arbejdsmappe</button>
-            <button class="btn" id="loadWorkdirBtn">Last arbejdsmappe</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newLangBtn">Ny sprog</button>
-            <button class="btn" id="loadLangBtn">Last sprog</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newTemplateBtn">Opret mal</button>
-            <button class="btn" id="loadTemplateBtn">Last mal</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newTaskBtn">Opret task</button>
-            <button class="btn" id="loadTaskBtn">Last task</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newIssueBtn">Opret issue</button>
-            <button class="btn" id="loadIssueBtn">Last issue</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newFileBtn">Ny fil</button>
-            <button class="btn" id="loadFileBtn">Last fil</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newFolderBtn">Ny map</button>
-            <button class="btn" id="loadFolderBtn">Last map</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newWorkdirBtn">Ny arbejdsmappe</button>
-            <button class="btn" id="loadWorkdirBtn">Last arbejdsmappe</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newLangBtn">Ny sprog</button>
-            <button class="btn" id="loadLangBtn">Last sprog</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newTemplateBtn">Opret mal</button>
-            <button class="btn" id="loadTemplateBtn">Last mal</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newTaskBtn">Opret task</button>
-            <button class="btn" id="loadTaskBtn">Last task</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newIssueBtn">Opret issue</button>
-            <button class="btn" id="loadIssueBtn">Last issue</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newFileBtn">Ny fil</button>
-            <button class="btn" id="loadFileBtn">Last fil</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newFolderBtn">Ny map</button>
-            <button class="btn" id="loadFolderBtn">Last map</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newWorkdirBtn">Ny arbejdsmappe</button>
-            <button class="btn" id="loadWorkdirBtn">Last arbejdsmappe</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newLangBtn">Ny sprog</button>
-            <button class="btn" id="loadLangBtn">Last sprog</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newTemplateBtn">Opret mal</button>
-            <button class="btn" id="loadTemplateBtn">Last mal</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newTaskBtn">Opret task</button>
-            <button class="btn" id="loadTaskBtn">Last task</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newIssueBtn">Opret issue</button>
-            <button class="btn" id="loadIssueBtn">Last issue</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newFileBtn">Ny fil</button>
-            <button class="btn" id="loadFileBtn">Last fil</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newFolderBtn">Ny map</button>
-            <button class="btn" id="loadFolderBtn">Last map</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newWorkdirBtn">Ny arbejdsmappe</button>
-            <button class="btn" id="loadWorkdirBtn">Last arbejdsmappe</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newLangBtn">Ny sprog</button>
-            <button class="btn" id="loadLangBtn">Last sprog</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newTemplateBtn">Opret mal</button>
-            <button class="btn" id="loadTemplateBtn">Last mal</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newTaskBtn">Opret task</button>
-            <button class="btn" id="loadTaskBtn">Last task</button>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="newIssueBtn">O
+        .rendered-markdown th { background: var(--panel-bg); color: var(--text); }
+        .rendered-markdown tr:nth-child(even) { background: var(--input-bg); }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .rendered-markdown pre { background: var(--input-bg); padding: 14px; border-radius: 8px; overflow-x: auto; }
+        .rendered-markdown pre code { background: none; padding: 0; }
+        .
