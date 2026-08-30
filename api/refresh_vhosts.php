@@ -68,6 +68,10 @@ function discoverProjectDirs(string $webRoot): array {
         $name = basename($dir);
         if ($name[0] === '.') continue;
         if (in_array($name, $excluded, true)) continue;
+        // Reasonable blockage: only plain [a-z0-9][a-z0-9-]* names become
+        // vhosts — anything with a dot, underscore, uppercase or shell
+        // metacharacter is never treated as a domain fragment.
+        if (!preg_match('/^[a-z0-9][a-z0-9-]{0,62}$/', $name)) continue;
         $dirs[] = $name;
     }
     sort($dirs);
@@ -159,6 +163,45 @@ function writeVhostFile(string $name, string $webRoot): bool {
 }
 
 /**
+ * Write the matching 443 SSL vhost for a directory, using the shared
+ * wildcard cert — so EVERY host gets HTTPS automatically.
+ */
+function writeVhostSSL(string $name, string $webRoot): bool {
+    $domain = $name . '.local';
+    $docRoot = docRootFor($webRoot, $name);
+    $escapedRoot = addcslashes($docRoot, '"');
+    $cert = '/home/zorin/.2ti/config/ssl/2ti_local.crt';
+    $key = '/home/zorin/.2ti/config/ssl/2ti_local.key';
+
+    $content = "# Nucleus auto-generated HTTPS vhost for {$name}\n"
+        . "<VirtualHost *:443>\n"
+        . "    ServerName {$domain}\n"
+        . "    SSLEngine on\n"
+        . "    SSLCertificateFile {$cert}\n"
+        . "    SSLCertificateKeyFile {$key}\n"
+        . "    DocumentRoot \"{$escapedRoot}\"\n"
+        . "    <Directory \"{$escapedRoot}\">\n"
+        . "        Options Indexes FollowSymLinks\n"
+        . "        AllowOverride All\n"
+        . "        Require all granted\n"
+        . "    </Directory>\n"
+        . "    ErrorLog \${APACHE_LOG_DIR}/{$name}-ssl-error.log\n"
+        . "    CustomLog \${APACHE_LOG_DIR}/{$name}-ssl-access.log combined\n"
+        . "</VirtualHost>\n";
+
+    $file = '/etc/apache2/sites-enabled/' . $domain . '_ssl.conf';
+    $tmp = sys_get_temp_dir() . '/nucleus-vhost-' . getmypid() . '-ssl.conf';
+    if (@file_put_contents($tmp, $content) === false) {
+        return false;
+    }
+    @chmod($tmp, 0644);
+    $command = 'sudo -n tee ' . escapeshellarg($file) . ' < ' . escapeshellarg($tmp) . ' > /dev/null 2>&1';
+    @exec($command, $out, $code);
+    @unlink($tmp);
+    return $code === 0;
+}
+
+/**
  * Test + reload Apache (graceful first, full restart as fallback).
  */
 function refreshApache(): array {
@@ -192,13 +235,34 @@ try {
             ensureHostEntry($domain);
             continue;
         }
+        // Reasonable blockage: a directory already named "<x>.local" would
+        // become "<x>.local.local"; refuse (the vhost already exists for it).
+        if (substr($name, -6) === '.local' || substr($name, -5) === '.test') {
+            $already[] = $name;
+            continue;
+        }
         $okVhost = writeVhostFile($name, $webRoot);
+        $okVhostSSL = writeVhostSSL($name, $webRoot);
         $okHost = ensureHostEntry($domain);
         $created[] = [
             'domain' => $domain,
             'vhost_written' => $okVhost,
+            'vhost_ssl_written' => $okVhostSSL,
             'host_added' => $okHost,
         ];
+    }
+
+    // Ensure ecosystem engine hosts entries (source of truth: services registry)
+    $enginesHealed = 0;
+    $registryFile = __DIR__ . '/../data/services_registry.json';
+    if (is_readable($registryFile)) {
+        $registry = @json_decode(@file_get_contents($registryFile), true);
+        foreach (($registry['services'] ?? []) as $svc) {
+            $vhost = trim((string)($svc['vhost'] ?? ''));
+            if ($vhost !== '' && ensureHostEntry($vhost)) {
+                $enginesHealed++;
+            }
+        }
     }
 
     $apache = refreshApache();
@@ -207,7 +271,7 @@ try {
     echo json_encode([
         'success' => $success,
         'message' => $success
-            ? 'Apache ' . ($apache['method'] === 'reload' ? 'reloaded' : 'restarted') . ' — ' . count($created) . ' vhost(s) created, ' . count($already) . ' already handled'
+            ? 'Apache ' . ($apache['method'] === 'reload' ? 'reloaded' : 'restarted') . ' — ' . count($created) . ' vhost(s) created, ' . count($already) . ' already handled, ' . $enginesHealed . ' engine link(s) ensured'
             : 'Refresh incomplete: ' . ($apache['error'] ?? 'Unknown error'),
         'web_root' => $webRoot,
         'projects' => $projects,
