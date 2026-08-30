@@ -5,6 +5,8 @@
 
 # --- Separate projects & symlinks (not part of Nucleus) ---
 2ti-orchestrator/
+Agenten/
+Laragon-Dashboard/
 dashboard/
 laragon-dashboard/
 2tinteractive
@@ -105,3 +107,6 @@ desktop.ini
 # --- Windows artifacts (should not exist on Linux, but just in case) ---
 C:/
 [D-Z]:/
+
+# --- Agenten: own Gitea repo (tarek/Agenten) — never tracked here ---
+Agenten/
