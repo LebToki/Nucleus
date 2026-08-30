@@ -45,6 +45,19 @@ function writeHostsFile($content) {
         $content .= "\n";
     }
 
+    // Self-heal ecosystem engine hosts entries (source of truth: services registry).
+    // Prevents Nucleus save/toggle/remove from wiping engine .local links.
+    $registryFile = __DIR__ . '/../data/services_registry.json';
+    if (is_readable($registryFile)) {
+        $registry = @json_decode(@file_get_contents($registryFile), true);
+        foreach (($registry['services'] ?? []) as $svc) {
+            $vhost = trim((string)($svc['vhost'] ?? ''));
+            if ($vhost !== '' && stripos($content, $vhost) === false) {
+                $content .= "127.0.0.1\t{$vhost}\n";
+            }
+        }
+    }
+
     // Try to back up first
     $backupCommand = 'sudo -n cp ' . escapeshellarg($HOSTS_FILE) . ' ' . escapeshellarg($BACKUP_FILE) . ' 2>&1';
     @exec($backupCommand, $backupOut, $backupCode);

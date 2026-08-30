@@ -109,9 +109,11 @@ function enrichEntry(array $entry, array $livePorts): array {
     $running = array_key_exists($port, $livePorts);
     $procs = $running ? $livePorts[$port] : [];
     $url = '';
-    if (!empty($entry['vhost'])) {
+    $vhost = preg_replace('~^https?://~i', '', trim((string)($entry['vhost'] ?? '')));
+    $vhost = rtrim($vhost, '/');
+    if ($vhost !== '') {
         $schema = $entry['schema'] ?? 'https';
-        $url = $schema . '://' . $entry['vhost'] . '/';
+        $url = $schema . '://' . $vhost . '/';
     }
     return [
         'id' => $entry['id'] ?? '',
@@ -120,7 +122,7 @@ function enrichEntry(array $entry, array $livePorts): array {
         'color' => $entry['color'] ?? 'primary',
         'port' => $port,
         'ssl_port' => $sslPort,
-        'vhost' => $entry['vhost'] ?? null,
+        'vhost' => $vhost !== '' ? $vhost : null,
         'schema' => $entry['schema'] ?? 'https',
         'webui' => (bool)($entry['webui'] ?? true),
         'description' => $entry['description'] ?? '',
@@ -195,7 +197,7 @@ try {
                 'color' => trim($input['color'] ?? 'primary') ?: 'primary',
                 'port' => (int)($input['port'] ?? 0),
                 'ssl_port' => isset($input['ssl_port']) && $input['ssl_port'] !== '' ? (int)$input['ssl_port'] : null,
-                'vhost' => trim($input['vhost'] ?? '') ?: null,
+                'vhost' => (function ($v) { $v = preg_replace('~^https?://~i', '', trim((string)$v)); return rtrim($v, '/') ?: null; })($input['vhost'] ?? ''),
                 'schema' => in_array($input['schema'] ?? '', ['http', 'https']) ? $input['schema'] : 'https',
                 'webui' => (bool)($input['webui'] ?? true),
                 'description' => trim($input['description'] ?? ''),
