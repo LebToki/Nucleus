@@ -1,5 +1,9 @@
 # ⚛️ Nucleus
 
+<p align="center">
+  <img src="assets/OG_Banner.png" alt="Nucleus Header" width="900" />
+</p>
+
 ### The Missing Dashboard for Linux Developers
 
 A lightweight, central control panel for Linux development environments. Nucleus scans your web root, detects your projects, manages your services via systemd, and gives you a modern web interface to orchestrate your entire local dev stack — no Windows, no WAMP, no compromises.
