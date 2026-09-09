@@ -1,0 +1,1 @@
+{"jsonrpc": "2.0", "id": 1, "result": {"protocolVersion": "2024-11-05", "capabilities": {"tools": {"listChanged": false}}, "serverInfo": {"name": "cortex-mcp-bridge", "version": "1.0.0"}}}

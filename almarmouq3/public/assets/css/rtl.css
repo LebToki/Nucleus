@@ -1,0 +1,33 @@
+html[dir='rtl'] body {
+    font-family: 'Cairo', sans-serif;
+}
+
+html[dir='rtl'] .dashboard-main {
+    margin-left: 0;
+    margin-right: 260px;
+}
+
+html[dir='rtl'] .sidebar {
+    left: auto;
+    right: 0;
+}
+
+html[dir='rtl'] .navbar-header,
+html[dir='rtl'] .dashboard-main-body,
+html[dir='rtl'] .navbar-search {
+    direction: rtl;
+}
+
+html[dir='rtl'] .sidebar-toggle {
+    transform: scaleX(-1);
+}
+
+html[dir='rtl'] .dropdown-menu {
+    text-align: right;
+}
+
+@media (max-width: 1199px) {
+    html[dir='rtl'] .dashboard-main {
+        margin-right: 0;
+    }
+}
