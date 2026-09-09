@@ -34,7 +34,11 @@ All code must adhere strictly to the **Al-Marmouq UI Sovereign Specification** (
     - Where the sidebar or menu mentions **"AI Agent"**, **"AI Assistant"**, or **"Automated Telemetry"**, these are **future implementations**.
     - **Crucial**: For this milestone, these features MUST be built using **standard Laravel Controllers and MySQL tables**. Do NOT rely on background daemons, Node services, or external Python sockets that require root VPS access. Everything must execute synchronously or via standard database-backed queues.
 
-4. **Gitea VCS Repository Setup**:
+4. **Script Placement & Escaping Directive**:
+    - All Blade view JavaScript blocks (e.g., `$script` variables or `@push('scripts')`) must be positioned correctly relative to target DOM elements.
+    - Script strings inside `@php ... $script = '...' @endphp` must avoid unescaped single quotes inside JS selectors (e.g. using escaped quotes or `@push('scripts')`) to prevent PHP Blade compilation `ParseError`.
+
+5. **Gitea VCS Repository Setup**:
     - Director must initialize and configure a Gitea repository for `almarmouq3` (e.g. `http://gitea.local/almarmouq/almarmouq3.git` or local gitea instance), push all initial code, and tag release `v1.0.0`.
 
 ---
