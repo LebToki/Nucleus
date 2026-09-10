@@ -69,4 +69,9 @@ class ProductController extends Controller
 
         return redirect()->route('products.catalog')->with('status', 'Product deleted.');
     }
+
+    public function show(Product $product)
+    {
+        return view('products.show', compact('product'));
+    }
 }

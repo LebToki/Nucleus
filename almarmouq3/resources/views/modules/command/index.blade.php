@@ -9,135 +9,146 @@
     $channelLabels = json_encode($charts['channel_labels'] ?? []);
     $channelData = json_encode($charts['channel_data'] ?? []);
 
-    $script = '<script>
-        function getThemeColors() {
-            var isDark = document.documentElement.getAttribute("data-theme") === "dark";
-            if (isDark) {
-                return {
-                    grid: "#3f4b5b"
-                };
-            }
+    ob_start();
+@endphp
+<script>
+    function getThemeColors() {
+        var isDark = document.documentElement.getAttribute("data-theme") === "dark";
+        if (isDark) {
             return {
-                grid: "#e0e0e0"
+                grid: "#3f4b5b"
             };
         }
+        return {
+            grid: "#e0e0e0"
+        };
+    }
 
-        var revenueOptions = {
-            series: [{
-                name: "Revenue (AED)",
-                data: ' . $revenueData . '
-            }],
-            chart: {
-                type: "line",
-                height: 280,
-                toolbar: {
-                    show: false
-                }
-            },
-            stroke: {
-                curve: "smooth",
-                width: 3
-            },
-            markers: {
-                size: 4
-            },
-            xaxis: {
-                categories: ' . $revenueLabels . ',
-                labels: {
-                    style: {
-                        cssClass: "text-xs"
-                    }
-                }
-            },
-            yaxis: {
-                labels: {
-                    formatter: function(val) {
-                        return val.toLocaleString("en-US");
-                    }
-                }
-            },
-            grid: {
-                borderColor: getThemeColors().grid,
-                strokeDashArray: 3
-            },
-            dataLabels: {
-                enabled: false
-            },
-            tooltip: {
-                y: {
-                    formatter: function(val) {
-                        return val.toLocaleString("en-US") + " AED";
-                    }
+    var revenueOptions = {
+        series: [{
+            name: "Revenue (AED)",
+            data: {!! $revenueData !!}
+        }],
+        chart: {
+            type: "line",
+            height: 280,
+            toolbar: {
+                show: false
+            }
+        },
+        stroke: {
+            curve: "smooth",
+            width: 3
+        },
+        markers: {
+            size: 4
+        },
+        xaxis: {
+            categories: {!! $revenueLabels !!},
+            labels: {
+                style: {
+                    cssClass: "text-xs"
                 }
             }
-        };
-
-        var revenueChart = new ApexCharts(document.querySelector("#chart-revenue-velocity"), revenueOptions);
-        revenueChart.render();
-
-        var channelColors = ["#10b981", "#f59e0b", "#3b82f6", "#ec4899"];
-        var channelOptions = {
-            series: ' . $channelData . ',
-            chart: {
-                type: "donut",
-                height: 280
-            },
-            labels: ' . $channelLabels . ',
-            legend: {
-                position: "bottom",
-                markers: {
-                    width: 10,
-                    height: 10
-                }
-            },
-            dataLabels: {
-                enabled: true,
+        },
+        yaxis: {
+            labels: {
                 formatter: function(val) {
-                    return val.toFixed(1) + "%";
+                    return val.toLocaleString("en-US");
                 }
-            },
-            tooltip: {
-                y: {
-                    formatter: function(val) {
-                        return val;
-                    }
+            }
+        },
+        grid: {
+            borderColor: getThemeColors().grid,
+            strokeDashArray: 3
+        },
+        dataLabels: {
+            enabled: false
+        },
+        tooltip: {
+            y: {
+                formatter: function(val) {
+                    return val.toLocaleString("en-US") + " AED";
                 }
-            },
-            colors: channelColors.slice(0, ' . $channelData . '.length)
-        };
+            }
+        }
+    };
 
-        var channelChart = new ApexCharts(document.querySelector("#chart-channel-mix"), channelOptions);
-        channelChart.render();
+    var revenueChart = new ApexCharts(document.querySelector("#chart-revenue-velocity"), revenueOptions);
+    revenueChart.render();
 
-        document.addEventListener("theme-change", function() {
-            var colors = getThemeColors();
-            revenueChart.updateOptions({
-                grid: {
-                    borderColor: colors.grid
+    var channelColors = ["var(--success-600)", "var(--warning-600)", "var(--info-600)", "var(--danger-600)"];
+    var rawChannelData = {!! $channelData !!};
+    var rawChannelLabels = !!$channelLabels!!
+    };
+    var channelOptions = {
+        series: rawChannelData,
+        chart: {
+            type: "donut",
+            height: 280
+        },
+        labels: rawChannelLabels,
+        legend: {
+            position: "bottom",
+            markers: {
+                width: 10,
+                height: 10
+            }
+        },
+        dataLabels: {
+            enabled: true,
+            formatter: function(val) {
+                return val.toFixed(1) + "%";
+            }
+        },
+        tooltip: {
+            y: {
+                formatter: function(val) {
+                    return val;
                 }
-            });
-            channelChart.updateColors();
+            }
+        },
+        colors: channelColors.slice(0, rawChannelData.length || 1)
+    };
+
+    var channelChart = new ApexCharts(document.querySelector("#chart-channel-mix"), channelOptions);
+    channelChart.render();
+
+    document.addEventListener("theme-change", function() {
+        var colors = getThemeColors();
+        revenueChart.updateOptions({
+            grid: {
+                borderColor: colors.grid
+            }
         });
-    </script>';
+        channelChart.updateColors();
+    });
+</script>
+@php
+    $script = ob_get_clean();
 @endphp
 
 @section('content')
+    <!-- Main Container -->
     <div class="d-flex flex-column gap-4">
+        <!-- Header Section -->
         <div class="d-flex align-items-center justify-content-between">
             <div>
                 <div class="fw-bold text-neutral-900 text-lg mb-1">{{ __('entities.dashboard.title') }}</div>
                 <div class="text-neutral-500 text-sm">{{ __('entities.dashboard.business_glance') }}</div>
             </div>
-            <span class="badge bg-neutral-100 text-neutral-600 text-xs px-2 py-1">
+            <span class="bg-neutral-100 text-neutral-600 text-xs px-2 py-1">
                 <iconify-icon icon="solar:shield-check-outline" class="me-1 align-middle"></iconify-icon>
                 {{ __('entities.dashboard.secure_session') }}
             </span>
         </div>
+        <!-- End Header Section -->
 
         {{-- Tier 1: 4 KPI Cards --}}
         <div class="row g-3">
+            <!-- Revenue Card -->
             <div class="col-12 col-sm-6 col-xl-3">
-                <div class="card h-100 p-20 radius-12 border-0" style="background-color: #ECF7FF;">
+                <div class="card h-100 p-20 radius-12 border-0" style="background-color: var(--info-50);">
                     <div class="d-flex justify-content-between align-items-start">
                         <div>
                             <span
@@ -157,13 +168,16 @@
                         </div>
                         <div
                             class="w-40-px h-40-px rounded-circle d-flex align-items-center justify-content-center text-info-600 bg-white shadow-xs">
-                            <iconify-icon icon="solar:dollar-bill-check-outline" class="text-xl"></iconify-icon>
+                            <iconify-icon icon="flat-color-icons:sales-performance" class="text-xl"></iconify-icon>
                         </div>
                     </div>
                 </div>
             </div>
+            <!-- End Revenue Card -->
+
+            <!-- Pipeline Card -->
             <div class="col-12 col-sm-6 col-xl-3">
-                <div class="card h-100 p-20 radius-12 border-0" style="background-color: #F0FDF4;">
+                <div class="card h-100 p-20 radius-12 border-0" style="background-color: var(--success-50);">
                     <div class="d-flex justify-content-between align-items-start">
                         <div>
                             <span
@@ -176,20 +190,23 @@
                         </div>
                         <div
                             class="w-40-px h-40-px rounded-circle d-flex align-items-center justify-content-center text-success-600 bg-white shadow-xs">
-                            <iconify-icon icon="solar:trend-up-outline" class="text-xl"></iconify-icon>
+                            <iconify-icon icon="material-icon-theme:pipeline" class="text-xl"></iconify-icon>
                         </div>
                     </div>
                 </div>
             </div>
+            <!-- End Pipeline Card -->
+
+            <!-- Low Stock Card -->
             <div class="col-12 col-sm-6 col-xl-3">
-                <div class="card h-100 p-20 radius-12 border-0" style="background-color: #FFFBEB;">
+                <div class="card h-100 p-20 radius-12 border-0" style="background-color: var(--warning-50);">
                     <div class="d-flex justify-content-between align-items-start">
                         <div>
                             <span
                                 class="text-xs fw-semibold text-warning-700 text-uppercase">{{ __('entities.dashboard.low_stock') }}</span>
                             <div class="fw-bold text-neutral-900 mt-2 mb-1 fs-2">{{ $metrics['lowStockCount'] }}</div>
                             <div class="text-xs text-neutral-500 mt-1">
-                                {{ number_format($metrics['lowStockValue'], 2, '.', ',') }}
+                                {{ number_format($metrics['lowStockValue'] ?? 0, 2, '.', ',') }}
                                 {{ __('entities.dashboard.value') }}</div>
                         </div>
                         <div
@@ -199,8 +216,11 @@
                     </div>
                 </div>
             </div>
+            <!-- End Low Stock Card -->
+
+            <!-- Overdue Card -->
             <div class="col-12 col-sm-6 col-xl-3">
-                <div class="card h-100 p-20 radius-12 border-0" style="background-color: #FEF2F2;">
+                <div class="card h-100 p-20 radius-12 border-0" style="background-color: var(--danger-50);">
                     <div class="d-flex justify-content-between align-items-start">
                         <div>
                             <span
@@ -217,10 +237,13 @@
                     </div>
                 </div>
             </div>
+            <!-- End Overdue Card -->
         </div>
+        <!-- End Tier 1: 4 KPI Cards -->
 
         {{-- Tier 2: Charts --}}
         <div class="row g-3">
+            <!-- Revenue Velocity Chart -->
             <div class="col-12 col-lg-6">
                 <div class="card p-24 radius-12 border-0 shadow-xs h-100">
                     <div class="d-flex justify-content-between align-items-center mb-3">
@@ -231,6 +254,9 @@
                     <div id="chart-revenue-velocity" style="min-height: 280px;"></div>
                 </div>
             </div>
+            <!-- End Revenue Velocity Chart -->
+
+            <!-- Channel Mix Chart -->
             <div class="col-12 col-lg-6">
                 <div class="card p-24 radius-12 border-0 shadow-xs h-100">
                     <div class="d-flex justify-content-between align-items-center mb-3">
@@ -241,10 +267,13 @@
                     <div id="chart-channel-mix" style="min-height: 280px;"></div>
                 </div>
             </div>
+            <!-- End Channel Mix Chart -->
         </div>
+        <!-- End Tier 2: Charts -->
 
         {{-- Tier 3: Quick Insights --}}
         <div class="row g-3">
+            <!-- Conversion Insights -->
             <div class="col-12 col-lg-6">
                 <div class="card p-20 radius-12 border-0 shadow-xs">
                     <div class="d-flex justify-content-between align-items-center mb-3">
@@ -269,6 +298,9 @@
                     </div>
                 </div>
             </div>
+            <!-- End Conversion Insights -->
+
+            <!-- Incoming Alerts -->
             <div class="col-12 col-lg-6">
                 <div class="card p-20 radius-12 border-0 shadow-xs">
                     <div class="d-flex justify-content-between align-items-center mb-3">
@@ -292,10 +324,13 @@
                     </div>
                 </div>
             </div>
+            <!-- End Incoming Alerts -->
         </div>
+        <!-- End Tier 3: Quick Insights -->
 
         {{-- Tier 4: Low Stock Detail + Pending Deliveries --}}
         <div class="row g-3">
+            <!-- Low Stock Detail -->
             <div class="col-12 col-lg-6">
                 <div class="card p-20 radius-12 border-0 shadow-xs">
                     <div class="d-flex justify-content-between align-items-center mb-3">
@@ -326,13 +361,16 @@
                     </div>
                 </div>
             </div>
+            <!-- End Low Stock Detail -->
+
+            <!-- Pending Deliveries -->
             <div class="col-12 col-lg-6">
                 <div class="card p-20 radius-12 border-0 shadow-xs">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h6 class="text-lg mb-0">{{ __('entities.dashboard.total') }}
                             {{ __('entities.dashboard.pending_deliveries') }}</h6>
                         <span
-                            class="badge bg-neutral-100 text-neutral-600 text-xs px-2 py-1">{{ $metrics['pendingDeliveryCount'] }}
+                            class="bg-neutral-100 text-neutral-600 text-xs px-2 py-1">{{ $metrics['pendingDeliveryCount'] }}
                             {{ __('entities.dashboard.total') }}</span>
                     </div>
                     <div class="d-flex flex-column gap-2">
@@ -354,10 +392,13 @@
                     </div>
                 </div>
             </div>
+            <!-- End Pending Deliveries -->
         </div>
+        <!-- End Tier 4: Low Stock Detail + Pending Deliveries -->
 
-        {{-- Tier 5: Agenda --}}
+        {{-- Tier 5: Today's Protocol & Sales --}}
         <div class="row g-3">
+            <!-- Today's Protocol -->
             <div class="col-12 col-lg-6">
                 <div class="card p-20 radius-12 border-0 shadow-xs">
                     <div class="d-flex justify-content-between align-items-center mb-3">
@@ -384,6 +425,82 @@
                     </div>
                 </div>
             </div>
+            <!-- End Today's Protocol -->
+
+            <!-- Today's Sales -->
+            <div class="col-12 col-lg-6">
+                <div class="card p-20 radius-12 border-0 shadow-xs">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h6 class="text-lg mb-0">{{ __('entities.dashboard.todays_sales') }}</h6>
+                        <span
+                            class="badge bg-neutral-100 text-neutral-600 text-xs px-2 py-1">{{ __('entities.dashboard.today') }}</span>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table basic-table mb-0">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="text-xs text-uppercase text-neutral-600 fw-semibold w-1">
+                                        {{ __('entities.dashboard.avatar') }}
+                                    </th>
+                                    <th scope="col" class="text-xs text-uppercase text-neutral-600 fw-semibold">
+                                        {{ __('entities.dashboard.product') }}
+                                    </th>
+                                    <th scope="col"
+                                        class="text-xs text-uppercase text-neutral-600 fw-semibold text-end">
+                                        {{ __('entities.dashboard.quantity') }}
+                                    </th>
+                                    <th scope="col"
+                                        class="text-xs text-uppercase text-neutral-600 fw-semibold text-end">
+                                        {{ __('entities.dashboard.amount') }}
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($todaysSales as $sale)
+                                    <tr>
+                                        <td class="align-middle">
+                                            <div class="avatar avatar-xs me-2">
+                                                @if ($sale->product->image && file_exists(public_path('assets/images/products/' . $sale->product->image)))
+                                                    <img src="{{ asset('assets/images/products/' . $sale->product->image) }}"
+                                                        alt="{{ $sale->product->name }}"
+                                                        class="avatar-img rounded-circle">
+                                                @else
+                                                    <i class="ri-package-2-line text-muted"></i>
+                                                @endif
+                                            </div>
+                                        </td>
+                                        <td class="align-middle fw-medium">
+                                            <a href="{{ route('products.show', ['product' => $sale->product->id]) }}"
+                                                class="text-neutral-900 hover-text-primary">
+                                                {{ $sale->product->name }}
+                                            </a>
+                                            @if($sale->product->business_name)
+                                                <br>
+                                                <small class="text-neutral-500">{{ $sale->product->business_name }}</small>
+                                            @endif
+                                        </td>
+                                        <td class="align-middle text-end fw-medium">
+                                            {{ number_format($sale->line_total, 2) }} AED
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="4" class="text-center text-neutral-500 py-4">
+
+                                            <i class="streamline-freehand:shopping-bag-sad" style="font-size: 2rem;"></i>
+                                            &nbsp;
+                                            {{ __('entities.dashboard.no_sales_today') }}
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!-- End Today's Sales -->
         </div>
+        <!-- End Tier 5: Today's Protocol & Sales -->
     </div>
+    <!-- End Main Container -->
 @endsection

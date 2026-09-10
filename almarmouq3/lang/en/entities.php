@@ -49,6 +49,15 @@ return [
         'opportunities' => 'Opportunities',
         'no_recent_documents' => 'No recent documents uploaded.',
         'no_recent_communications' => 'No recent communication records.',
+        /*
+         * Today's Sales Section
+         */
+        'todays_sales' => "Today's Sales",
+        'avatar' => 'Avatar',
+        'product' => 'Product',
+        'quantity' => 'Quantity',
+        'amount' => 'Amount',
+        'no_sales_today' => 'No sales today.',
     ],
     'roles' => [
         'owner' => 'Owner',

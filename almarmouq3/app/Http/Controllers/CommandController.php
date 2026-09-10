@@ -23,6 +23,10 @@ class CommandController extends Controller
         $monthStart = $now->copy()->startOfMonth();
         $prevMonthStart = $now->copy()->subMonth()->startOfMonth();
         $prevMonthEnd = $now->copy()->subMonth()->endOfMonth();
+        $todaysSaleItems = SaleItem::whereHas('sale', function ($query) {
+            $query->whereDate('sold_at', today());
+        })->with('product')
+        ->get();
 
         $revenueThisMonth = (float) Sale::where('sold_at', '>=', $monthStart)
             ->sum('total_amount');
@@ -102,6 +106,7 @@ class CommandController extends Controller
         return view('modules.command.index', [
             'events' => $events,
             'userId' => auth()->id(),
+            'todaysSales' => $todaysSaleItems,
             'metrics' => [
                 'revenue' => $revenueThisMonth,
                 'pipeline' => (float) $pipeline,
@@ -149,7 +154,7 @@ class CommandController extends Controller
 
         $customers = \App\Models\Customer::where('active', true)->get(['id', 'name', 'type']);
 
-        return view('modules.command.agenda', [
+        return view('command.daily-agenda', [
             'user' => $user,
             'todayEvents' => $todayEvents,
             'upcomingEvents' => $upcomingEvents,

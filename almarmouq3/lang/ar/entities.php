@@ -48,6 +48,15 @@ return [
         'opportunities' => 'فرص',
         'no_recent_documents' => 'لم يتم رفع أي مرفقات مؤخرًا.',
         'no_recent_communications' => 'لا توجد سجلات اتصال حديثة.',
+        /*
+         * قسم مبيعات اليوم
+         */
+        'todays_sales' => 'مبيعات اليوم',
+        'avatar' => 'الصورة الرمزية',
+        'product' => 'المنتج',
+        'quantity' => 'الكمية',
+        'amount' => 'المبلغ',
+        'no_sales_today' => 'لا توجد مبيعات اليوم.',
     ],
     'roles' => [
         'owner' => 'المالك',

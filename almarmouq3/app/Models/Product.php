@@ -30,4 +30,9 @@ class Product extends Model
     {
         return $this->hasMany(ProductPriceHistory::class);
     }
+
+    public function getNameAttribute()
+    {
+        return $this->business_name . ' ' . $this->grade;
+    }
 }
