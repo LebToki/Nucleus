@@ -9,6 +9,7 @@ use App\Models\Event;
 use App\Models\Delegation;
 use App\Models\DelegationStatus;
 use App\Models\ProductLot;
+use App\Models\Customer;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -60,13 +61,10 @@ class CommandController extends Controller
             ->where('sold_at', '<', $now->subDays(3))
             ->sum('total_amount');
 
-        $pendingDeliveryCount = Sale::where('status', 'processing')
-            ->where('sold_at', '<', $now->subDays(7))
-            ->count();
-        $pendingDeliveries = Sale::where('status', 'processing')
-            ->where('sold_at', '<', $now->subDays(7))
-            ->limit(3)
-            ->get();
+        $pendingDeliveryQuery = Sale::where('status', 'processing')
+            ->where('sold_at', '<', $now->subDays(7));
+        $pendingDeliveryCount = $pendingDeliveryQuery->count();
+        $pendingDeliveries = $pendingDeliveryQuery->limit(3)->get();
 
         $newEmails = CommunicationLog::where('channel', 'email')
             ->where('direction', 'inbound')
@@ -152,7 +150,7 @@ class CommandController extends Controller
             return !$event->start_time->isToday();
         })->values();
 
-        $customers = \App\Models\Customer::where('active', true)->get(['id', 'name', 'type']);
+        $customers = Customer::where('active', true)->get(['id', 'name', 'type']);
 
         return view('modules.command.agenda', [
             'user' => $user,
@@ -199,11 +197,14 @@ class CommandController extends Controller
         $event->tags = $request->input('tags_input') ? array_filter(explode(',', $request->input('tags_input'))) : [];
         $event->save();
 
-        return redirect()->route('command.agenda')->with('success', 'Event created.');
+        return redirect()->route('command.agenda')->with('success', __('Event created.'));
     }
 
     public function updateEvent(Request $request, Event $event)
     {
+        if (!auth()->user()->is($event->user) && !auth()->user()->hasRole('owner')) {
+            abort(403);
+        }
         $event->title = $request->input('title');
         $event->title_ar = $request->input('title_ar');
         $event->start_time = Carbon::parse($request->input('start_time'));
@@ -226,13 +227,16 @@ class CommandController extends Controller
         $event->tags = $request->input('tags_input') ? array_filter(explode(',', $request->input('tags_input'))) : [];
         $event->save();
 
-        return redirect()->route('command.agenda')->with('success', 'Event updated.');
+        return redirect()->route('command.agenda')->with('success', __('Event updated.'));
     }
 
     public function destroyEvent(Event $event)
     {
+        if (!auth()->user()->is($event->user) && !auth()->user()->hasRole('owner')) {
+            abort(403);
+        }
         $event->delete();
-        return redirect()->route('command.agenda')->with('success', 'Event deleted.');
+        return redirect()->route('command.agenda')->with('success', __('Event deleted.'));
     }
 
     public function delegations()
@@ -272,11 +276,14 @@ class CommandController extends Controller
         $delegation->flag_reason = $request->input('flag_reason');
         $delegation->save();
 
-        return redirect()->route('command.delegations')->with('success', 'Delegation created.');
+        return redirect()->route('command.delegations')->with('success', __('Delegation created.'));
     }
 
     public function updateDelegation(Request $request, Delegation $delegation)
     {
+        if ($delegation->assignee_id !== auth()->id() && !auth()->user()->hasRole('owner')) {
+            abort(403);
+        }
         $delegation->task_name = $request->input('title');
         $delegation->description = $request->input('description');
         $delegation->priority = $request->input('priority', 'normal');
@@ -284,13 +291,16 @@ class CommandController extends Controller
         $delegation->flag_reason = $request->input('flag_reason');
         $delegation->save();
 
-        return redirect()->route('command.delegations')->with('success', 'Delegation updated.');
+        return redirect()->route('command.delegations')->with('success', __('Delegation updated.'));
     }
 
     public function destroyDelegation(Delegation $delegation)
     {
+        if ($delegation->assignee_id !== auth()->id() && !auth()->user()->hasRole('owner')) {
+            abort(403);
+        }
         $delegation->delete();
-        return redirect()->route('command.delegations')->with('success', 'Delegation deleted.');
+        return redirect()->route('command.delegations')->with('success', __('Delegation deleted.'));
     }
 
     public function updateDelegationStatus(Request $request, Delegation $delegation)
