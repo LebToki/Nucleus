@@ -9,14 +9,52 @@
 
 ## Status Summary
 
-| Area | Issues Found | Severity | Action |
+| Area | Issues Found | Severity | Status |
 |------|-------------|----------|--------|
-| Hardcoded strings | 6 | Medium | Replace with `__()` calls |
-| Missing validation | 4 methods | High | Add FormRequest validation |
-| Authorization gaps | 4 methods | High | Add policies/gates |
-| Duplicate queries | 1 instance | Low | Cache/shared query |
-| Magic numbers | 1 | Low | Extract to config |
-| Missing imports | 1 | Low | Add use statement |
+| Hardcoded strings | 6 | Medium | **FIXED** - Replaced with `__()` calls |
+| Missing validation | 4 methods | High | **FIXED** - FormRequest classes created |
+| Authorization gaps | 4 methods | High | **FIXED** - Added auth checks |
+| Duplicate queries | 1 instance | Low | **FIXED** - Shared query builder |
+| Magic numbers | 1 | Low | **FIXED** - Extracted to config |
+| Missing imports | 1 | Low | **FIXED** - Added Customer import |
+| N+1 queries | 0 found | - | No issues (eager loading present) |
+
+---
+
+## Completed Fixes
+
+### 1. FormRequest Validation (P1)
+Created 4 FormRequest classes in `app/Http/Requests/`:
+- `StoreEventRequest.php` - validates title, start_time, priority, status, etc.
+- `UpdateEventRequest.php` - same rules + authorization check
+- `StoreDelegationRequest.php` - validates title, priority, due_date, etc.
+- `UpdateDelegationRequest.php` - same rules + authorization check
+
+Updated `CommandController.php` to use these classes instead of `Request $request`.
+
+### 2. Authorization Checks (P1)
+Added `abort(403)` checks to:
+- `updateEvent()` - user or owner can edit
+- `destroyEvent()` - user or owner can delete
+- `updateDelegation()` - assignee or owner can update
+- `destroyDelegation()` - assignee or owner can delete
+
+### 3. Translation Files (P2)
+- `lang/en/messages.php` - English translations
+- `lang/ar/messages.php` - Arabic translations (العربية)
+
+### 4. Config Extraction (P2)
+Created `config/command.php` with:
+- `low_stock_threshold_kg` (default: 10)
+- `low_stock_lots_limit` (default: 5)
+- `pending_deliveries_limit` (default: 3)
+- `email_lookback_days` (default: 7)
+- `rfq_lookback_days` (default: 3)
+- `payment_due_days` (default: 3)
+- `delivery_due_days` (default: 7)
+- `agenda_lookahead_days` (default: 7)
+
+All env-configurable with sensible defaults.
 
 ---
 
@@ -142,18 +180,30 @@ $lowStockThreshold = config('command.low_stock_threshold', 10);
 
 ## 8. Priority Fix List
 
-| Priority | Fix | Files | Effort |
-|----------|-----|-------|--------|
-| P1 | Add authorization checks to update/destroy methods | CommandController.php | ~10 min |
-| P1 | Add request validation via FormRequest classes | 4 controllers | ~30 min |
-| P2 | Replace hardcoded strings with `__()` | CommandController.php | ~10 min |
-| P2 | Extract magic numbers to config | CommandController.php | ~10 min |
-| P3 | Fix duplicate query (count vs get) | CommandController.php | ~5 min |
-| P3 | Add missing import | CommandController.php | ~1 min |
-| P3 | Create translation files | lang/en/messages.php, lang/ar/messages.php | ~15 min |
+| Priority | Fix | Status |
+|----------|-----|--------|
+| P1 | Add authorization checks to update/destroy methods | **DONE** |
+| P1 | Add request validation via FormRequest classes | **DONE** |
+| P2 | Replace hardcoded strings with `__()` | **DONE** |
+| P2 | Extract magic numbers to config | **DONE** |
+| P3 | Fix duplicate query (count vs get) | **DONE** |
+| P3 | Add missing import | **DONE** |
+| P3 | Create translation files | **DONE** |
 
 ---
 
 ## Conclusion
 
-Phase 3 code quality audit complete. Found 6 categories of issues primarily in `CommandController.php`. No critical bugs, but authorization and validation gaps present security risks. CORTEX tool calling is functional but slow (90-110s per turn) - recommend using for post-fix validation only.
+Phase 3 code quality audit and refactoring complete. All 7 priority items are resolved.
+
+**Files changed:**
+- `app/Http/Controllers/CommandController.php` - auth checks, i18n, config extraction, query refactor
+- `app/Http/Requests/StoreEventRequest.php` - NEW
+- `app/Http/Requests/UpdateEventRequest.php` - NEW
+- `app/Http/Requests/StoreDelegationRequest.php` - NEW
+- `app/Http/Requests/UpdateDelegationRequest.php` - NEW
+- `config/command.php` - NEW
+- `lang/en/messages.php` - NEW
+- `lang/ar/messages.php` - NEW
+
+**CORTEX enhancement:** The `agent-api.py` tool call normalization was enhanced (committed to `2ti-cortex` repo). The 32B model can emit JSON tool calls but is slow (90-110s/turn). Recommend using for Phase 4+ validation only.
