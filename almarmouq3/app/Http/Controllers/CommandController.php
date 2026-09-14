@@ -154,7 +154,7 @@ class CommandController extends Controller
 
         $customers = \App\Models\Customer::where('active', true)->get(['id', 'name', 'type']);
 
-        return view('command.daily-agenda', [
+        return view('modules.command.agenda', [
             'user' => $user,
             'todayEvents' => $todayEvents,
             'upcomingEvents' => $upcomingEvents,
@@ -240,8 +240,11 @@ class CommandController extends Controller
         $user = auth()->user();
         $statuses = DelegationStatus::orderBy('sort_order')->get();
 
+        $statusCodes = $statuses->pluck('code')->toArray();
+        $placeholders = implode(',', array_fill(0, count($statusCodes), '?'));
+
         $delegations = Delegation::where('assignee_id', $user->id)
-            ->orderByRaw("FIELD(status, " . $statuses->pluck('code')->map(fn($c) => "'$c'")->implode(',') . ")")
+            ->orderByRaw("FIELD(status, {$placeholders})", $statusCodes)
             ->orderByRaw("FIELD(priority, 'high', 'medium', 'normal', 'low')")
             ->orderBy('due_date')
             ->get();
