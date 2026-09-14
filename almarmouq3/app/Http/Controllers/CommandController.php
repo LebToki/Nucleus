@@ -13,6 +13,10 @@ use App\Models\Customer;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use App\Http\Requests\StoreEventRequest;
+use App\Http\Requests\UpdateEventRequest;
+use App\Http\Requests\StoreDelegationRequest;
+use App\Http\Requests\UpdateDelegationRequest;
 
 class CommandController extends Controller
 {
@@ -42,11 +46,11 @@ class CommandController extends Controller
             })
             ->sum('total_amount');
 
-        $lowStockThreshold = 10;
+        $lowStockThreshold = config('command.dashboard.low_stock_threshold_kg', 10);
 
         $lowStockLots = ProductLot::whereRaw('quantity_kg - COALESCE((SELECT SUM(quantity_kg) FROM sale_items WHERE sale_items.product_lot_id = product_lots.id), 0) < ?', [$lowStockThreshold])
             ->with('product:id,business_name')
-            ->limit(5)
+            ->limit(config('command.dashboard.low_stock_lots_limit', 5))
             ->get();
 
         $lowStockCount = (int) ProductLot::whereRaw('quantity_kg - COALESCE((SELECT SUM(quantity_kg) FROM sale_items WHERE sale_items.product_lot_id = product_lots.id), 0) < ?', [$lowStockThreshold])
@@ -54,27 +58,27 @@ class CommandController extends Controller
 
         $overdueInvoices = CommunicationLog::where('channel', 'email')
             ->where('status', 'pending')
-            ->where('created_at', '<', $now->subDays(7))
+            ->where('created_at', '<', $now->subDays(config('command.dashboard.email_lookback_days', 7)))
             ->count();
 
         $pendingPayments = Sale::where('status', 'pending')
-            ->where('sold_at', '<', $now->subDays(3))
+            ->where('sold_at', '<', $now->subDays(config('command.dashboard.payment_due_days', 3)))
             ->sum('total_amount');
 
         $pendingDeliveryQuery = Sale::where('status', 'processing')
-            ->where('sold_at', '<', $now->subDays(7));
+            ->where('sold_at', '<', $now->subDays(config('command.dashboard.delivery_due_days', 7)));
         $pendingDeliveryCount = $pendingDeliveryQuery->count();
-        $pendingDeliveries = $pendingDeliveryQuery->limit(3)->get();
+        $pendingDeliveries = $pendingDeliveryQuery->limit(config('command.dashboard.pending_deliveries_limit', 3))->get();
 
         $newEmails = CommunicationLog::where('channel', 'email')
             ->where('direction', 'inbound')
             ->where('status', 'sent')
-            ->where('created_at', '>=', $now->subDays(7))
+            ->where('created_at', '>=', $now->subDays(config('command.dashboard.email_lookback_days', 7)))
             ->count();
 
         $incomingRFQs = CommunicationLog::where('channel', 'email')
             ->where('direction', 'inbound')
-            ->where('created_at', '>=', $now->subDays(3))
+            ->where('created_at', '>=', $now->subDays(config('command.dashboard.rfq_lookback_days', 3)))
             ->count();
 
         $trend = $revenueLastMonth > 0
@@ -134,7 +138,7 @@ class CommandController extends Controller
     {
         $user = auth()->user();
         $today = Carbon::today();
-        $weekEnd = Carbon::today()->addDays(7);
+        $weekEnd = Carbon::today()->addDays(config('command.events.agenda_lookahead_days', 7));
 
         $events = Event::where('user_id', $user->id)
             ->where('start_time', '>=', $today->startOfDay())
@@ -169,7 +173,7 @@ class CommandController extends Controller
         return response()->json($event);
     }
 
-    public function storeEvent(Request $request)
+    public function storeEvent(StoreEventRequest $request)
     {
         $user = auth()->user();
         $event = new Event();
@@ -200,7 +204,7 @@ class CommandController extends Controller
         return redirect()->route('command.agenda')->with('success', __('Event created.'));
     }
 
-    public function updateEvent(Request $request, Event $event)
+    public function updateEvent(UpdateEventRequest $request, Event $event)
     {
         if (!auth()->user()->is($event->user) && !auth()->user()->hasRole('owner')) {
             abort(403);
@@ -260,7 +264,7 @@ class CommandController extends Controller
         ]);
     }
 
-    public function storeDelegation(Request $request)
+    public function storeDelegation(StoreDelegationRequest $request)
     {
         $user = auth()->user();
         $delegation = new Delegation();
@@ -279,7 +283,7 @@ class CommandController extends Controller
         return redirect()->route('command.delegations')->with('success', __('Delegation created.'));
     }
 
-    public function updateDelegation(Request $request, Delegation $delegation)
+    public function updateDelegation(UpdateDelegationRequest $request, Delegation $delegation)
     {
         if ($delegation->assignee_id !== auth()->id() && !auth()->user()->hasRole('owner')) {
             abort(403);
