@@ -380,6 +380,13 @@ return [
         'no_data' => 'لا توجد بيانات متاحة',
         'select' => 'اختر...',
         'ok' => 'موافق',
+        'total' => 'المجموع',
+        'view_all' => 'عرض الكل',
+        'customer' => 'العميل',
+        'reference' => 'المرجع',
+        'amount' => 'المبلغ',
+        'status' => 'الحالة',
+        'date' => 'التاريخ',
     ],
     'crm' => [
         'cockpit' => [
@@ -564,6 +571,9 @@ return [
             'view_delegations' => 'عرض التفويضات',
             'action_vat_settlement' => 'اعتماد مستحقات ضريبة القيمة المضافة للربع الثالث',
             'process_payment' => 'معالجة الدفع',
+            'days_left' => 'أيام متبقية',
+            'no_outstanding_receivables' => 'لا توجد مستحقات معلقة',
+            'no_outstanding_invoices' => 'لا توجد فواتير معلقة',
         ],
         'expenses' => [
             'description' => 'حسابات المشتريات الأولية، نفقات الأتيلييه، تغليف البلور وتكاليف الشحن',
@@ -602,6 +612,12 @@ return [
                 'sanctuary' => 'مباشرة للمأوى',
                 'doorstep' => 'توصيل للباب',
                 'majlis' => 'فعاليات مجلس',
+                'purchase' => 'شراء',
+                'sales' => 'مبيعات',
+                'expense' => 'نفقة',
+                'gross_profit' => 'صافي الربح الإجمالي',
+                'revenue' => 'إيرادات',
+                'cogs' => 'التكاليف',
             ],
             'filter' => [
                 'ytd' => 'حتى الآن',
@@ -610,6 +626,7 @@ return [
             ],
             'metrics' => [
                 'gross_revenue' => 'إجمالي الإيرادات (حتى الآن)',
+                'revenue' => 'الإيرادات',
                 'total_cogs' => 'إجمالي التكاليف (العود والتقطير)',
                 'operating_expenses' => 'النفقات التشغيلية',
                 'net_profit' => 'صافي الربح السيادي',
@@ -622,6 +639,7 @@ return [
             'breakdown_title' => 'تحليل بيان الأرباح (الربع الثالث 2026)',
             'metrics' => [
                 'gross_revenue' => 'إجمالي الإيرادات (حتى الآن)',
+                'revenue' => 'الإيرادات',
                 'total_cogs' => 'إجمالي التكاليف (العود والتقطير)',
                 'operating_expenses' => 'النفقات التشغيلية',
                 'net_profit' => 'صافي الربح السيادي',

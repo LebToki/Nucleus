@@ -3,120 +3,7 @@
 @php
     $title = __('entities.financial.overview.available_cash');
     $subTitle = __('entities.financial.overview.available_cash');
-    $chartIncomeData = json_encode($metrics['chart_income'] ?? []);
-    $chartExpensesData = json_encode($metrics['chart_expenses'] ?? []);
-    $chartLabelsData = json_encode($metrics['chart_labels'] ?? ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']);
-    $donutData = json_encode($metrics['donut_data'] ?? [30, 30, 20, 20]);
-    $barRevenueData = json_encode($metrics['bar_revenue'] ?? []);
-    $barCogsData = json_encode($metrics['bar_cogs'] ?? []);
-    $barLabelsData = json_encode($metrics['bar_labels'] ?? ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']);
     $daysUntilFiling = $metrics['days_until_filing'] ?? 75;
-    $script = '<script>
-            var currencySymbol = ' . json_encode($currency->symbol ?? 'AED') . ';
-            function createChartTwo(chartId, color1, color2, incomeData, expenseData, labels) {
-                var options = {
-                    series: [{
-                        name: "Income",
-                        data: incomeData
-                    }, {
-                        name: "Expenses",
-                        data: expenseData
-                    }],
-                    legend: { show: false },
-                    chart: {
-                        type: "area", width: "100%", height: 270,
-                        toolbar: { show: false },
-                        padding: { left: 0, right: 0, top: 0, bottom: 0 }
-                    },
-                    dataLabels: { enabled: false },
-                    stroke: { curve: "smooth", width: 3, colors: [color1, color2], lineCap: "round" },
-                    grid: {
-                        show: true, borderColor: "#D1D5DB", strokeDashArray: 1, position: "back",
-                        xaxis: { lines: { show: false } },
-                        yaxis: { lines: { show: true } },
-                        row: { colors: undefined, opacity: 0.5 },
-                        column: { colors: undefined, opacity: 0.5 },
-                        padding: { top: -20, right: 0, bottom: -10, left: 0 },
-                    },
-                    fill: {
-                        type: "gradient",
-                        gradient: {
-                            shade: "light", type: "vertical", shadeIntensity: 0.5,
-                            gradientToColors: [undefined, color2 + "00"],
-                            inverseColors: false,
-                            opacityFrom: [0.4, 0.6], opacityTo: [0.3, 0.3],
-                            stops: [0, 100],
-                        },
-                    },
-                    markers: {
-                        colors: [color1, color2], strokeWidth: 3, size: 0,
-                        hover: { size: 10 }
-                    },
-                    xaxis: {
-                        labels: { show: false },
-                        categories: labels,
-                        tooltip: { enabled: false },
-                        labels: {
-                            formatter: function(value) { return value; },
-                            style: { fontSize: "14px" }
-                        }
-                    },
-                    yaxis: {
-                        labels: {
-                            formatter: function(value) { return currencySymbol + " " + value.toFixed(2) + "k"; },
-                            style: { fontSize: "14px" }
-                        }
-                    },
-                    tooltip: { x: { format: "dd/MM/yy HH:mm" } }
-                };
-                var chart = new ApexCharts(document.querySelector("#" + chartId), options);
-                chart.render();
-            }
-
-            var chartIncome = ' . $chartIncomeData . ';
-            var chartExpenses = ' . $chartExpensesData . ';
-            var chartLabels = ' . $chartLabelsData . ';
-            createChartTwo("incomeExpense", "#487FFF", "#FF9F29", chartIncome, chartExpenses, chartLabels);
-
-            var donutOptions = {
-                series: ' . $donutData . ',
-                colors: ["#FF9F29", "#487FFF", "#45B369", "#9935FE"],
-                labels: ["Purchase", "Sales", "Expense", "Gross Profit"],
-                legend: { show: false },
-                chart: { type: "donut", height: 270, sparkline: { enabled: true },
-                    margin: { top: 0, right: 0, bottom: 0, left: 0 },
-                    padding: { top: 0, right: 0, bottom: 0, left: 0 } },
-                stroke: { width: 0 },
-                dataLabels: { enabled: true },
-                responsive: [{ breakpoint: 480, options: { chart: { width: 200 }, legend: { position: "bottom" } } }]
-            };
-            var donutChart = new ApexCharts(document.querySelector("#userOverviewDonutChart"), donutOptions);
-            donutChart.render();
-
-            var barRevenue = ' . $barRevenueData . ';
-            var barCogs = ' . $barCogsData . ';
-            var barLabels = ' . $barLabelsData . ';
-            var barOptions = {
-                series: [{
-                    name: "Revenue", data: barRevenue
-                }, {
-                    name: "COGS", data: barCogs
-                }],
-                colors: ["#45B369", "#FF9F29"],
-                labels: barLabels,
-                legend: { show: false },
-                chart: { type: "bar", height: 260, toolbar: { show: false } },
-                grid: { show: true, borderColor: "#D1D5DB", strokeDashArray: 4, position: "back" },
-                plotOptions: { bar: { borderRadius: 4, columnWidth: 8 } },
-                dataLabels: { enabled: false },
-                states: { hover: { filter: { type: "none" } } },
-                stroke: { show: true, width: 0, colors: ["transparent"] },
-                xaxis: { categories: barLabels },
-                fill: { opacity: 1, width: 18 }
-            };
-            var barChart = new ApexCharts(document.querySelector("#purchaseSaleChart"), barOptions);
-            barChart.render();
-            </script>';
 @endphp
 
 @section('content')
@@ -212,7 +99,7 @@
                         <li class="d-flex flex-column gap-1">
                             <div class="d-flex align-items-center gap-2">
                                 <span class="w-8-px h-8-px rounded-pill bg-primary-600"></span>
-                                <span class="text-secondary-light text-sm fw-semibold">{{ __('Revenue') }} </span>
+                                <span class="text-secondary-light text-sm fw-semibold">{{ __('entities.financial.pnl.metrics.revenue') }} </span>
                             </div>
                             <div class="d-flex align-items-center gap-8">
                                 <h6 class="mb-0">{{ $currency->symbol }} <small class="fw-semibold">{{ number_format($metrics['mtd_revenue'], 0, '.', ',') }}</small></h6>
@@ -268,7 +155,7 @@
                     <div class="d-flex align-items-center flex-wrap gap-2 justify-content-between">
                         <h6 class="mb-2 fw-bold text-lg mb-0">{{ __('entities.financial.overview.ar_aging') }}</h6>
                         <a href="{{ route('financial.pnl') }}" class="text-primary-600 hover-text-primary d-flex align-items-center gap-1">
-                            {{ __('View all') }}
+                            {{ __('entities.shared.view_all') }}
                             <iconify-icon icon="solar:alt-arrow-right-linear" class="icon"></iconify-icon>
                         </a>
                     </div>
@@ -290,10 +177,10 @@
                             <table class="table basic-table mb-0">
                                 <thead>
                                     <tr>
-                                        <th scope="col">{{ __('Customer') }}</th>
-                                        <th scope="col">{{ __('Reference') }}</th>
-                                        <th scope="col">{{ __('Amount') }}</th>
-                                        <th scope="col">{{ __('Status') }}</th>
+                                        <th scope="col">{{ __('entities.shared.customer') }}</th>
+                                        <th scope="col">{{ __('entities.shared.reference') }}</th>
+                                        <th scope="col">{{ __('entities.shared.amount') }}</th>
+                                        <th scope="col">{{ __('entities.shared.status') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -317,7 +204,7 @@
                             </table>
                         </div>
                         @else
-                            <p class="text-sm text-secondary-light mt-3">{{ __('No outstanding receivables') }}</p>
+                            <p class="text-sm text-secondary-light mt-3">{{ __('entities.financial.overview.no_outstanding_receivables') }}</p>
                         @endif
                     </div>
                 </div>
@@ -330,13 +217,13 @@
                     <div class="d-flex align-items-center flex-wrap gap-2 justify-content-between">
                         <h6 class="mb-2 fw-bold text-lg mb-0">{{ __('entities.financial.overview.upcoming_outflows_title') }}</h6>
                         <a href="{{ route('financial.expenses') }}" class="text-primary-600 hover-text-primary d-flex align-items-center gap-1">
-                            {{ __('View all') }}
+                            {{ __('entities.shared.view_all') }}
                             <iconify-icon icon="solar:alt-arrow-right-linear" class="icon"></iconify-icon>
                         </a>
                     </div>
                     <ul class="d-flex flex-column gap-2 mt-3">
                         <li class="d-flex align-items-center justify-content-between">
-                            <span class="text-secondary-light text-sm fw-semibold">{{ __('Total') }}</span>
+                            <span class="text-secondary-light text-sm fw-semibold">{{ __('entities.shared.total') }}</span>
                             <span class="fw-semibold">{{ $currency->symbol }} <small>{{ number_format($metrics['upcoming_outflows_total'], 0, '.', ',') }}</small></span>
                         </li>
                         <li class="d-flex align-items-center justify-content-between">
@@ -351,7 +238,7 @@
                                 <tr>
                                     <th scope="col">{{ __('entities.financial.expenses.headers.voucher') }}</th>
                                     <th scope="col">{{ __('entities.financial.overview.due_date') }}</th>
-                                    <th scope="col">{{ __('Amount') }}</th>
+                                    <th scope="col">{{ __('entities.shared.amount') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -405,7 +292,7 @@
                     <div class="d-flex align-items-center flex-wrap gap-2 justify-content-between">
                         <h6 class="mb-2 fw-bold text-lg mb-0">{{ __('entities.financial.pnl.breakdown_title') }}</h6>
                         <a href="{{ route('financial.tax') }}" class="text-primary-600 hover-text-primary d-flex align-items-center gap-1">
-                            {{ __('View all') }}
+                            {{ __('entities.shared.view_all') }}
                             <iconify-icon icon="solar:alt-arrow-right-linear" class="icon"></iconify-icon>
                         </a>
                     </div>
@@ -415,11 +302,11 @@
                         <table class="table basic-table mb-0">
                             <thead>
                                 <tr>
-                                    <th scope="col">{{ __('Customer') }}</th>
+                                    <th scope="col">{{ __('entities.shared.customer') }}</th>
                                     <th scope="col">{{ __('entities.financial.pnl.headers.category') }}</th>
-                                    <th scope="col">{{ __('Date') }}</th>
-                                    <th scope="col" class="text-end">{{ __('Amount') }}</th>
-                                    <th scope="col">{{ __('Status') }}</th>
+                                    <th scope="col">{{ __('entities.shared.date') }}</th>
+                                    <th scope="col" class="text-end">{{ __('entities.shared.amount') }}</th>
+                                    <th scope="col">{{ __('entities.shared.status') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -445,7 +332,7 @@
                         </table>
                     </div>
                     @else
-                        <p class="text-sm text-secondary-light mt-3">{{ __('No outstanding invoices') }}</p>
+                        <p class="text-sm text-secondary-light mt-3">{{ __('entities.financial.overview.no_outstanding_invoices') }}</p>
                     @endif
                 </div>
             </div>
@@ -456,7 +343,7 @@
         <div class="card h-100">
             <div class="card-body p-24">
                 <div class="d-flex align-items-center flex-wrap gap-2 justify-content-between">
-                    <h6 class="mb-2 fw-bold text-lg mb-0">{{ __('Entities.financial.overview.vat_collected_vs_paid') }}</h6>
+                        <h6 class="mb-2 fw-bold text-lg mb-0">{{ __('entities.financial.overview.vat_collected_vs_paid') }}</h6>
                 </div>
                 <div class="d-flex align-items-center gap-3 flex-wrap mt-3">
                     <div class="col-xxl-6 col-md-6">
@@ -502,14 +389,14 @@
 
 @push('scripts')
 <script>
-            var currencySymbol = @json($currency->symbol ?? 'AED');
-            var chartIncome = {!! json_encode($metrics['chart_income'] ?? []) !!};
-            var chartExpenses = {!! json_encode($metrics['chart_expenses'] ?? []) !!};
-            var chartLabels = {!! json_encode($metrics['chart_labels'] ?? ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']) !!};
-            var donutData = {!! json_encode($metrics['donut_data'] ?? [30, 30, 20, 20]) !!};
-            var barRevenue = {!! json_encode($metrics['bar_revenue'] ?? []) !!};
-            var barCogs = {!! json_encode($metrics['bar_cogs'] ?? []) !!};
-            var barLabels = {!! json_encode($metrics['bar_labels'] ?? ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']) !!};
+    var currencySymbol = @json($currency->symbol ?? 'AED');
+    var chartIncome = {!! json_encode($metrics['chart_income'] ?? []) !!};
+    var chartExpenses = {!! json_encode($metrics['chart_expenses'] ?? []) !!};
+    var chartLabels = {!! json_encode($metrics['chart_labels'] ?? ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']) !!};
+    var donutData = {!! json_encode($metrics['donut_data'] ?? [30, 30, 20, 20]) !!};
+    var barRevenue = {!! json_encode($metrics['bar_revenue'] ?? []) !!};
+    var barCogs = {!! json_encode($metrics['bar_cogs'] ?? []) !!};
+    var barLabels = {!! json_encode($metrics['bar_labels'] ?? ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']) !!};
 
             function createChartTwo(chartId, color1, color2, incomeData, expenseData, labels) {
                 var options = {
@@ -575,7 +462,7 @@
             var donutOptions = {
                 series: donutData,
                 colors: ["#FF9F29", "#487FFF", "#45B369", "#9935FE"],
-                labels: ["Purchase", "Sales", "Expense", "Gross Profit"],
+                __labels__ __('entities.financial.pnl.segments.purchase') }}", "{{ __('entities.financial.pnl.segments.sales') }}", "{{ __('entities.financial.pnl.segments.expense') }}", "{{ __('entities.financial.pnl.segments.gross_profit') }}"],
                 legend: { show: false },
                 chart: { type: "donut", height: 270, sparkline: { enabled: true },
                     margin: { top: 0, right: 0, bottom: 0, left: 0 },
@@ -589,9 +476,9 @@
 
             var barOptions = {
                 series: [{
-                    name: "Revenue", data: barRevenue
+                    name: "{{ __('entities.financial.pnl.segments.revenue') }}", data: barRevenue
                 }, {
-                    name: "COGS", data: barCogs
+                    name: "{{ __('entities.financial.pnl.segments.cogs') }}", data: barCogs
                 }],
                 colors: ["#45B369", "#FF9F29"],
                 labels: barLabels,
