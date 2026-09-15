@@ -35,7 +35,8 @@
                         <span class="icon top-50 translate-middle-y">
                             <iconify-icon icon="mage:email"></iconify-icon>
                         </span>
-                        <input type="email" class="form-control h-56-px bg-neutral-50 radius-12" placeholder="Email">
+                        <input type="email" class="form-control h-56-px bg-neutral-50 radius-12" placeholder="Email"
+                            required autocomplete="email">
                     </div>
                     <div class="mb-20">
                         <div class="position-relative ">
@@ -44,7 +45,8 @@
                                     <iconify-icon icon="solar:lock-password-outline"></iconify-icon>
                                 </span>
                                 <input type="password" class="form-control h-56-px bg-neutral-50 radius-12"
-                                    id="your-password" placeholder="Password">
+                                    id="your-password" placeholder="Password"
+                                    required autocomplete="new-password">
                             </div>
                             <span
                                 class="toggle-password ri-eye-line cursor-pointer position-absolute end-0 top-50 translate-middle-y me-16 text-secondary-light"

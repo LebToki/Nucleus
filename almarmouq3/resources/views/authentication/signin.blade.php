@@ -25,7 +25,7 @@
                 @if (session('status'))
                     <div class="alert alert-success mb-20">{{ session('status') }}</div>
                 @endif
-                <form action="{{ route('login') }}" method="POST">
+                <form action="{{ route('login.post') }}" method="POST">
                     @csrf
                     <div class="icon-field mb-16">
                         <span class="icon top-50 translate-middle-y">
@@ -33,7 +33,7 @@
                         </span>
                         <input type="text" name="login" value="{{ old('login') }}"
                             class="form-control h-56-px bg-neutral-50 radius-12" placeholder="Email or username"
-                            required autofocus>
+                            required autocomplete="username" autofocus>
                     </div>
                     <div class="position-relative mb-20">
                         <div class="icon-field">
@@ -41,7 +41,7 @@
                                 <iconify-icon icon="solar:lock-password-outline"></iconify-icon>
                             </span>
                             <input type="password" name="password" class="form-control h-56-px bg-neutral-50 radius-12"
-                                id="your-password" placeholder="Password" required>
+                                id="your-password" placeholder="Password" required autocomplete="current-password">
                         </div>
                         <span
                             class="toggle-password ri-eye-line cursor-pointer position-absolute end-0 top-50 translate-middle-y me-16 text-secondary-light"
