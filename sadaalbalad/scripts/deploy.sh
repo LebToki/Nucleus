@@ -79,12 +79,14 @@ rsync -avz -e ssh --delete $EXTRA_FLAGS \
     --exclude=".phpunit.result.cache" \
     --exclude=".phpunit.cache/" \
     --exclude=".phpactor.json" \
-    --exclude=".codex/" \
+        --exclude=".codex/" \
     --exclude=".cursor/" \
     --exclude=".idea/" \
-    --exclude=".nova/" \
     --exclude=".vscode/" \
     --exclude=".zed/" \
+    --exclude=".kilo/" \
+    --exclude=".claude/" \
+    --exclude=".agents/" \
     --exclude="__pycache__/" \
     --exclude="*.pyc" \
     --exclude="*.log" \
