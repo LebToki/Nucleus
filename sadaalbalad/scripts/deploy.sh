@@ -21,9 +21,12 @@
 set -euo pipefail
 
 # --- Configuration (override with env vars) ----------------------------------
-REMOTE_HOST="${DEPLOY_HOST:-fr-int-web1582}"
+# The 2tinteractive host alias is defined in ~/.ssh/config with the correct
+# hostname (92.113.24.9), port (65002), and key (~/.ssh/2tinteractive_ed25519).
+# Using the alias means rsync inherits all those SSH settings automatically.
+REMOTE_HOST="${DEPLOY_HOST:-2tinteractive}"
 REMOTE_USER="${DEPLOY_USER:-u562928360}"
-REMOTE_PATH="${DEPLOY_PATH:-/home/u562928360/public_html/demo/sadaalbalad}"
+REMOTE_PATH="${DEPLOY_PATH:-/home/u562928360/domains/2tinteractive.com/public_html/demo/sadaalbalad}"
 EXTRA_FLAGS="${DEPLOY_EXTRA:-}"
 
 # --- Show config and exit ----------------------------------------------------
@@ -65,7 +68,7 @@ echo "   → $REMOTE_USER@$REMOTE_HOST:$REMOTE_PATH"
 #   --delete  remove files on remote that no longer exist locally
 #   --exclude  protect environment-specific files
 
-rsync -avz --delete $EXTRA_FLAGS \
+rsync -avz -e ssh --delete $EXTRA_FLAGS \
     --exclude="vendor/" \
     --exclude="node_modules/" \
     --exclude=".env" \
