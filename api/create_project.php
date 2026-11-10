@@ -111,6 +111,10 @@ if (empty($documentRoot) || !is_dir($documentRoot)) {
     exit;
 }
 
+// Resolve the document root once: it may be a symlink (/var/www/html ->
+// elsewhere), and the traversal guard below compares against realpath().
+$documentRoot = realpath($documentRoot) ?: rtrim($documentRoot, '/');
+
 // Normalize and validate the project path
 $projectPath = rtrim($documentRoot, '/') . '/' . $projectName;
 
