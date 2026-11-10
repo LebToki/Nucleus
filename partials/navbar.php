@@ -82,8 +82,18 @@ $GLOBALS['navbarAssetsImageUrl'] = $assetsImageUrl;
             <div class="d-flex flex-wrap align-items-center gap-3">
                 <!-- Theme Switcher: Light/Dark Toggle -->
                 <button type="button" data-theme-toggle="light-dark" class="w-40-px h-40-px bg-neutral-200 rounded-circle d-flex justify-content-center align-items-center" title="Toggle Light/Dark Theme" aria-label="Toggle Light/Dark Theme">
-                    <iconify-icon icon="solar:sun-bold" class="icon text-lg theme-icon-light" style="display: none;"></iconify-icon>
-                    <iconify-icon icon="solar:moon-bold" class="icon text-lg theme-icon-dark"></iconify-icon>
+                    <!-- Inline SVG: the toggle must render even when the Iconify API is unreachable -->
+                    <span class="theme-icon theme-icon-light" aria-hidden="true" style="display: none;">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                            <circle cx="12" cy="12" r="4.2"></circle>
+                            <path d="M12 2.4v2.2M12 19.4v2.2M2.4 12h2.2M19.4 12h2.2M5.2 5.2l1.6 1.6M17.2 17.2l1.6 1.6M18.8 5.2l-1.6 1.6M6.8 17.2l-1.6 1.6"></path>
+                        </svg>
+                    </span>
+                    <span class="theme-icon theme-icon-dark" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20.2 14.3A8.2 8.2 0 0 1 9.7 3.8a8.4 8.4 0 1 0 10.5 10.5z"></path>
+                        </svg>
+                    </span>
                 </button>
                 
                 <!-- Theme Switcher: Monochrome -->
