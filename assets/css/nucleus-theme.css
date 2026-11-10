@@ -178,3 +178,66 @@
 
 /* --- micro label used by page headers and stat captions ---------------- */
 .text-sm.fw-medium, .text-sm.text-secondary-light { letter-spacing: .01em; }
+
+/* --- KPI tiles: flat surfaces, neutral icon discs ----------------------
+   WowDash paints each tile with a coloured gradient and a saturated disc.
+   Orchestrator keeps the surface neutral and lets one accent carry meaning,
+   so the tiles become flat surface and the icon disc goes neutral with a gold
+   glyph. Colour then only appears where it signals state.                    */
+.card.bg-gradient-start-1,
+.card.bg-gradient-start-2,
+.card.bg-gradient-start-3,
+.card.bg-gradient-start-4,
+.card.bg-gradient-start-5,
+.card.bg-gradient-start-6,
+.card.bg-gradient-start-7 {
+  background: var(--neutral-50) !important;
+  border: 1px solid var(--border-color) !important;
+}
+.card .rounded-circle {
+  background: var(--neutral-100) !important;
+  border: 1px solid var(--border-color);
+}
+.card .rounded-circle iconify-icon { color: #c5a059; }
+
+/* --- quiet info / primary-600 buttons --------------------------------- */
+.btn-info {
+  background: var(--neutral-100);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary-light);
+}
+.btn-info:hover, .btn-info:focus, .btn-info:active {
+  background: var(--neutral-200); border-color: var(--neutral-300); color: var(--text-primary-light);
+}
+.btn-primary-600 {
+  background: rgba(197, 160, 89, .14);
+  border: 1px solid rgba(197, 160, 89, .38);
+  color: #d2b071;
+}
+.btn-primary-600:hover { background: rgba(197, 160, 89, .22); color: #ddc08c; }
+
+/* --- card headings: smaller than WowDash's 18px ----------------------- */
+.card h6 { font-size: 15px !important; letter-spacing: -.01em; }
+.card .border-top { border-color: var(--border-color) !important; }
+
+/* --- denser card body -------------------------------------------------- */
+.card .card-body { padding: 14px; }
+
+/* --- project card header: clear the absolute 3-dot menu ----------------
+   Each project card carries a menu button pinned to the card's top-left
+   (position-absolute top-0 start-0 ms-16 mt-16, 32px + 16px margin). The
+   platform label sat underneath it, so "Node.js" rendered as ".js" with the
+   button on top. Indent any sibling row that shares that corner; selector is
+   scoped to cards that actually contain the menu, so KPI tiles are untouched. */
+.card .card-body > .dropdown ~ .d-flex.align-items-center.justify-content-between {
+  padding-inline-start: 48px;
+  min-width: 0;
+}
+.card .card-body > .dropdown ~ .d-flex.align-items-center.justify-content-between > div {
+  min-width: 0;
+}
+.card .card-body > .dropdown ~ .d-flex.align-items-center.justify-content-between p {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
