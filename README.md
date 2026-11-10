@@ -6,7 +6,7 @@ A lightweight, central control panel for Linux development environments. Nucleus
 
 Born from [Laragon Dashboard](https://github.com/LebToki/Laragon-Dashboard) (v4.0.5 for Windows), Nucleus is the Linux-native evolution — purpose-built for ZorinOS, Ubuntu, and Linux Mint.
 
-[![Version](https://img.shields.io/badge/version-4.1.0-blue.svg)](https://github.com/LebToki/Nucleus)
+[![Version](https://img.shields.io/badge/version-1.4.0-blue.svg)](https://github.com/LebToki/Nucleus)
 [![PHP](https://img.shields.io/badge/PHP-8.1%2B-green.svg)](https://php.net)
 [![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3.2-purple.svg)](https://getbootstrap.com)
 [![Platform](https://img.shields.io/badge/platform-linux%20%7C%20ZorinOS%20%7C%20Ubuntu%20%7C%20Mint-orange.svg)]()

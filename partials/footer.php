@@ -11,7 +11,8 @@ $footerReleaseUrl = defined('APP_GITHUB') && strpos(APP_GITHUB, 'github.com/') !
         <div class="col-auto">
             <p class="mb-0 d-inline-flex align-items-center gap-2 flex-wrap">
                 © <?php echo date('Y'); ?> Nucleus by Tarek Tarabichi
-                <span class="badge bg-primary-600">v<?php echo htmlspecialchars((string)$footerVersion); ?></span>
+                <button type="button" class="badge bg-primary-600 border-0" data-bs-toggle="modal" data-bs-target="#changelogModal"
+                        title="Version history" aria-label="Version history">v<?php echo htmlspecialchars((string)$footerVersion); ?></button>
                 <?php if (!empty($footerLatest['latest_version'])): ?>
                     <a href="<?php echo htmlspecialchars((string)$footerReleaseUrl); ?>" target="_blank" rel="noopener"
                        class="text-secondary-light hover-text-primary d-inline-flex align-items-center gap-1"

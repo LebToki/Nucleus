@@ -46,22 +46,57 @@ if (empty(NUCLEUS_ROOT)) {
     exit;
 }
 
-// Security: Only allow files within Laragon directory
-function validatePath($path) {
+// System paths the dashboard legitimately reads: vhosts and logs live outside
+// the project root, and the Sites/Logs pages were rejected as "Invalid file
+// path" because every path had to be under NUCLEUS_ROOT.
+const SYSTEM_READ_PATHS = [
+    '/etc/apache2/sites-available',
+    '/etc/apache2/sites-enabled',
+    '/etc/apache2/conf-enabled',
+    '/etc/apache2/apache2.conf',
+    '/etc/nginx/sites-available',
+    '/etc/nginx/sites-enabled',
+    '/etc/nginx/nginx.conf',
+    '/etc/hosts',
+    '/var/log/apache2',
+    '/var/log/nginx',
+    '/var/log/php',
+    '/var/log/syslog',
+];
+
+function isSystemReadablePath($realPath) {
+    foreach (SYSTEM_READ_PATHS as $allowed) {
+        $realAllowed = realpath($allowed) ?: $allowed;
+        if ($realPath === $realAllowed || strpos($realPath, rtrim($realAllowed, '/') . '/') === 0) {
+            return true;
+        }
+    }
+    return false;
+}
+
+// Security: writes stay inside the project root; reads also allow system config
+// and log locations, which the Sites and Logs views need.
+function validatePath($path, $forWrite = false) {
     $laragonRoot = defined('NUCLEUS_ROOT') ? NUCLEUS_ROOT : '';
-    
+
+    $realPath = realpath($path);
+    if (!$realPath) {
+        return false;
+    }
+
+    if (!$forWrite && isSystemReadablePath($realPath)) {
+        return true;
+    }
+
     if (empty($laragonRoot)) {
         return false;
     }
-    
-    $realPath = realpath($path);
+
     $realLaragonRoot = realpath($laragonRoot);
-    
-    if (!$realPath || !$realLaragonRoot) {
+    if (!$realLaragonRoot) {
         return false;
     }
-    
-    // Check if file is within Laragon directory
+
     return strpos($realPath, $realLaragonRoot) === 0;
 }
 

@@ -1,4 +1,4 @@
-# Nucleus 4.1.0 — release notes (candidate)
+# Nucleus 1.4.0 — release notes (candidate)
 
 Consolidated refresh: same behaviour, a fraction of the weight, and the Linux
 path actually works.

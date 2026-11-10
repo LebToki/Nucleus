@@ -2,6 +2,35 @@
 
 All notable changes to Nucleus will be documented in this file.
 
+## [1.4.0] - 2026-11-10
+
+Consolidated refresh. Same behaviour, a fraction of the weight, and the Linux
+path works end to end.
+
+### Size
+- Page CSS **547 KB -> 115 KB** (22 KB gzip), page JS **1,172 KB -> 199 KB** (65 KB gzip). Budgets: CSS <=120 KB, JS <=200 KB.
+- Repository 133 MB -> 108 MB; `assets/` 72 MB -> 21 MB.
+
+### UI
+- WowDash demo kits removed: 36 MB of demo images, 10 MB of Remixicon/FontAwesome fonts (the views already used 521 Iconify elements), 930 KB of unloaded demo scripts, and 11 unused CSS / 8 unused JS bundles.
+- 2ti palette overlay (`assets/css/nucleus-theme.css`): navy surfaces, gold accent, dark by default. Overrides CSS variables and component surfaces only - no layout rule redefined.
+- Component skin: quiet buttons, flatter cards, dense sidebar with uppercase micro labels (Latin only), uppercase table headers, dark-mode alerts and surfaces.
+
+### Platform
+- `platform.php` declares product, platform and update repository. `includes/UpdateManager.php` is byte-identical with Laragon-Dashboard, fails closed without the adapter, and rejects a package that declares another product.
+
+### Fixes
+- **Services** - `restart` was `stop()` + 0.5 s + `start()`, and `stop()` reported failure while the unit was `deactivating`. One `systemctl restart`, state polling, and an exit-status check; actions run through a whitelisted helper.
+- **Create/delete/download** - called `validate_csrf_token()`, which does not exist, so every request fataled with HTTP 500.
+- **Project root** - `getWwwPath()` returned the dashboard's own directory when served from its own vhost; it now honours `document_root`.
+- **Symlinked web root** - `create_project` compared a raw path to `realpath()`, so creates failed whenever the web root was a symlink.
+- **Backups** - the lister split filenames on `_` and popped the last segment, producing a project/timestamp pair that never matched the real file, so deletion was impossible.
+- **Preferences** - a GET ran the save path with no CSRF; now POST-only.
+- **API status codes** - validation errors answer 400, missing resources 404.
+
+### Verified
+16 routes 200; class-coverage gate over 440 rendered classes with 0 regressions; create -> delete project cycle; service restart/stop/start with an honest failure for a missing unit; backup create -> list -> delete.
+
 ## [1.2.1] - 2026-08-09
 
 ### New: Service Hub

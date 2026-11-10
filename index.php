@@ -549,15 +549,21 @@ include __DIR__ . '/partials/layouts/layoutTop.php' ?>
         </div>
     </div> <!--/ container-fluid -->
 
-    <!-- Dynamic Changelog Accordion -->
-    <div class="container-fluid mt-24">
-        <div class="card shadow-none border radius-12 glass">
-            <div class="card-body p-24">
-                <div class="d-flex align-items-center justify-content-between mb-16">
-                    <strong><p class="fw-semibold mb-0"><?php echo t_common('version_history_changelog'); ?></p></strong>
-                    <span class="badge bg-primary-600">v<?php echo getAppVersion(); ?></span>
-                </div>
-                
+
+</div> <!--/ dashboard-main-body -->
+
+<!-- Version history: opened from the footer version badge -->
+<div class="modal fade" id="changelogModal" tabindex="-1" aria-labelledby="changelogModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="changelogModalLabel">
+                    Version history
+                    <span class="badge bg-primary-600 ms-2">v<?php echo getAppVersion(); ?></span>
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
                 <div class="accordion accordion-flush" id="changelogAccordion">
                     <?php 
                     $changelog = getChangelog();
@@ -592,14 +598,17 @@ include __DIR__ . '/partials/layouts/layoutTop.php' ?>
                         $first = false;
                     endforeach; 
                     ?>
-                </div>
-                <div class="text-center mt-16">
-                    <a href="index.php?page=changelog" class="text-primary-600 fw-medium text-sm"><?php echo t_common('view_full_changelog'); ?></a>
-                </div>
+                
+            </div>
+            <div class="modal-footer">
+                <a href="index.php?page=changelog" class="btn btn-sm btn-primary-100 text-primary-600">
+                    <?php echo t_common('view_full_changelog'); ?>
+                </a>
+                <button type="button" class="btn btn-sm btn-primary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
-</div> <!--/ dashboard-main-body -->
+</div>
 
 <!-- Project Creation Wizard Modal -->
 <div class="modal fade" id="projectWizardModal" tabindex="-1" aria-labelledby="projectWizardModalLabel" aria-hidden="true">
