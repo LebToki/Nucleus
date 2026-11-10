@@ -52,7 +52,7 @@ $nucleusPage = $_GET['page'] ?? 'dashboard';
 <link rel="shortcut icon" href="<?php echo $assetsUrl; ?>/images/favicon/favicon.ico">
     <!-- remix icon font css  -->
     <!-- BootStrap css -->
-    <link rel="stylesheet" href="<?php echo $assetsUrl; ?>/css/lib/bootstrap.min.css">
+    <link rel="stylesheet" href="<?php echo $assetsUrl; ?>/css/lib/bootstrap-subset.css">
     <!-- Apex Chart css -->
     <?php if ($nucleusPage === 'vitals'): ?><link rel="stylesheet" href="<?php echo $assetsUrl; ?>/css/lib/apexcharts.css"><?php endif; ?>
     <!-- Data Table css -->

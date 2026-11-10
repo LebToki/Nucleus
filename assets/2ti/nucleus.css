@@ -296,3 +296,12 @@ body { background: var(--bg); color: var(--text); }
   border-block-end: 1px solid var(--border);
 }
 .email-item:hover { background: var(--surface-2); }
+
+/* --- explicit size/icon utilities (were only matched as substrings before) - */
+.icon { display: inline-flex; align-items: center; justify-content: center; line-height: 1; }
+.text-sm { font-size: var(--fs-sm); }
+.text-md { font-size: var(--fs-md); }
+.text-lg { font-size: var(--fs-lg); }
+.text-xl { font-size: var(--fs-xl); }
+.dropdown-menu-sm { min-width: 10rem; }
+.dropdown-menu-lg { min-width: 20rem; }
