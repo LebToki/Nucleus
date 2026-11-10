@@ -39,8 +39,8 @@ $serverType = $isBuiltInServer ? 'PHP Built-in Server' : 'Apache/Nginx';
 
 // Check if CSS files exist
 $cssFiles = [
-    '2ti/nucleus.css' => defined('ASSETS_URL') ? ASSETS_URL . '/2ti/nucleus.css' : '/assets/2ti/nucleus.css',
-    'bootstrap-subset.css' => defined('ASSETS_URL') ? ASSETS_URL . '/css/lib/bootstrap-subset.css' : '/assets/css/lib/bootstrap.min.css',
+    'style.css' => defined('ASSETS_URL') ? ASSETS_URL . '/css/style.css' : '/assets/css/style.css',
+    'bootstrap.min.css' => defined('ASSETS_URL') ? ASSETS_URL . '/css/lib/bootstrap.min.css' : '/assets/css/lib/bootstrap.min.css',
 ];
 
 $cssStatus = [];

@@ -70,10 +70,8 @@ $csrfToken = \Nucleus\Core\Security::getCSRFToken();
     <title>Nucleus — Login</title>
     <meta name="robots" content="noindex, nofollow">
     <link rel="icon" type="image/png" href="<?php echo htmlspecialchars($assetsUrl); ?>/images/favicon/favicon-32x32.png">
-    <link rel="stylesheet" href="<?php echo htmlspecialchars($assetsUrl); ?>/css/lib/bootstrap-subset.css">
-    <link rel="stylesheet" href="<?php echo htmlspecialchars($assetsUrl); ?>/2ti/tokens.css">
-    <link rel="stylesheet" href="<?php echo htmlspecialchars($assetsUrl); ?>/2ti/theme.css">
-    <link rel="stylesheet" href="<?php echo htmlspecialchars($assetsUrl); ?>/2ti/nucleus.css">
+    <link rel="stylesheet" href="<?php echo htmlspecialchars($assetsUrl); ?>/css/lib/bootstrap.min.css">
+    <link rel="stylesheet" href="<?php echo htmlspecialchars($assetsUrl); ?>/css/style.css">
     <style>
         .login-wrapper {
             min-height: 100vh;

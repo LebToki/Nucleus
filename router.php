@@ -28,9 +28,9 @@ if ($requestPath === '/favicon.ico' || $requestPath === 'favicon.ico') {
 }
 
 // Handle common CSS path variations
-// Legacy alias: assets/styles.css now serves the 2ti Nucleus sheet
+// Redirect assets/styles.css to assets/css/style.css
 if ($requestPath === '/assets/styles.css' || $requestPath === 'assets/styles.css') {
-    $stylePath = __DIR__ . '/assets/2ti/nucleus.css';
+    $stylePath = __DIR__ . '/assets/css/style.css';
     if (file_exists($stylePath)) {
         header('Content-Type: text/css');
         readfile($stylePath);

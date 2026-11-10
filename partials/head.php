@@ -52,7 +52,7 @@ $nucleusPage = $_GET['page'] ?? 'dashboard';
 <link rel="shortcut icon" href="<?php echo $assetsUrl; ?>/images/favicon/favicon.ico">
     <!-- remix icon font css  -->
     <!-- BootStrap css -->
-    <link rel="stylesheet" href="<?php echo $assetsUrl; ?>/css/lib/bootstrap-subset.css">
+    <link rel="stylesheet" href="<?php echo $assetsUrl; ?>/css/lib/bootstrap.min.css">
     <!-- Apex Chart css -->
     <?php if ($nucleusPage === 'vitals'): ?><link rel="stylesheet" href="<?php echo $assetsUrl; ?>/css/lib/apexcharts.css"><?php endif; ?>
     <!-- Data Table css -->
@@ -72,8 +72,5 @@ $nucleusPage = $_GET['page'] ?? 'dashboard';
     <!-- Monochrome Mode css -->
     <link rel="stylesheet" href="<?php echo $assetsUrl; ?>/css/lib/monochrome-mode.css">
     <!-- main css -->
-    <!-- 2ti-theme: tokens -> components -> Nucleus shell/bridge -->
-    <link rel="stylesheet" href="<?php echo $assetsUrl; ?>/2ti/tokens.css">
-    <link rel="stylesheet" href="<?php echo $assetsUrl; ?>/2ti/theme.css">
-    <link rel="stylesheet" href="<?php echo $assetsUrl; ?>/2ti/nucleus.css">
+    <link rel="stylesheet" href="<?php echo $assetsUrl; ?>/css/style.css">
 </head>
