@@ -10,6 +10,7 @@ if (!defined('ASSETS_URL')) {
 
 // Ensure ASSETS_URL is always absolute (starts with /)
 if (substr($assetsUrl, 0, 1) !== '/') {
+$nucleusPage = $_GET['page'] ?? 'dashboard';
     $assetsUrl = '/' . $assetsUrl;
 }
 ?>
@@ -53,7 +54,7 @@ if (substr($assetsUrl, 0, 1) !== '/') {
     <!-- BootStrap css -->
     <link rel="stylesheet" href="<?php echo $assetsUrl; ?>/css/lib/bootstrap.min.css">
     <!-- Apex Chart css -->
-    <link rel="stylesheet" href="<?php echo $assetsUrl; ?>/css/lib/apexcharts.css">
+    <?php if ($nucleusPage === 'vitals'): ?><link rel="stylesheet" href="<?php echo $assetsUrl; ?>/css/lib/apexcharts.css"><?php endif; ?>
     <!-- Data Table css -->
     <!-- Text Editor css -->
     <link rel="stylesheet" href="<?php echo $assetsUrl; ?>/css/lib/editor.atom-one-dark.min.css">
@@ -64,8 +65,8 @@ if (substr($assetsUrl, 0, 1) !== '/') {
     <!-- Slick Slider css -->
     <!-- prism css -->
     <!-- CodeMirror css -->
-    <link rel="stylesheet" href="<?php echo $assetsUrl; ?>/css/lib/codemirror.min.css">
-    <link rel="stylesheet" href="<?php echo $assetsUrl; ?>/css/lib/theme/monokai.min.css">
+    <?php if ($nucleusPage === 'logs'): ?><link rel="stylesheet" href="<?php echo $assetsUrl; ?>/css/lib/codemirror.min.css"><?php endif; ?>
+    <?php if ($nucleusPage === 'logs'): ?><link rel="stylesheet" href="<?php echo $assetsUrl; ?>/css/lib/theme/monokai.min.css"><?php endif; ?>
     <!-- file upload css -->
 
     <!-- Monochrome Mode css -->

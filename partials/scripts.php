@@ -1,6 +1,7 @@
 <?php
 // Use root assets directory (same as head.php) - ensure absolute path
 $assetsUrl = defined('ASSETS_URL') ? ASSETS_URL : '/assets';
+$nucleusPage = $_GET['page'] ?? 'dashboard';
 // Ensure ASSETS_URL is always absolute (starts with /)
 if (substr($assetsUrl, 0, 1) !== '/') {
     $assetsUrl = '/' . $assetsUrl;
@@ -11,23 +12,22 @@ if (substr($assetsUrl, 0, 1) !== '/') {
     <!-- Bootstrap js -->
     <script src="<?php echo $assetsUrl; ?>/js/lib/bootstrap.bundle.min.js"></script>
     <!-- Apex Chart js -->
-    <script src="<?php echo $assetsUrl; ?>/js/lib/apexcharts.min.js"></script>
+    <?php if ($nucleusPage === 'vitals'): ?><script src="<?php echo $assetsUrl; ?>/js/lib/apexcharts.min.js"></script><?php endif; ?>
     <!-- Data Table js -->
     <!-- Iconify Font js -->
     <script src="<?php echo $assetsUrl; ?>/js/lib/iconify-icon.min.js"></script>
     <!-- jQuery UI js -->
-    <script src="<?php echo $assetsUrl; ?>/js/lib/jquery-ui.min.js"></script>
     <!-- Vector Map js -->
     <!-- Popup js -->
     <!-- Slick Slider js -->
     <!-- prism js -->
     <!-- CodeMirror js -->
-    <script src="<?php echo $assetsUrl; ?>/js/lib/codemirror.min.js"></script>
-    <script src="<?php echo $assetsUrl; ?>/js/lib/mode/apache/apache.min.js"></script>
-    <script src="<?php echo $assetsUrl; ?>/js/lib/mode/php/php.min.js"></script>
-    <script src="<?php echo $assetsUrl; ?>/js/lib/mode/sql/sql.min.js"></script>
-    <script src="<?php echo $assetsUrl; ?>/js/lib/mode/ini/ini.min.js"></script>
-    <script src="<?php echo $assetsUrl; ?>/js/lib/mode/shell/shell.min.js"></script>
+    <?php if ($nucleusPage === 'logs'): ?><script src="<?php echo $assetsUrl; ?>/js/lib/codemirror.min.js"></script><?php endif; ?>
+    <?php if ($nucleusPage === 'logs'): ?><script src="<?php echo $assetsUrl; ?>/js/lib/mode/apache/apache.min.js"></script><?php endif; ?>
+    <?php if ($nucleusPage === 'logs'): ?><script src="<?php echo $assetsUrl; ?>/js/lib/mode/php/php.min.js"></script><?php endif; ?>
+    <?php if ($nucleusPage === 'logs'): ?><script src="<?php echo $assetsUrl; ?>/js/lib/mode/sql/sql.min.js"></script><?php endif; ?>
+    <?php if ($nucleusPage === 'logs'): ?><script src="<?php echo $assetsUrl; ?>/js/lib/mode/ini/ini.min.js"></script><?php endif; ?>
+    <?php if ($nucleusPage === 'logs'): ?><script src="<?php echo $assetsUrl; ?>/js/lib/mode/shell/shell.min.js"></script><?php endif; ?>
     <!-- file upload js -->
     <!-- audioplayer -->
 
