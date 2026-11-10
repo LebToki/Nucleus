@@ -114,3 +114,14 @@ www-data ALL=(root) NOPASSWD: /usr/local/bin/nucleus-service
 polls `is-active` until the unit settles. Checking the exit status matters: the
 previous implementation treated "unit is still active" as success, so a restart
 that sudo had refused was reported as successful.
+
+## Force HTTPS
+
+The wildcard certificate covers `nucleus-2.local`, but nothing upgraded plain
+HTTP. The port-80 vhost now redirects, keeping `.well-known` reachable:
+
+```apache
+RedirectMatch permanent ^/(?!\.well-known/)(.*)$ https://nucleus-2.local/$1
+```
+
+Verified: `http://nucleus-2.local/` → `301` → `https://nucleus-2.local/` → `200`.
