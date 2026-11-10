@@ -2,6 +2,12 @@
 
 All notable changes to Nucleus will be documented in this file.
 
+## [1.4.1] - 2026-11-10
+
+- README: upstream header banner and dashboard screenshot restored after the
+  branch refresh; version badge updated.
+- Version aligned at 1.4.1 (README badge had moved ahead of `VERSION`).
+
 ## [1.4.0] - 2026-11-10
 
 Consolidated refresh. Same behaviour, a fraction of the weight, and the Linux
