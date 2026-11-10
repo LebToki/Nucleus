@@ -39,14 +39,32 @@ class Services {
     }
 
     /**
+     * Wait for a unit to settle into one of the expected states.
+     *
+     * systemctl returns before the unit finishes transitioning, so a single
+     * is-active check right after start/stop reports a false failure (the unit
+     * is still "activating"/"deactivating"). Poll briefly instead.
+     */
+    private static function waitForState(string $quotedName, array $states, int $timeoutMs = 5000): bool {
+        $deadline = microtime(true) + ($timeoutMs / 1000);
+        do {
+            $status = @shell_exec('systemctl is-active ' . $quotedName . ' 2>&1');
+            if ($status !== null && in_array(trim($status), $states, true)) {
+                return true;
+            }
+            usleep(150000);
+        } while (microtime(true) < $deadline);
+
+        return false;
+    }
+
+    /**
      * Start a service
      */
     public static function start(string $name): bool {
         $realName = escapeshellarg(self::getRealName($name));
-        $output = @shell_exec('sudo systemctl start ' . $realName . ' 2>&1');
-        // systemctl start returns empty on success; verify the service is now active
-        $status = @shell_exec('systemctl is-active ' . $realName . ' 2>&1');
-        return $status && trim($status) === 'active';
+        @shell_exec('sudo systemctl start ' . $realName . ' 2>&1');
+        return self::waitForState($realName, ['active']);
     }
 
     /**
@@ -54,10 +72,37 @@ class Services {
      */
     public static function stop(string $name): bool {
         $realName = escapeshellarg(self::getRealName($name));
-        $output = @shell_exec('sudo systemctl stop ' . $realName . ' 2>&1');
-        // systemctl stop returns empty on success; verify the service is now inactive
-        $status = @shell_exec('systemctl is-active ' . $realName . ' 2>&1');
-        return $status && (trim($status) === 'inactive' || trim($status) === 'failed');
+        @shell_exec('sudo systemctl stop ' . $realName . ' 2>&1');
+        return self::waitForState($realName, ['inactive', 'failed']);
+    }
+
+    /**
+     * Restart a service.
+     *
+     * This is a real `systemctl restart`, not stop-then-start: stop+start drops
+     * the listening socket and races the unit back up, which is why restarts
+     * from the dashboard appeared to fail.
+     */
+    public static function restart(string $name): bool {
+        $realName = escapeshellarg(self::getRealName($name));
+        @shell_exec('sudo systemctl restart ' . $realName . ' 2>&1');
+        return self::waitForState($realName, ['active']);
+    }
+
+    /**
+     * Reload a service's configuration without dropping connections.
+     * Returns false when the unit does not support reload.
+     */
+    public static function reload(string $name): bool {
+        $realName = escapeshellarg(self::getRealName($name));
+        // A reload issued while the unit is still settling after a restart fails
+        // transiently, so wait for it to be active first (returns immediately
+        // when it already is).
+        self::waitForState($realName, ['active'], 3000);
+        $output = [];
+        $code = 0;
+        @exec('sudo systemctl reload ' . $realName . ' 2>&1', $output, $code);
+        return $code === 0;
     }
 
     /**

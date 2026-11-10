@@ -282,11 +282,11 @@ try {
                 throw new Exception('Service name required');
             }
 
-            // Restart = stop + start with a brief delay
-            $stopped = \Nucleus\Core\Services::stop($serviceName);
-            usleep(500000); // 0.5s pause
-            $started = \Nucleus\Core\Services::start($serviceName);
-            $result = $stopped && $started;
+            // Real restart: one `systemctl restart`, verified by polling.
+            // The old stop+start dropped the listening socket and raced the
+            // unit back up, which reported false failures for services that
+            // had in fact restarted.
+            $result = \Nucleus\Core\Services::restart($serviceName);
 
             if ($result) {
                 \Nucleus\Core\Cache::delete('service_status');
