@@ -86,3 +86,7 @@ desktop.ini
 # --- Windows artifacts (should not exist on Linux, but just in case) ---
 C:/
 [D-Z]:/
+
+# Generated outside the app (see UI-2 notes); never commit a 6MB icon dump
+assets/favicon.svg
+assets/images/favicon.svg
