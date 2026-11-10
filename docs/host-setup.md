@@ -125,3 +125,17 @@ RedirectMatch permanent ^/(?!\.well-known/)(.*)$ https://nucleus-2.local/$1
 ```
 
 Verified: `http://nucleus-2.local/` → `301` → `https://nucleus-2.local/` → `200`.
+
+## Backup storage
+
+Backups are written to `uploaded/backups/` by the web process. The directory is
+created by www-data, so set the group and setgid bit once, otherwise the owner
+cannot delete or clear old archives from the shell:
+
+```bash
+sudo chgrp -R zorin uploaded
+sudo chmod -R g+ws uploaded
+```
+
+Both www-data (member of `zorin`) and the developer can then manage archives.
+`uploaded/` is in `.gitignore` — never commit runtime backups.
