@@ -13,20 +13,14 @@ if (substr($assetsUrl, 0, 1) !== '/') {
     <!-- Apex Chart js -->
     <script src="<?php echo $assetsUrl; ?>/js/lib/apexcharts.min.js"></script>
     <!-- Data Table js -->
-    <script src="<?php echo $assetsUrl; ?>/js/lib/dataTables.min.js"></script>
     <!-- Iconify Font js -->
     <script src="<?php echo $assetsUrl; ?>/js/lib/iconify-icon.min.js"></script>
     <!-- jQuery UI js -->
     <script src="<?php echo $assetsUrl; ?>/js/lib/jquery-ui.min.js"></script>
     <!-- Vector Map js -->
-    <script src="<?php echo $assetsUrl; ?>/js/lib/jquery-jvectormap-2.0.5.min.js"></script>
-    <script src="<?php echo $assetsUrl; ?>/js/lib/jquery-jvectormap-world-mill-en.js"></script>
     <!-- Popup js -->
-    <script src="<?php echo $assetsUrl; ?>/js/lib/magnifc-popup.min.js"></script>
     <!-- Slick Slider js -->
-    <script src="<?php echo $assetsUrl; ?>/js/lib/slick.min.js"></script>
     <!-- prism js -->
-    <script src="<?php echo $assetsUrl; ?>/js/lib/prism.js"></script>
     <!-- CodeMirror js -->
     <script src="<?php echo $assetsUrl; ?>/js/lib/codemirror.min.js"></script>
     <script src="<?php echo $assetsUrl; ?>/js/lib/mode/apache/apache.min.js"></script>
@@ -35,9 +29,7 @@ if (substr($assetsUrl, 0, 1) !== '/') {
     <script src="<?php echo $assetsUrl; ?>/js/lib/mode/ini/ini.min.js"></script>
     <script src="<?php echo $assetsUrl; ?>/js/lib/mode/shell/shell.min.js"></script>
     <!-- file upload js -->
-    <script src="<?php echo $assetsUrl; ?>/js/lib/file-upload.js"></script>
     <!-- audioplayer -->
-    <script src="<?php echo $assetsUrl; ?>/js/lib/audioplayer.js"></script>
 
     <!-- main js -->
     <script src="<?php echo $assetsUrl; ?>/js/app.js"></script>

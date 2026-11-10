@@ -55,30 +55,19 @@ if (substr($assetsUrl, 0, 1) !== '/') {
     <!-- Apex Chart css -->
     <link rel="stylesheet" href="<?php echo $assetsUrl; ?>/css/lib/apexcharts.css">
     <!-- Data Table css -->
-    <link rel="stylesheet" href="<?php echo $assetsUrl; ?>/css/lib/dataTables.min.css">
     <!-- Text Editor css -->
-    <link rel="stylesheet" href="<?php echo $assetsUrl; ?>/css/lib/editor-katex.min.css">
     <link rel="stylesheet" href="<?php echo $assetsUrl; ?>/css/lib/editor.atom-one-dark.min.css">
-    <link rel="stylesheet" href="<?php echo $assetsUrl; ?>/css/lib/editor.quill.snow.css">
     <!-- Date picker css -->
-    <link rel="stylesheet" href="<?php echo $assetsUrl; ?>/css/lib/flatpickr.min.css">
     <!-- Calendar css -->
-    <link rel="stylesheet" href="<?php echo $assetsUrl; ?>/css/lib/full-calendar.css">
     <!-- Vector Map css -->
-    <link rel="stylesheet" href="<?php echo $assetsUrl; ?>/css/lib/jquery-jvectormap-2.0.5.css">
     <!-- Popup css -->
-    <link rel="stylesheet" href="<?php echo $assetsUrl; ?>/css/lib/magnific-popup.css">
     <!-- Slick Slider css -->
-    <link rel="stylesheet" href="<?php echo $assetsUrl; ?>/css/lib/slick.css">
     <!-- prism css -->
-    <link rel="stylesheet" href="<?php echo $assetsUrl; ?>/css/lib/prism.css">
     <!-- CodeMirror css -->
     <link rel="stylesheet" href="<?php echo $assetsUrl; ?>/css/lib/codemirror.min.css">
     <link rel="stylesheet" href="<?php echo $assetsUrl; ?>/css/lib/theme/monokai.min.css">
     <!-- file upload css -->
-    <link rel="stylesheet" href="<?php echo $assetsUrl; ?>/css/lib/file-upload.css">
 
-    <link rel="stylesheet" href="<?php echo $assetsUrl; ?>/css/lib/audioplayer.css">
     <!-- Monochrome Mode css -->
     <link rel="stylesheet" href="<?php echo $assetsUrl; ?>/css/lib/monochrome-mode.css">
     <!-- main css -->
