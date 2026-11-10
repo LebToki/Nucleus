@@ -341,15 +341,17 @@ include __DIR__ . '/../partials/layouts/layoutTop.php';
                                                             <?php echo t_services('reload', 'Reload'); ?>
                                                         </button>
                                                     <?php endif; ?>
+                                                    <!-- Restart is always available: it is the only way to apply a
+                                                         port/SSL change, and it also starts a stopped service. -->
+                                                    <button type="button" class="svc-btn svc-restart" onclick="restartService('<?php echo $key; ?>')" title="<?php echo t_services('restart', 'Restart'); ?>" aria-label="<?php echo t_services('restart', 'Restart') . ' ' . htmlspecialchars($key); ?>">
+                                                        <iconify-icon icon="solar:refresh-bold"></iconify-icon>
+                                                    </button>
                                                     <?php if ($status === 'running'): ?>
-                                                        <button type="button" class="w-32-px h-32-px bg-warning-focus text-warning-main rounded-circle d-inline-flex align-items-center justify-content-center" onclick="restartService('<?php echo $key; ?>')" title="<?php echo t_services('restart', 'Restart'); ?>" aria-label="<?php echo t_services('restart', 'Restart') . ' ' . htmlspecialchars($key); ?>">
-                                                            <iconify-icon icon="solar:refresh-bold"></iconify-icon>
-                                                        </button>
-                                                        <button type="button" class="w-32-px h-32-px bg-danger-focus text-danger-main rounded-circle d-inline-flex align-items-center justify-content-center" onclick="stopService('<?php echo $key; ?>')" title="<?php echo t_services('stop', 'Stop'); ?>" aria-label="<?php echo t_services('stop', 'Stop') . ' ' . htmlspecialchars($key); ?>">
+                                                        <button type="button" class="svc-btn svc-stop" onclick="stopService('<?php echo $key; ?>')" title="<?php echo t_services('stop', 'Stop'); ?>" aria-label="<?php echo t_services('stop', 'Stop') . ' ' . htmlspecialchars($key); ?>">
                                                             <iconify-icon icon="solar:stop-bold"></iconify-icon>
                                                         </button>
                                                     <?php else: ?>
-                                                        <button type="button" class="w-32-px h-32-px bg-success-focus text-success-main rounded-circle d-inline-flex align-items-center justify-content-center" onclick="startService('<?php echo $key; ?>')" title="<?php echo t_services('start', 'Start'); ?>" aria-label="<?php echo t_services('start', 'Start') . ' ' . htmlspecialchars($key); ?>">
+                                                        <button type="button" class="svc-btn svc-start" onclick="startService('<?php echo $key; ?>')" title="<?php echo t_services('start', 'Start'); ?>" aria-label="<?php echo t_services('start', 'Start') . ' ' . htmlspecialchars($key); ?>">
                                                             <iconify-icon icon="solar:play-bold"></iconify-icon>
                                                         </button>
                                                     <?php endif; ?>

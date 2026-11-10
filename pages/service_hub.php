@@ -66,22 +66,8 @@ include __DIR__ . '/../partials/layouts/layoutTop.php'; ?>
 
     <div class="card shadow-none border radius-12">
         <div class="card-body p-24">
-            <div class="table-responsive scroll-sm">
-                <table class="table bordered-table mb-0">
-                    <thead>
-                        <tr>
-                            <th scope="col" class="bg-transparent rounded-0" style="width: 260px;">Service</th>
-                            <th scope="col" class="bg-transparent rounded-0" style="width: 220px;">Virtual Host</th>
-                            <th scope="col" class="bg-transparent rounded-0" style="width: 100px;">Port</th>
-                            <th scope="col" class="bg-transparent rounded-0" style="width: 120px;">Process</th>
-                            <th scope="col" class="bg-transparent rounded-0" style="width: 110px;">Status</th>
-                            <th scope="col" class="bg-transparent rounded-0">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="service-hub-list">
-                        <tr><td colspan="6" class="text-center py-24 text-secondary-light">Loading services...</td></tr>
-                    </tbody>
-                </table>
+            <div id="service-hub-list" class="hub-list">
+                <p class="text-secondary-light text-center py-24 mb-0">Loading services...</p>
             </div>
         </div>
     </div>
@@ -179,54 +165,68 @@ include __DIR__ . '/../partials/layouts/layoutTop.php'; ?>
             });
     };
 
+    function esc(v) {
+        return String(v == null ? '' : v).replace(/[&<>"']/g, function (c) {
+            return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+        });
+    }
+
+    function card(r) {
+        const running = r.status === 'running';
+        const pill = running
+            ? '<span class="pill pill--ok">Running</span>'
+            : '<span class="pill pill--idle">Stopped</span>';
+        const visit = (r.webui && r.url)
+            ? '<a target="_blank" rel="noopener" class="hub-act" href="' + esc(r.url) + '" title="Visit">' +
+              '<iconify-icon icon="solar:link-circle-bold"></iconify-icon></a>'
+            : '';
+        const meta = [];
+        if (r.vhost) meta.push('<span class="hub-meta"><iconify-icon icon="solar:global-bold"></iconify-icon>' + esc(r.vhost) + '</span>');
+        if (r.port) meta.push('<span class="hub-meta"><iconify-icon icon="solar:socket-outline"></iconify-icon>:' + esc(r.port) + '</span>');
+        if (r.processes && r.processes.length) meta.push('<span class="hub-meta">' + esc(r.processes.join(', ')) + '</span>');
+        return '' +
+            '<article class="hub-card" data-status="' + (running ? 'ok' : 'idle') + '">' +
+                '<div class="hub-top">' +
+                    '<span class="hub-icon"><iconify-icon icon="' + esc(r.icon) + '"></iconify-icon></span>' +
+                    pill +
+                '</div>' +
+                '<h3 class="hub-name">' + esc(r.name) + '</h3>' +
+                (r.description ? '<p class="hub-desc">' + esc(r.description) + '</p>' : '') +
+                '<div class="hub-meta-row">' + meta.join('') + '</div>' +
+                '<div class="hub-actions">' +
+                    visit +
+                    '<button type="button" class="hub-act" onclick="openServiceModal(\'' + esc(r.id) + '\')" title="Edit">' +
+                        '<iconify-icon icon="solar:pen-bold"></iconify-icon></button>' +
+                    '<button type="button" class="hub-act hub-act--danger" onclick="deleteService(\'' + esc(r.id) + '\')" title="Delete">' +
+                        '<iconify-icon icon="solar:trash-bin-trash-bold"></iconify-icon></button>' +
+                '</div>' +
+            '</article>';
+    }
+
+    function section(title, rows) {
+        if (!rows.length) {
+            return '<section class="hub-group"><header><span class="hub-sec">' + title +
+                   '</span><span class="hub-count">0</span></header>' +
+                   '<p class="text-secondary-light text-sm mb-0">Nothing here.</p></section>';
+        }
+        return '<section class="hub-group"><header><span class="hub-sec">' + title +
+               '</span><span class="hub-count">' + rows.length + '</span></header>' +
+               '<div class="hub-grid">' + rows.map(card).join('') + '</div></section>';
+    }
+
     function render(rows) {
-        const running = rows.filter(r => r.status === 'running').length;
+        const running = rows.filter(r => r.status === 'running');
+        const stopped = rows.filter(r => r.status !== 'running');
         totEl.textContent = rows.length;
-        runEl.textContent = running;
-        stopEl.textContent = rows.length - running;
+        runEl.textContent = running.length;
+        stopEl.textContent = stopped.length;
 
         if (!rows.length) {
-            listEl.innerHTML = '<tr><td colspan="6" class="text-center py-24 text-secondary-light">No services registered yet.</td></tr>';
+            listEl.innerHTML = '<p class="text-secondary-light text-center py-24 mb-0">No services registered yet.</p>';
             return;
         }
 
-        listEl.innerHTML = rows.map(r => {
-            const color = ['info', 'success', 'warning', 'danger', 'secondary'].includes(r.color) ? r.color : 'primary';
-            const badge = r.status === 'running'
-                ? '<span class="badge bg-success-subtle text-success-main">● Running</span>'
-                : '<span class="badge bg-secondary-subtle text-secondary-main">○ Stopped</span>';
-            const visitBtn = (r.webui && r.url)
-                ? '<a target="_blank" rel="noopener" class="btn btn-sm btn-primary-100 text-primary-600" href="' + r.url + '"><iconify-icon icon="solar:link-circle-bold" class="icon"></iconify-icon> Visit</a>'
-                : '<span class="text-secondary-light text-sm">—</span>';
-            const vhostCell = r.vhost
-                ? '<code class="fw-semibold text-primary-600">' + r.vhost + '</code>'
-                : '<span class="text-secondary-light">—</span>';
-            const proc = (r.processes && r.processes.length) ? r.processes.join(', ') : '<span class="text-secondary-light">—</span>';
-            return (
-                '<tr>' +
-                    '<td><div class="d-flex align-items-center gap-2">' +
-                        '<span class="w-40-px h-40-px rounded-circle bg-' + color + '-100 text-' + color + '-600 d-flex justify-content-center align-items-center flex-shrink-0">' +
-                            '<iconify-icon icon="' + r.icon + '" class="text-lg"></iconify-icon>' +
-                        '</span>' +
-                        '<div>' +
-                            '<p class="fw-semibold mb-0">' + r.name + '</p>' +
-                            (r.description ? '<p class="text-xs text-secondary-light mb-0">' + r.description + '</p>' : '') +
-                        '</div>' +
-                    '</div></td>' +
-                    '<td>' + vhostCell + '</td>' +
-                    '<td><code>' + (r.port || '—') + '</code></td>' +
-                    '<td class="text-secondary-light text-sm">' + proc + '</td>' +
-                    '<td>' + badge + '</td>' +
-                    '<td>' +
-                        '<div class="d-flex flex-wrap gap-2">' +
-                            visitBtn +
-                            '<button type="button" class="btn btn-sm btn-primary-100 text-primary-600" onclick="openServiceModal(\'' + r.id + '\')"><iconify-icon icon="solar:pen-bold" class="icon"></iconify-icon> Edit</button>' +
-                            '<button type="button" class="btn btn-sm btn-danger-100 text-danger-600" onclick="deleteService(\'' + r.id + '\')"><iconify-icon icon="solar:trash-bin-trash-bold" class="icon"></iconify-icon></button>' +
-                        '</div>' +
-                    '</td>' +
-                '</tr>'
-            );
-        }).join('');
+        listEl.innerHTML = section('Running', running) + section('Stopped', stopped);
     }
 
     window.openServiceModal = function (id) {
