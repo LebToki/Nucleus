@@ -83,7 +83,7 @@ try {
                 // Try to find by scanning again with updated paths
                 $logs = scanLogFiles();
                 if (!isset($logs[$logType])) {
-                    throw new Exception('Log file not found for type: ' . $logType);
+                    throw new RuntimeException('Log file not found for type: ' . $logType);
                 }
             }
             
@@ -99,7 +99,7 @@ try {
             
             $logs = scanLogFiles();
             if (!isset($logs[$logType])) {
-                throw new Exception('Log file not found');
+                throw new RuntimeException('Log file not found');
             }
             
             $path = $logs[$logType]['path'];
@@ -117,6 +117,12 @@ try {
         default:
             throw new Exception('Invalid action');
     }
+} catch (RuntimeException $e) {
+    // Requested resource does not exist - not a server fault.
+    ob_clean();
+    http_response_code(404);
+    echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+    ob_end_flush();
 } catch (InvalidArgumentException $e) {
     ob_clean();
     http_response_code(400);
