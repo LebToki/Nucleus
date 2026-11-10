@@ -221,11 +221,21 @@ function listBackups() {
     
     foreach ($files as $file) {
         $basename = basename($file, '_project.zip');
-        $parts = explode('_', $basename);
-        
-        if (count($parts) >= 2) {
-            $timestamp = array_pop($parts);
+
+        // Filename is "{project}_{Y-m-d_H-i-s}_project.zip". The timestamp
+        // itself contains an underscore, so splitting on '_' and popping the
+        // last segment yielded project "…_01-53" + timestamp "09", which made
+        // the computed delete path never match the real file.
+        if (preg_match('/^(.*)_(\\d{4}-\\d{2}-\\d{2}_\\d{2}-\\d{2}-\\d{2})$/', $basename, $m)) {
+            $projectName = $m[1];
+            $timestamp = $m[2];
+        } else {
+            $parts = explode('_', $basename);
+            $timestamp = count($parts) > 1 ? array_pop($parts) : '';
             $projectName = implode('_', $parts);
+        }
+
+        if ($projectName !== '' && $timestamp !== '') {
             
             $dbZip = $backupDir . '/' . $basename . '_database.zip';
             

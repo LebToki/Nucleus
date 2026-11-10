@@ -90,3 +90,6 @@ C:/
 # Generated outside the app (see UI-2 notes); never commit a 6MB icon dump
 assets/favicon.svg
 assets/images/favicon.svg
+
+# Runtime: generated backups and uploads
+uploaded/
