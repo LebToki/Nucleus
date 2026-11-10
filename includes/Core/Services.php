@@ -59,50 +59,59 @@ class Services {
     }
 
     /**
+     * Run one whitelisted action through the privileged helper.
+     *
+     * The web process is not root. /usr/local/bin/nucleus-service accepts only
+     * (start|stop|restart|reload) on a fixed unit list, and is the single
+     * command www-data may sudo. Using `sudo systemctl ...` directly both
+     * required broad sudo rights and silently failed.
+     */
+    private static function run(string $action, string $name): bool {
+        $realName = escapeshellarg(self::getRealName($name));
+        $output = [];
+        $code = 0;
+        @exec('sudo -n /usr/local/bin/nucleus-service ' . $action . ' ' . $realName . ' 2>&1', $output, $code);
+        return $code === 0;
+    }
+
+    /**
      * Start a service
      */
     public static function start(string $name): bool {
-        $realName = escapeshellarg(self::getRealName($name));
-        @shell_exec('sudo systemctl start ' . $realName . ' 2>&1');
-        return self::waitForState($realName, ['active']);
+        if (!self::run('start', $name)) {
+            return false;
+        }
+        return self::waitForState(escapeshellarg(self::getRealName($name)), ['active']);
     }
 
     /**
      * Stop a service
      */
     public static function stop(string $name): bool {
-        $realName = escapeshellarg(self::getRealName($name));
-        @shell_exec('sudo systemctl stop ' . $realName . ' 2>&1');
-        return self::waitForState($realName, ['inactive', 'failed']);
+        if (!self::run('stop', $name)) {
+            return false;
+        }
+        return self::waitForState(escapeshellarg(self::getRealName($name)), ['inactive', 'failed']);
     }
 
     /**
      * Restart a service.
      *
-     * This is a real `systemctl restart`, not stop-then-start: stop+start drops
-     * the listening socket and races the unit back up, which is why restarts
-     * from the dashboard appeared to fail.
+     * A real `systemctl restart`, not stop-then-start: stop+start dropped the
+     * listening socket and raced the unit back up.
      */
     public static function restart(string $name): bool {
-        $realName = escapeshellarg(self::getRealName($name));
-        @shell_exec('sudo systemctl restart ' . $realName . ' 2>&1');
-        return self::waitForState($realName, ['active']);
+        if (!self::run('restart', $name)) {
+            return false;
+        }
+        return self::waitForState(escapeshellarg(self::getRealName($name)), ['active']);
     }
 
     /**
      * Reload a service's configuration without dropping connections.
-     * Returns false when the unit does not support reload.
      */
     public static function reload(string $name): bool {
-        $realName = escapeshellarg(self::getRealName($name));
-        // A reload issued while the unit is still settling after a restart fails
-        // transiently, so wait for it to be active first (returns immediately
-        // when it already is).
-        self::waitForState($realName, ['active'], 3000);
-        $output = [];
-        $code = 0;
-        @exec('sudo systemctl reload ' . $realName . ' 2>&1', $output, $code);
-        return $code === 0;
+        return self::run('reload', $name);
     }
 
     /**

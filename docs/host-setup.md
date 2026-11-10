@@ -94,3 +94,23 @@ curl -sk -o /dev/null -w '%{http_code}\n' https://nucleus-2.local/     # 200
 id www-data | grep -q zorin && echo "www-data in zorin group"
 namei -l /var/www/html/ | tail -3                                     # setgid + g+w
 ```
+
+## Service control
+
+The web process must not have blanket root. Service actions go through a single
+whitelisted helper:
+
+`/usr/local/bin/nucleus-service` (root:root 0755) accepts only
+`start|stop|restart|reload` on `apache2, mariadb, mysql, postgresql, nginx,
+redis-server, memcached, mongod, mailpit`, then execs `systemctl`.
+
+`/etc/sudoers.d/nucleus-service` (0440):
+
+```
+www-data ALL=(root) NOPASSWD: /usr/local/bin/nucleus-service
+```
+
+`Nucleus\Core\Services` calls it with `sudo -n`, checks the exit status, then
+polls `is-active` until the unit settles. Checking the exit status matters: the
+previous implementation treated "unit is still active" as success, so a restart
+that sudo had refused was reported as successful.
