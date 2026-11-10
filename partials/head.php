@@ -71,5 +71,8 @@ if (substr($assetsUrl, 0, 1) !== '/') {
     <!-- Monochrome Mode css -->
     <link rel="stylesheet" href="<?php echo $assetsUrl; ?>/css/lib/monochrome-mode.css">
     <!-- main css -->
-    <link rel="stylesheet" href="<?php echo $assetsUrl; ?>/css/style.css">
+    <!-- 2ti-theme: tokens -> components -> Nucleus shell/bridge -->
+    <link rel="stylesheet" href="<?php echo $assetsUrl; ?>/2ti/tokens.css">
+    <link rel="stylesheet" href="<?php echo $assetsUrl; ?>/2ti/theme.css">
+    <link rel="stylesheet" href="<?php echo $assetsUrl; ?>/2ti/nucleus.css">
 </head>
