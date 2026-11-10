@@ -1,0 +1,180 @@
+/* ============================================================================
+   2TI theme — components
+   Logical properties throughout (padding-inline, inset-inline), so Arabic RTL
+   works without a mirrored stylesheet.
+   ========================================================================= */
+
+/* --- Layout ------------------------------------------------------------- */
+.app-shell { display: flex; min-height: 100vh; }
+
+.sidebar {
+  width: 248px; flex: 0 0 248px;
+  background: var(--surface);
+  border-inline-end: 1px solid var(--border);
+  padding: var(--s-5) var(--s-3);
+  display: flex; flex-direction: column; gap: var(--s-1);
+  position: sticky; top: 0; height: 100vh; overflow-y: auto;
+}
+.sidebar .brand { font-weight: 700; font-size: var(--fs-lg); padding-inline: var(--s-3); margin-block-end: var(--s-5); letter-spacing: -.01em; }
+.nav-item {
+  display: flex; align-items: center; gap: var(--s-3);
+  padding: var(--s-2) var(--s-3); border-radius: var(--r-2);
+  color: var(--text-muted); text-decoration: none; font-size: var(--fs-md);
+  transition: background var(--t-fast), color var(--t-fast);
+}
+.nav-item:hover { background: var(--surface-2); color: var(--text); }
+.nav-item[aria-current="page"] { background: var(--brand); color: var(--brand-ink); }
+
+.main { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; }
+
+.topbar {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--s-4);
+  padding: var(--s-4) var(--s-6);
+  background: var(--surface); border-block-end: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 20;
+}
+
+.page { padding: var(--s-6); display: flex; flex-direction: column; gap: var(--s-5); }
+.page-head { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--s-4); flex-wrap: wrap; }
+.page-title { font-size: var(--fs-2xl); font-weight: 700; margin: 0; letter-spacing: -.02em; }
+.page-sub { color: var(--text-muted); font-size: var(--fs-md); margin: var(--s-1) 0 0; }
+
+@media (max-width: 860px) {
+  .app-shell { flex-direction: column; }
+  .sidebar { width: 100%; flex: none; height: auto; position: static; flex-direction: row; overflow-x: auto; gap: var(--s-2); }
+  .sidebar .brand { display: none; }
+  .page, .topbar { padding-inline: var(--s-4); }
+}
+
+/* --- Buttons ------------------------------------------------------------ */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--s-2);
+  font: inherit; font-size: var(--fs-md); font-weight: 600;
+  padding: var(--s-2) var(--s-4); border-radius: var(--r-2);
+  border: 1px solid transparent; cursor: pointer; text-decoration: none;
+  transition: background var(--t-fast), border-color var(--t-fast), opacity var(--t-fast);
+  white-space: nowrap;
+}
+.btn:disabled, .btn[aria-disabled="true"] { opacity: .5; cursor: not-allowed; }
+.btn:focus-visible, .input:focus-visible, .nav-item:focus-visible, .tab:focus-visible {
+  outline: 2px solid var(--brand-accent); outline-offset: 2px;
+}
+
+.btn-primary { background: var(--brand); color: var(--brand-ink); }
+.btn-primary:hover:not(:disabled) { filter: brightness(1.15); }
+
+.btn-accent { background: var(--brand-accent); color: #1d2733; }
+.btn-accent:hover:not(:disabled) { filter: brightness(1.06); }
+
+.btn-ghost { background: transparent; color: var(--text); border-color: var(--border-strong); }
+.btn-ghost:hover:not(:disabled) { background: var(--surface-2); }
+
+.btn-danger { background: var(--danger); color: #fff; }
+.btn-sm { padding: 6px var(--s-3); font-size: var(--fs-sm); border-radius: var(--r-1); }
+.btn-block { width: 100%; }
+
+/* --- Forms -------------------------------------------------------------- */
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field > label { font-size: var(--fs-sm); font-weight: 600; color: var(--text-muted); }
+.input, .select, .textarea {
+  font: inherit; font-size: var(--fs-md); color: var(--text);
+  background: var(--surface); border: 1px solid var(--border-strong);
+  border-radius: var(--r-2); padding: 10px var(--s-3); width: 100%;
+  transition: border-color var(--t-fast);
+}
+.input:focus, .select:focus, .textarea:focus { border-color: var(--brand-accent); outline: none; }
+.textarea { min-height: 96px; resize: vertical; }
+.help { font-size: var(--fs-xs); color: var(--text-faint); }
+.error-text { font-size: var(--fs-xs); color: var(--danger); }
+.input[aria-invalid="true"] { border-color: var(--danger); }
+
+.form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--s-4); }
+
+/* --- Cards -------------------------------------------------------------- */
+.card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r-3); box-shadow: var(--shadow-1);
+}
+.card-head {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--s-3);
+  padding: var(--s-4) var(--s-5); border-block-end: 1px solid var(--border);
+}
+.card-title { margin: 0; font-size: var(--fs-lg); font-weight: 700; }
+.card-body { padding: var(--s-5); }
+.card-body.tight { padding: var(--s-3); }
+.card-foot { padding: var(--s-4) var(--s-5); border-block-start: 1px solid var(--border); }
+
+/* --- Tables ------------------------------------------------------------- */
+.table-wrap { overflow-x: auto; }
+.table { width: 100%; border-collapse: collapse; font-size: var(--fs-md); }
+.table th {
+  text-align: start; font-size: var(--fs-xs); text-transform: uppercase; letter-spacing: .06em;
+  color: var(--text-muted); font-weight: 700; padding: var(--s-3) var(--s-4);
+  border-block-end: 1px solid var(--border); background: var(--surface-2);
+}
+.table td { padding: var(--s-3) var(--s-4); border-block-end: 1px solid var(--border); vertical-align: middle; }
+.table tbody tr:hover { background: var(--surface-2); }
+.table .num { text-align: end; font-variant-numeric: tabular-nums; }
+
+/* --- Badges ------------------------------------------------------------- */
+.badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: var(--fs-xs); font-weight: 600; padding: 2px 8px;
+  border-radius: var(--r-full); border: 1px solid transparent; white-space: nowrap;
+}
+.badge-neutral { background: var(--surface-2); color: var(--text-muted); border-color: var(--border); }
+.badge-success { background: color-mix(in srgb, var(--success) 14%, transparent); color: var(--success); }
+.badge-warning { background: color-mix(in srgb, var(--warning) 16%, transparent); color: var(--warning); }
+.badge-danger  { background: color-mix(in srgb, var(--danger) 14%, transparent); color: var(--danger); }
+.badge-info    { background: color-mix(in srgb, var(--info) 14%, transparent); color: var(--info); }
+
+/* --- Stats -------------------------------------------------------------- */
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--s-4); }
+.stat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-3); padding: var(--s-4) var(--s-5); }
+.stat .label { font-size: var(--fs-xs); text-transform: uppercase; letter-spacing: .06em; color: var(--text-muted); font-weight: 700; }
+.stat .value { font-size: var(--fs-2xl); font-weight: 700; letter-spacing: -.02em; margin-block-start: var(--s-1); }
+.stat .delta { font-size: var(--fs-sm); color: var(--text-muted); }
+
+/* --- Tabs --------------------------------------------------------------- */
+.tabs { display: flex; gap: var(--s-1); border-block-end: 1px solid var(--border); }
+.tab {
+  font: inherit; font-size: var(--fs-md); font-weight: 600; color: var(--text-muted);
+  background: none; border: 0; border-block-end: 2px solid transparent;
+  padding: var(--s-2) var(--s-3); cursor: pointer; margin-block-end: -1px;
+}
+.tab[aria-selected="true"] { color: var(--text); border-block-end-color: var(--brand-accent); }
+
+/* --- Modal -------------------------------------------------------------- */
+.modal-backdrop {
+  position: fixed; inset: 0; background: rgba(9, 14, 20, .55);
+  display: none; align-items: center; justify-content: center; padding: var(--s-4); z-index: 100;
+}
+.modal-backdrop[data-open="true"] { display: flex; }
+.modal {
+  background: var(--surface); border-radius: var(--r-3); box-shadow: var(--shadow-3);
+  width: min(560px, 100%); max-height: 88vh; overflow: auto; border: 1px solid var(--border);
+}
+.modal-head { padding: var(--s-4) var(--s-5); border-block-end: 1px solid var(--border); font-weight: 700; font-size: var(--fs-lg); }
+.modal-body { padding: var(--s-5); }
+.modal-foot { padding: var(--s-4) var(--s-5); border-block-start: 1px solid var(--border); display: flex; justify-content: flex-end; gap: var(--s-2); }
+
+/* --- Toast -------------------------------------------------------------- */
+.toast-stack { position: fixed; inset-block-end: var(--s-5); inset-inline-end: var(--s-5); display: flex; flex-direction: column; gap: var(--s-2); z-index: 200; }
+.toast {
+  background: var(--surface); border: 1px solid var(--border); border-inline-start: 3px solid var(--success);
+  border-radius: var(--r-2); box-shadow: var(--shadow-2); padding: var(--s-3) var(--s-4);
+  font-size: var(--fs-md); min-width: 260px; max-width: 380px;
+}
+
+/* --- Empty state -------------------------------------------------------- */
+.empty { text-align: center; padding: var(--s-7) var(--s-5); color: var(--text-muted); }
+.empty h3 { margin: 0 0 var(--s-2); font-size: var(--fs-lg); color: var(--text); }
+.empty p { margin: 0 0 var(--s-4); }
+
+/* --- Utilities (deliberately few) --------------------------------------- */
+.row { display: flex; align-items: center; gap: var(--s-3); flex-wrap: wrap; }
+.spacer { flex: 1 1 auto; }
+.muted { color: var(--text-muted); }
+.mono { font-family: var(--font-mono); font-size: var(--fs-sm); }
+.mt-4 { margin-block-start: var(--s-4); }
+.mt-6 { margin-block-start: var(--s-6); }
