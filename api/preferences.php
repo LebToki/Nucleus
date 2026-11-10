@@ -7,8 +7,29 @@
 
 // Load configuration
 require_once __DIR__ . '/../config.php';
+if (file_exists(__DIR__ . '/../includes/helpers.php')) {
+    require_once __DIR__ . '/../includes/helpers.php';
+}
 
 header('Content-Type: application/json');
+
+// Preferences are a write endpoint: refuse anything that is not a POST so a
+// page load, prefetch or crawler cannot rewrite them.
+if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
+    http_response_code(405);
+    header('Allow: POST');
+    echo json_encode(['success' => false, 'error' => 'Method not allowed']);
+    exit;
+}
+
+$csrfToken = $_POST['csrf_token']
+    ?? $_SERVER['HTTP_X_CSRF_TOKEN']
+    ?? (json_decode(file_get_contents('php://input'), true)['csrf_token'] ?? '');
+if (!function_exists('verifyCSRFToken') || !verifyCSRFToken($csrfToken)) {
+    http_response_code(403);
+    echo json_encode(['success' => false, 'error' => 'CSRF token validation failed']);
+    exit;
+}
 
 $action = $_GET['action'] ?? 'save';
 
@@ -22,6 +43,11 @@ try {
     switch ($action) {
         case 'save':
             $input = json_decode(file_get_contents('php://input'), true);
+            if (!is_array($input) || empty($input)) {
+                http_response_code(400);
+                echo json_encode(['success' => false, 'error' => 'Empty or invalid preferences payload']);
+                exit;
+            }
             
             $prefs = [];
             
