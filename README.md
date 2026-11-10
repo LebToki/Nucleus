@@ -14,7 +14,7 @@ Born from [Laragon Dashboard](https://github.com/LebToki/Laragon-Dashboard) (v4.
 [![GitHub](https://img.shields.io/github/stars/LebToki/Nucleus?style=social)](https://github.com/LebToki/Nucleus)
 
 <p align="center">
-  <img src="assets/images/Nucleus_Dark_Dashboard.png" alt="Nucleus Dark Dashboard Interface" width="900" />
+  <img width="1100" alt="Nucleus Dark Dashboard Interface" src="https://github.com/user-attachments/assets/2e53fde9-9752-489d-97e0-a2d8373904d8" />
 </p>
 
 
