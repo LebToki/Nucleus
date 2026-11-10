@@ -49,6 +49,14 @@ class System {
      * Get the www directory where projects live
      */
     public static function getWwwPath(): string {
+        // An explicit document_root preference wins: when the dashboard is
+        // served from its own vhost, DOCUMENT_ROOT is the dashboard itself,
+        // not the directory that holds the projects.
+        $preferred = self::preferredWwwPath();
+        if ($preferred !== null) {
+            return $preferred;
+        }
+
         $root = self::getNucleusRoot();
         // On Linux, www is /var/www/html (Apache DocumentRoot)
         // But if getNucleusRoot() already returned the DocumentRoot itself,
@@ -57,6 +65,22 @@ class System {
             return $root;
         }
         return $root . '/html';
+    }
+
+    /**
+     * Read document_root from data/preferences.json when it is set and valid.
+     */
+    private static function preferredWwwPath(): ?string {
+        $file = dirname(__DIR__, 2) . '/data/preferences.json';
+        if (!is_file($file)) {
+            return null;
+        }
+        $prefs = json_decode((string) @file_get_contents($file), true);
+        if (!is_array($prefs) || empty($prefs['document_root'])) {
+            return null;
+        }
+        $path = rtrim((string) $prefs['document_root'], '/');
+        return is_dir($path) ? $path : null;
     }
 
     /**
