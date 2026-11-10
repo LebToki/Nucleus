@@ -117,9 +117,9 @@ include __DIR__ . '/../partials/layouts/layoutTop.php';
                         <div class="d-flex align-items-center gap-4 mt-2 flex-wrap">
                             <!-- Postfix Status -->
                             <div>
-                                <span class="me-3 fw-medium text-secondary-light">Postfix Daemon:</span> 
+                                <span class="me-3 fw-medium text-secondary-light">Postfix (optional):</span> 
                                 <?php if ($postfixRunning): ?>
-                                    <span class="badge bg-success-main text-white px-4 py-1 rounded-pill shadow-sm">ACTIVE</span>
+                                    <span class="badge bg-success-subtle text-success-main px-4 py-1 rounded-pill">ACTIVE</span>
                                 <?php else: ?>
                                     <span class="badge bg-neutral-400 text-white px-4 py-1 rounded-pill shadow-sm">INACTIVE</span>
                                 <?php endif; ?>
@@ -128,7 +128,7 @@ include __DIR__ . '/../partials/layouts/layoutTop.php';
                             <div>
                                 <span class="me-3 fw-medium text-secondary-light">Mailpit Web UI:</span> 
                                 <?php if ($mailpitRunning): ?>
-                                    <span class="badge bg-success-main text-white px-4 py-1 rounded-pill shadow-sm">CONNECTED</span>
+                                    <span class="badge bg-success-subtle text-success-main px-4 py-1 rounded-pill">CONNECTED</span>
                                 <?php else: ?>
                                     <span class="badge bg-warning-main text-white px-4 py-1 rounded-pill shadow-sm">OFFLINE (Port 8025)</span>
                                 <?php endif; ?>
