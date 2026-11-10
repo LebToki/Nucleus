@@ -133,7 +133,7 @@ class ProjectApi {
             case 'list_ignored':
                 return $this->listIgnored();
             default:
-                throw new Exception('Invalid action specified.');
+                throw new InvalidArgumentException('Invalid action specified.');
         }
     }
 }
@@ -159,6 +159,10 @@ try {
     // Output success response
     echo json_encode(['success' => true, 'data' => $result]);
 
+} catch (InvalidArgumentException $e) {
+    // Caller error (unknown action, bad input) - not a server fault.
+    http_response_code(400);
+    echo json_encode(['success' => false, 'error' => $e->getMessage()]);
 } catch (Exception $e) {
     // Consolidated error handler for all API actions.
     http_response_code(500);

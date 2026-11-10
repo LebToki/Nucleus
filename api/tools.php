@@ -324,8 +324,13 @@ try {
             break;
             
         default:
-            throw new Exception('Invalid action');
+            throw new InvalidArgumentException('Invalid action');
     }
+} catch (\InvalidArgumentException $e) {
+    ob_clean();
+    http_response_code(400);
+    echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+    ob_end_flush();
 } catch (\Throwable $e) {
     ob_clean();
     http_response_code(500);

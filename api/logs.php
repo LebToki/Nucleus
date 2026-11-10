@@ -75,7 +75,7 @@ try {
             
         case 'read':
             if (empty($logType)) {
-                throw new Exception('Log type required');
+                throw new InvalidArgumentException('Log type required');
             }
             
             $logs = scanLogFiles();
@@ -94,7 +94,7 @@ try {
             
         case 'clear':
             if (empty($logType)) {
-                throw new Exception('Log type required');
+                throw new InvalidArgumentException('Log type required');
             }
             
             $logs = scanLogFiles();
@@ -117,6 +117,11 @@ try {
         default:
             throw new Exception('Invalid action');
     }
+} catch (InvalidArgumentException $e) {
+    ob_clean();
+    http_response_code(400);
+    echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+    ob_end_flush();
 } catch (Exception $e) {
     ob_clean();
     http_response_code(500);
