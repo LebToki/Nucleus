@@ -2,7 +2,10 @@
 
 ### The Missing Dashboard for Linux Developers
 
+
 A lightweight, central control panel for Linux development environments. Nucleus scans your web root, detects your projects, manages your services via systemd, and gives you a modern web interface to orchestrate your entire local dev stack — no Windows, no WAMP, no compromises.
+
+<img width="1200" height="630" alt="image" src="https://github.com/user-attachments/assets/643fa1b4-ff8b-4bf3-a02c-623b579a7629" />
 
 Born from [Laragon Dashboard](https://github.com/LebToki/Laragon-Dashboard) (v4.0.5 for Windows), Nucleus is the Linux-native evolution — purpose-built for ZorinOS, Ubuntu, and Linux Mint.
 
